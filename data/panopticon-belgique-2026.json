@@ -1,0 +1,40 @@
+{
+  "entities": [
+    { "id": "bouchez", "name": "Georges-Louis Bouchez", "type": "person", "role": "Président MR", "desc": "Président du Mouvement Réformateur depuis 2019, réélu en 2024." },
+    { "id": "magnette", "name": "Paul Magnette", "type": "person", "role": "Président PS", "desc": "Président du Parti Socialiste, bourgmestre de Charleroi." },
+    { "id": "dewever", "name": "Bart De Wever", "type": "person", "role": "Premier Ministre", "desc": "Premier Ministre depuis février 2025. Ex-président N-VA." },
+    { "id": "vanpeel", "name": "Valerie Van Peel", "type": "person", "role": "Présidente N-VA", "desc": "Présidente N-VA depuis avril 2025, succède à De Wever." },
+    { "id": "engelaar", "name": "Bert Engelaar", "type": "person", "role": "Président FGTB", "desc": "Président FGTB depuis décembre 2025." },
+    { "id": "bodson", "name": "Thierry Bodson", "type": "person", "role": "Co-président Solidaris", "desc": "Ex-président FGTB, co-président Solidaris/UNMS." },
+    { "id": "labille", "name": "Jean-Pascal Labille", "type": "person", "role": "SG Solidaris", "desc": "Secrétaire général UNMS/Solidaris." },
+    { "id": "deliamchine", "name": "Sarah de Liamchine", "type": "person", "role": "Prés. Solidaris Wallonie", "desc": "Présidente Solidaris Wallonie, DG Samusocial (depuis sept 2025)." },
+    { "id": "mr", "name": "MR", "type": "organization", "role": "Parti libéral", "desc": "Mouvement Réformateur - Premier parti francophone." },
+    { "id": "ps", "name": "PS", "type": "organization", "role": "Parti socialiste", "desc": "Parti Socialiste belge francophone." },
+    { "id": "nva", "name": "N-VA", "type": "organization", "role": "Parti nationaliste", "desc": "Nieuw-Vlaamse Alliantie - Premier parti flamand." },
+    { "id": "fgtb", "name": "FGTB", "type": "organization", "role": "Syndicat", "desc": "Fédération Générale du Travail de Belgique." },
+    { "id": "solidaris", "name": "Solidaris", "type": "organization", "role": "Mutualité", "desc": "Mutualité socialiste (ex-UNMS)." },
+    { "id": "arizona", "name": "Gouvernement Arizona", "type": "organization", "role": "Gouvernement fédéral", "desc": "Coalition N-VA/MR/CD&V/Vooruit/Engagés depuis février 2025." },
+    { "id": "pac", "name": "PAC", "type": "organization", "role": "Éducation permanente", "desc": "Présence et Action Culturelles. Codirection: Vangilbergen & Cydzik." },
+    { "id": "soralia", "name": "Soralia", "type": "organization", "role": "Mouvement féministe", "desc": "Ex-FPS. SG: Noémie Van Erps." }
+  ],
+  "relations": [
+    { "source": "bouchez", "target": "mr", "type": "hierarchy", "label": "préside" },
+    { "source": "magnette", "target": "ps", "type": "hierarchy", "label": "préside" },
+    { "source": "vanpeel", "target": "nva", "type": "hierarchy", "label": "préside" },
+    { "source": "engelaar", "target": "fgtb", "type": "hierarchy", "label": "préside" },
+    { "source": "bodson", "target": "solidaris", "type": "hierarchy", "label": "co-préside" },
+    { "source": "labille", "target": "solidaris", "type": "hierarchy", "label": "secrétaire général" },
+    { "source": "deliamchine", "target": "solidaris", "type": "hierarchy", "label": "prés. Wallonie" },
+    { "source": "dewever", "target": "arizona", "type": "hierarchy", "label": "dirige" },
+    { "source": "dewever", "target": "nva", "type": "collaboration", "label": "membre" },
+    { "source": "mr", "target": "arizona", "type": "collaboration", "label": "coalition" },
+    { "source": "nva", "target": "arizona", "type": "collaboration", "label": "coalition" },
+    { "source": "ps", "target": "fgtb", "type": "collaboration", "label": "Action Commune" },
+    { "source": "ps", "target": "solidaris", "type": "collaboration", "label": "pilier socialiste" },
+    { "source": "fgtb", "target": "solidaris", "type": "collaboration", "label": "pilier socialiste" },
+    { "source": "solidaris", "target": "soralia", "type": "collaboration", "label": "mouvement associé" },
+    { "source": "solidaris", "target": "pac", "type": "collaboration", "label": "mouvement associé" },
+    { "source": "bouchez", "target": "magnette", "type": "conflict", "label": "opposition" },
+    { "source": "mr", "target": "ps", "type": "conflict", "label": "opposition" }
+  ]
+}

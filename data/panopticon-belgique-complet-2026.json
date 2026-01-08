@@ -1,0 +1,392 @@
+{
+  "metadata": {
+    "title": "PANOPTICON - Cartographie du pouvoir en Belgique",
+    "version": "2.0",
+    "date_creation": "2026-01-06",
+    "date_verification": "2026-01-06",
+    "sources": ["Wikipedia", "RTBF", "La Libre", "Le Soir", "VRT", "Sites officiels partis"],
+    "note": "Toutes les données ont été vérifiées via recherche web le 6 janvier 2026"
+  },
+  "entities": [
+    {
+      "id": "dewever",
+      "name": "Bart De Wever",
+      "type": "person",
+      "role": "Premier Ministre",
+      "desc": "Premier Ministre de Belgique depuis le 3 février 2025. Ancien président de la N-VA (2004-2025). Bourgmestre d'Anvers empêché.",
+      "tags": ["gouvernement", "arizona", "flandre"],
+      "verified": true
+    },
+    {
+      "id": "bouchez",
+      "name": "Georges-Louis Bouchez",
+      "type": "person",
+      "role": "Président MR",
+      "desc": "Président du Mouvement Réformateur depuis 2019, réélu en 2024. Conseiller communal de Mons.",
+      "tags": ["parti", "libéral", "francophone"],
+      "verified": true
+    },
+    {
+      "id": "magnette",
+      "name": "Paul Magnette",
+      "type": "person",
+      "role": "Président PS",
+      "desc": "Président du Parti Socialiste. Bourgmestre de Charleroi. Ancien ministre-président wallon.",
+      "tags": ["parti", "socialiste", "opposition"],
+      "verified": true
+    },
+    {
+      "id": "vanpeel",
+      "name": "Valerie Van Peel",
+      "type": "person",
+      "role": "Présidente N-VA",
+      "desc": "Présidente de la N-VA depuis le 26 avril 2025, élue avec 96% des voix. Succède à Bart De Wever.",
+      "tags": ["parti", "nationaliste", "flandre"],
+      "verified": true
+    },
+    {
+      "id": "hedebouw",
+      "name": "Raoul Hedebouw",
+      "type": "person",
+      "role": "Président PTB-PVDA",
+      "desc": "Président du Parti du Travail de Belgique depuis janvier 2022. Député fédéral depuis 2014. Bilingue.",
+      "tags": ["parti", "gauche_radicale", "opposition"],
+      "verified": true
+    },
+    {
+      "id": "prevot",
+      "name": "Maxime Prévot",
+      "type": "person",
+      "role": "Vice-PM, Min. Affaires étrangères",
+      "desc": "Vice-Premier Ministre et Ministre des Affaires étrangères depuis février 2025. Ex-président Les Engagés. Bourgmestre de Namur empêché.",
+      "tags": ["gouvernement", "arizona", "francophone"],
+      "verified": true
+    },
+    {
+      "id": "verougstraete",
+      "name": "Yvan Verougstraete",
+      "type": "person",
+      "role": "Président ff Les Engagés",
+      "desc": "Président faisant fonction des Engagés depuis février 2025. Eurodéputé. Succède à Maxime Prévot.",
+      "tags": ["parti", "centre", "francophone"],
+      "verified": true
+    },
+    {
+      "id": "rousseau",
+      "name": "Conner Rousseau",
+      "type": "person",
+      "role": "Président Vooruit",
+      "desc": "Président de Vooruit (réélu août 2024). A transformé le sp.a en Vooruit en 2021.",
+      "tags": ["parti", "socialiste", "flandre"],
+      "verified": true
+    },
+    {
+      "id": "mahdi",
+      "name": "Sammy Mahdi",
+      "type": "person",
+      "role": "Président CD&V",
+      "desc": "Président du CD&V depuis juin 2022. Ancien secrétaire d'État à l'Asile et Migration.",
+      "tags": ["parti", "chrétien-démocrate", "flandre"],
+      "verified": true
+    },
+    {
+      "id": "vangrieken",
+      "name": "Tom Van Grieken",
+      "type": "person",
+      "role": "Président Vlaams Belang",
+      "desc": "Président du Vlaams Belang depuis 2014 (réélu 2023 avec 97,7%). Député flamand.",
+      "tags": ["parti", "extreme_droite", "flandre", "opposition"],
+      "verified": true
+    },
+    {
+      "id": "engelaar",
+      "name": "Bert Engelaar",
+      "type": "person",
+      "role": "Président FGTB",
+      "desc": "Président/Secrétaire général de la FGTB depuis décembre 2025. Succède à Thierry Bodson.",
+      "tags": ["syndicat", "socialiste"],
+      "verified": true
+    },
+    {
+      "id": "bodson",
+      "name": "Thierry Bodson",
+      "type": "person",
+      "role": "Co-président Solidaris",
+      "desc": "Co-président de Solidaris/UNMS. Ancien président FGTB (2020-2025).",
+      "tags": ["mutualité", "socialiste"],
+      "verified": true
+    },
+    {
+      "id": "labille",
+      "name": "Jean-Pascal Labille",
+      "type": "person",
+      "role": "SG Solidaris/UNMS",
+      "desc": "Secrétaire général de Solidaris (ex-UNMS). Ancien ministre fédéral des Entreprises publiques.",
+      "tags": ["mutualité", "socialiste"],
+      "verified": true
+    },
+    {
+      "id": "vermorgen",
+      "name": "Ann Vermorgen",
+      "type": "person",
+      "role": "Présidente CSC/ACV",
+      "desc": "Présidente de la Confédération des Syndicats Chrétiens, premier syndicat belge.",
+      "tags": ["syndicat", "chrétien"],
+      "verified": true
+    },
+    {
+      "id": "ska",
+      "name": "Marie-Hélène Ska",
+      "type": "person",
+      "role": "SG CSC/ACV",
+      "desc": "Secrétaire générale de la CSC/ACV.",
+      "tags": ["syndicat", "chrétien"],
+      "verified": true
+    },
+    {
+      "id": "jambon",
+      "name": "Jan Jambon",
+      "type": "person",
+      "role": "Vice-PM, Min. Finances",
+      "desc": "Vice-Premier Ministre N-VA et Ministre des Finances. Ancien ministre-président flamand.",
+      "tags": ["gouvernement", "arizona", "flandre"],
+      "verified": true
+    },
+    {
+      "id": "vanpeteghem",
+      "name": "Vincent Van Peteghem",
+      "type": "person",
+      "role": "Vice-PM, Min. Budget",
+      "desc": "Vice-Premier Ministre CD&V et Ministre du Budget. Ancien ministre des Finances (Vivaldi).",
+      "tags": ["gouvernement", "arizona", "flandre"],
+      "verified": true
+    },
+    {
+      "id": "mertens",
+      "name": "Peter Mertens",
+      "type": "person",
+      "role": "SG PTB-PVDA",
+      "desc": "Secrétaire général du PTB depuis janvier 2022. Président du PTB de 2008 à 2021.",
+      "tags": ["parti", "gauche_radicale"],
+      "verified": true
+    },
+    {
+      "id": "mr",
+      "name": "MR",
+      "type": "organization",
+      "role": "Parti libéral francophone",
+      "desc": "Mouvement Réformateur. Premier parti francophone. Membre de la coalition Arizona.",
+      "tags": ["parti", "libéral", "gouvernement"],
+      "verified": true
+    },
+    {
+      "id": "ps",
+      "name": "PS",
+      "type": "organization",
+      "role": "Parti socialiste francophone",
+      "desc": "Parti Socialiste belge francophone. Opposition fédérale depuis 2025.",
+      "tags": ["parti", "socialiste", "opposition"],
+      "verified": true
+    },
+    {
+      "id": "nva",
+      "name": "N-VA",
+      "type": "organization",
+      "role": "Parti nationaliste flamand",
+      "desc": "Nieuw-Vlaamse Alliantie. Premier parti de Belgique. Parti du Premier Ministre.",
+      "tags": ["parti", "nationaliste", "gouvernement"],
+      "verified": true
+    },
+    {
+      "id": "ptb",
+      "name": "PTB-PVDA",
+      "type": "organization",
+      "role": "Parti marxiste unitaire",
+      "desc": "Parti du Travail de Belgique / Partij van de Arbeid. Seul parti unitaire belge. Opposition.",
+      "tags": ["parti", "gauche_radicale", "opposition"],
+      "verified": true
+    },
+    {
+      "id": "engages",
+      "name": "Les Engagés",
+      "type": "organization",
+      "role": "Parti centriste francophone",
+      "desc": "Ex-cdH, refondé en 2022. Membre des coalitions Arizona (fédéral) et Azur (Wallonie/FWB).",
+      "tags": ["parti", "centre", "gouvernement"],
+      "verified": true
+    },
+    {
+      "id": "vooruit",
+      "name": "Vooruit",
+      "type": "organization",
+      "role": "Parti socialiste flamand",
+      "desc": "Ex-sp.a, renommé en 2021. Membre de la coalition Arizona.",
+      "tags": ["parti", "socialiste", "gouvernement"],
+      "verified": true
+    },
+    {
+      "id": "cdv",
+      "name": "CD&V",
+      "type": "organization",
+      "role": "Parti chrétien-démocrate flamand",
+      "desc": "Christen-Democratisch en Vlaams. Membre de la coalition Arizona.",
+      "tags": ["parti", "chrétien-démocrate", "gouvernement"],
+      "verified": true
+    },
+    {
+      "id": "vb",
+      "name": "Vlaams Belang",
+      "type": "organization",
+      "role": "Parti d'extrême droite flamand",
+      "desc": "Parti nationaliste flamand d'extrême droite. Cordon sanitaire partiellement rompu aux communales 2024.",
+      "tags": ["parti", "extreme_droite", "opposition"],
+      "verified": true
+    },
+    {
+      "id": "ecolo",
+      "name": "Ecolo",
+      "type": "organization",
+      "role": "Parti écologiste francophone",
+      "desc": "Parti vert francophone. En crise après démission des coprésidents (nov 2025). Équipe de transition jusqu'en mars 2026.",
+      "tags": ["parti", "écologiste", "opposition"],
+      "verified": true
+    },
+    {
+      "id": "groen",
+      "name": "Groen",
+      "type": "organization",
+      "role": "Parti écologiste flamand",
+      "desc": "Parti vert flamand. Recherche de président après démission de Bart Dhondt (déc 2025).",
+      "tags": ["parti", "écologiste", "opposition"],
+      "verified": true
+    },
+    {
+      "id": "fgtb",
+      "name": "FGTB",
+      "type": "organization",
+      "role": "Syndicat socialiste",
+      "desc": "Fédération Générale du Travail de Belgique. Deuxième syndicat belge. Pilier socialiste.",
+      "tags": ["syndicat", "socialiste"],
+      "verified": true
+    },
+    {
+      "id": "csc",
+      "name": "CSC/ACV",
+      "type": "organization",
+      "role": "Syndicat chrétien",
+      "desc": "Confédération des Syndicats Chrétiens. Premier syndicat belge (1,7 million membres).",
+      "tags": ["syndicat", "chrétien"],
+      "verified": true
+    },
+    {
+      "id": "solidaris",
+      "name": "Solidaris",
+      "type": "organization",
+      "role": "Mutualité socialiste",
+      "desc": "Mutualité socialiste (ex-UNMS). Pilier du mouvement socialiste belge.",
+      "tags": ["mutualité", "socialiste"],
+      "verified": true
+    },
+    {
+      "id": "mc",
+      "name": "Mutualité Chrétienne",
+      "type": "organization",
+      "role": "Mutualité chrétienne",
+      "desc": "Première mutualité belge. Liée au pilier chrétien.",
+      "tags": ["mutualité", "chrétien"],
+      "verified": true
+    },
+    {
+      "id": "arizona",
+      "name": "Gouvernement Arizona",
+      "type": "organization",
+      "role": "Gouvernement fédéral",
+      "desc": "Coalition N-VA/MR/Les Engagés/Vooruit/CD&V depuis février 2025. PM: Bart De Wever.",
+      "tags": ["gouvernement", "fédéral"],
+      "verified": true
+    },
+    {
+      "id": "azur",
+      "name": "Gouvernement Azur",
+      "type": "organization",
+      "role": "Gouvernement wallon",
+      "desc": "Coalition MR/Les Engagés en Wallonie et FWB depuis 2024.",
+      "tags": ["gouvernement", "wallonie"],
+      "verified": true
+    },
+    {
+      "id": "pac",
+      "name": "PAC",
+      "type": "organization",
+      "role": "Éducation permanente",
+      "desc": "Présence et Action Culturelles. Codirection: Pierre Vangilbergen & Anne-Lise Cydzik (depuis oct 2025).",
+      "tags": ["associatif", "socialiste"],
+      "verified": true
+    },
+    {
+      "id": "soralia",
+      "name": "Soralia",
+      "type": "organization",
+      "role": "Mouvement féministe",
+      "desc": "Ex-Femmes Prévoyantes Socialistes (FPS). SG: Noémie Van Erps. Mouvement associé à Solidaris.",
+      "tags": ["associatif", "socialiste", "féministe"],
+      "verified": true
+    }
+  ],
+  "relations": [
+    { "source": "dewever", "target": "arizona", "type": "hierarchy", "label": "dirige" },
+    { "source": "dewever", "target": "nva", "type": "collaboration", "label": "membre fondateur" },
+    { "source": "vanpeel", "target": "nva", "type": "hierarchy", "label": "préside" },
+    { "source": "bouchez", "target": "mr", "type": "hierarchy", "label": "préside" },
+    { "source": "magnette", "target": "ps", "type": "hierarchy", "label": "préside" },
+    { "source": "hedebouw", "target": "ptb", "type": "hierarchy", "label": "préside" },
+    { "source": "mertens", "target": "ptb", "type": "hierarchy", "label": "secrétaire général" },
+    { "source": "verougstraete", "target": "engages", "type": "hierarchy", "label": "préside (ff)" },
+    { "source": "prevot", "target": "engages", "type": "collaboration", "label": "ex-président" },
+    { "source": "prevot", "target": "arizona", "type": "hierarchy", "label": "vice-PM" },
+    { "source": "rousseau", "target": "vooruit", "type": "hierarchy", "label": "préside" },
+    { "source": "mahdi", "target": "cdv", "type": "hierarchy", "label": "préside" },
+    { "source": "vangrieken", "target": "vb", "type": "hierarchy", "label": "préside" },
+    { "source": "engelaar", "target": "fgtb", "type": "hierarchy", "label": "préside" },
+    { "source": "bodson", "target": "solidaris", "type": "hierarchy", "label": "co-préside" },
+    { "source": "labille", "target": "solidaris", "type": "hierarchy", "label": "secrétaire général" },
+    { "source": "vermorgen", "target": "csc", "type": "hierarchy", "label": "préside" },
+    { "source": "ska", "target": "csc", "type": "hierarchy", "label": "secrétaire générale" },
+    { "source": "jambon", "target": "arizona", "type": "hierarchy", "label": "vice-PM Finances" },
+    { "source": "jambon", "target": "nva", "type": "collaboration", "label": "membre" },
+    { "source": "vanpeteghem", "target": "arizona", "type": "hierarchy", "label": "vice-PM Budget" },
+    { "source": "vanpeteghem", "target": "cdv", "type": "collaboration", "label": "membre" },
+    
+    { "source": "mr", "target": "arizona", "type": "collaboration", "label": "coalition" },
+    { "source": "nva", "target": "arizona", "type": "collaboration", "label": "coalition" },
+    { "source": "engages", "target": "arizona", "type": "collaboration", "label": "coalition" },
+    { "source": "vooruit", "target": "arizona", "type": "collaboration", "label": "coalition" },
+    { "source": "cdv", "target": "arizona", "type": "collaboration", "label": "coalition" },
+    
+    { "source": "mr", "target": "azur", "type": "collaboration", "label": "coalition" },
+    { "source": "engages", "target": "azur", "type": "collaboration", "label": "coalition" },
+    
+    { "source": "ps", "target": "fgtb", "type": "collaboration", "label": "Action Commune" },
+    { "source": "ps", "target": "solidaris", "type": "collaboration", "label": "pilier socialiste" },
+    { "source": "fgtb", "target": "solidaris", "type": "collaboration", "label": "pilier socialiste" },
+    { "source": "solidaris", "target": "soralia", "type": "collaboration", "label": "mouvement associé" },
+    { "source": "solidaris", "target": "pac", "type": "collaboration", "label": "mouvement associé" },
+    
+    { "source": "cdv", "target": "csc", "type": "collaboration", "label": "pilier chrétien" },
+    { "source": "cdv", "target": "mc", "type": "collaboration", "label": "pilier chrétien" },
+    { "source": "csc", "target": "mc", "type": "collaboration", "label": "pilier chrétien" },
+    
+    { "source": "ecolo", "target": "groen", "type": "collaboration", "label": "partis frères" },
+    { "source": "ps", "target": "vooruit", "type": "collaboration", "label": "famille socialiste" },
+    
+    { "source": "bouchez", "target": "magnette", "type": "conflict", "label": "opposition" },
+    { "source": "mr", "target": "ps", "type": "conflict", "label": "opposition" },
+    { "source": "mr", "target": "ptb", "type": "conflict", "label": "opposition" },
+    { "source": "nva", "target": "vb", "type": "conflict", "label": "concurrence droite" },
+    { "source": "nva", "target": "ptb", "type": "conflict", "label": "opposition" },
+    { "source": "fgtb", "target": "arizona", "type": "conflict", "label": "contestation sociale" },
+    { "source": "csc", "target": "arizona", "type": "conflict", "label": "contestation sociale" },
+    
+    { "source": "bodson", "target": "fgtb", "type": "collaboration", "label": "ex-président" }
+  ]
+}

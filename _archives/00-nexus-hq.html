@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>◈ NEXUS — Quartier Général Personnel</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --bg-void: #030308;
+            --bg-deep: #0a0a12;
+            --bg-panel: #0d0d18;
+            --bg-widget: #111122;
+            --bg-input: #161628;
+            --border: rgba(99, 102, 241, 0.3);
+            --cyan: #22d3ee;
+            --cyan-dim: rgba(34, 211, 238, 0.15);
+            --purple: #a78bfa;
+            --purple-dim: rgba(167, 139, 250, 0.15);
+            --magenta: #f472b6;
+            --magenta-dim: rgba(244, 114, 182, 0.15);
+            --green: #4ade80;
+            --green-dim: rgba(74, 222, 128, 0.15);
+            --orange: #fb923c;
+            --orange-dim: rgba(251, 146, 60, 0.15);
+            --text: #e2e8f0;
+            --text-dim: #64748b;
+            --font-main: 'Space Grotesk', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; overflow: hidden; }
+        
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-void);
+            color: var(--text);
+        }
+        
+        /* Ambient background */
+        .ambient-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(34, 211, 238, 0.08) 0%, transparent 50%);
+        }
+        
+        /* CRITICAL: Main Layout with absolute positioning */
+        .nexus-layout {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: grid;
+            grid-template-columns: 300px 1fr 340px;
+            grid-template-rows: 56px 1fr;
+            gap: 1px;
+            background: var(--border);
+            z-index: 2;
+        }
+        
+        @media (max-width: 1400px) { .nexus-layout { grid-template-columns: 260px 1fr 300px; } }
+        @media (max-width: 1100px) { .nexus-layout { grid-template-columns: 250px 1fr; } .sidebar-right { display: none; } }
+        @media (max-width: 768px) { .nexus-layout { grid-template-columns: 1fr; } .sidebar-left { display: none; } }
+        
+        /* Header */
+        .header {
+            grid-column: 1 / -1;
+            background: var(--bg-deep);
+            padding: 0 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header-left { display: flex; align-items: center; gap: 0.75rem; }
+        
+        .logo-hex {
+            width: 36px; height: 36px;
+            background: conic-gradient(from 0deg, var(--cyan), var(--purple), var(--magenta), var(--cyan));
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex; align-items: center; justify-content: center;
+            animation: spin 20s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .logo-hex::after { content: '◈'; font-size: 1rem; color: var(--bg-void); }
+        
+        .header-titles h1 {
+            font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; letter-spacing: 0.15em;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .header-titles .tagline { font-size: 0.6rem; color: var(--text-dim); letter-spacing: 0.08em; }
+        
+        .header-center { display: flex; gap: 0.75rem; }
+        .status-pill {
+            display: flex; align-items: center; gap: 0.4rem;
+            padding: 0.3rem 0.6rem; background: var(--bg-widget);
+            border: 1px solid var(--border); border-radius: 100px;
+            font-size: 0.65rem; font-family: var(--font-mono);
+        }
+        .status-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--green); box-shadow: 0 0 8px var(--green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        
+        .clock {
+            font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .date-display { font-size: 0.6rem; color: var(--text-dim); text-align: right; }
+        
+        /* Sidebar Left */
+        .sidebar-left { background: var(--bg-panel); display: flex; flex-direction: column; overflow: hidden; }
+        
+        .search-container { padding: 0.75rem; border-bottom: 1px solid var(--border); }
+        .search-input {
+            width: 100%; padding: 0.5rem 0.75rem; background: var(--bg-input);
+            border: 1px solid var(--border); border-radius: 6px;
+            color: var(--text); font-size: 0.8rem; outline: none;
+        }
+        .search-input:focus { border-color: var(--purple); }
+        .search-input::placeholder { color: var(--text-dim); }
+        
+        .category-tabs { display: flex; padding: 0.5rem; gap: 0.25rem; border-bottom: 1px solid var(--border); overflow-x: auto; }
+        .cat-tab {
+            padding: 0.35rem 0.6rem; background: transparent; border: 1px solid transparent;
+            border-radius: 4px; color: var(--text-dim); font-size: 0.65rem;
+            font-family: var(--font-mono); cursor: pointer; white-space: nowrap;
+        }
+        .cat-tab:hover { background: var(--bg-widget); color: var(--text); }
+        .cat-tab.active { background: var(--purple-dim); border-color: var(--purple); color: var(--purple); }
+        
+        .bookmark-list { flex: 1; overflow-y: auto; padding: 0.5rem; }
+        .group-title { font-size: 0.55rem; font-family: var(--font-mono); letter-spacing: 0.1em; color: var(--text-dim); padding: 0.5rem 0.5rem 0.25rem; }
+        .bookmark-item {
+            display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem;
+            border-radius: 6px; cursor: pointer; border: 1px solid transparent; margin-bottom: 2px;
+        }
+        .bookmark-item:hover { background: var(--bg-widget); border-color: var(--border); }
+        .bookmark-item.active { background: var(--purple-dim); border-color: var(--purple); }
+        .bookmark-icon { width: 28px; height: 28px; border-radius: 6px; background: var(--bg-input); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+        .bookmark-info { flex: 1; min-width: 0; }
+        .bookmark-title { font-size: 0.75rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .bookmark-url { font-size: 0.6rem; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* Ecosystem Section */
+        .ecosystem-section { border-top: 1px solid var(--border); background: linear-gradient(180deg, var(--bg-widget) 0%, var(--bg-panel) 100%); }
+        .ecosystem-header { padding: 0.6rem 0.75rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .ecosystem-header:hover { background: rgba(139, 92, 246, 0.1); }
+        .ecosystem-title { display: flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em; color: var(--purple); }
+        .ecosystem-toggle { font-size: 0.6rem; color: var(--text-dim); transition: transform 0.3s; }
+        .ecosystem-toggle.collapsed { transform: rotate(-90deg); }
+        .ecosystem-content { padding: 0 0.5rem 0.5rem; max-height: 350px; overflow-y: auto; }
+        .ecosystem-content.collapsed { display: none; }
+        .eco-cat-title { font-size: 0.55rem; color: var(--text-dim); margin: 0.5rem 0 0.35rem; padding-left: 0.25rem; }
+        .eco-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem; }
+        .eco-tool {
+            display: flex; flex-direction: column; align-items: center; padding: 0.5rem 0.2rem;
+            background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .eco-tool:hover { background: var(--purple-dim); border-color: var(--purple); transform: translateY(-1px); }
+        .eco-tool.active { background: var(--purple-dim); border-color: var(--purple); }
+        .eco-tool.vitrine { background: linear-gradient(135deg, var(--bg-input) 0%, rgba(34, 211, 238, 0.1) 100%); }
+        .eco-tool.vitrine:hover { background: var(--cyan-dim); border-color: var(--cyan); }
+        .eco-tool-icon { font-size: 1.1rem; margin-bottom: 0.15rem; }
+        .eco-tool-name { font-size: 0.55rem; color: var(--text); font-weight: 500; }
+        .eco-hub-link {
+            display: block; text-align: center; padding: 0.5rem;
+            background: linear-gradient(135deg, var(--purple-dim) 0%, var(--cyan-dim) 100%);
+            border: 1px solid var(--border); border-radius: 6px;
+            color: var(--text); text-decoration: none; font-size: 0.65rem; margin-top: 0.5rem;
+        }
+        .eco-hub-link:hover { border-color: var(--purple); }
+        
+        .sidebar-footer { padding: 0.5rem; border-top: 1px solid var(--border); }
+        .add-btn { width: 100%; padding: 0.5rem; background: var(--bg-widget); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.75rem; cursor: pointer; }
+        .add-btn:hover { background: var(--purple-dim); border-color: var(--purple); }
+        
+        /* MAIN VIEWER - CRITICAL FIX */
+        .main-viewer { background: var(--bg-deep); display: flex; flex-direction: column; overflow: hidden; }
+        
+        .viewer-toolbar {
+            padding: 0.6rem 1rem; background: var(--bg-panel); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0;
+        }
+        .viewer-info { flex: 1; min-width: 0; }
+        .viewer-title { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .viewer-url { font-size: 0.6rem; color: var(--text-dim); font-family: var(--font-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .viewer-actions { display: flex; gap: 0.4rem; }
+        .viewer-btn {
+            padding: 0.35rem 0.6rem; background: var(--bg-widget); border: 1px solid var(--border);
+            border-radius: 4px; color: var(--text); font-size: 0.7rem; cursor: pointer;
+            text-decoration: none; display: flex; align-items: center; gap: 0.25rem;
+        }
+        .viewer-btn:hover { background: var(--purple-dim); border-color: var(--purple); }
+        
+        /* IFRAME - ABSOLUTE POSITIONING IS KEY */
+        .viewer-frame-container { flex: 1; position: relative; background: #0a0a0f; min-height: 0; }
+        .viewer-frame { position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; border: none; }
+        .viewer-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-dim); }
+        .placeholder-icon { font-size: 3rem; margin-bottom: 0.5rem; opacity: 0.3; }
+        
+        /* Sidebar Right */
+        .sidebar-right { background: var(--bg-panel); display: flex; flex-direction: column; overflow: hidden; }
+        .widget { padding: 1rem; border-bottom: 1px solid var(--border); }
+        .widget-title { font-size: 0.6rem; font-family: var(--font-mono); letter-spacing: 0.1em; color: var(--purple); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
+        .widget-title::before { content: '◆'; font-size: 0.4rem; }
+        
+        /* Pomodoro */
+        .pomodoro-display { text-align: center; margin-bottom: 0.75rem; }
+        .pomodoro-time { font-family: var(--font-mono); font-size: 2.5rem; font-weight: 700; background: linear-gradient(135deg, var(--cyan), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .pomodoro-label { font-size: 0.6rem; color: var(--text-dim); letter-spacing: 0.1em; }
+        .pomodoro-controls { display: flex; gap: 0.4rem; justify-content: center; }
+        .pomo-btn { padding: 0.4rem 0.8rem; background: var(--bg-widget); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.7rem; cursor: pointer; }
+        .pomo-btn:hover { background: var(--purple-dim); border-color: var(--purple); }
+        .pomo-btn.active { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+        .pomodoro-stats { display: flex; justify-content: center; gap: 1.5rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+        .pomo-stat { text-align: center; }
+        .pomo-stat-value { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; color: var(--cyan); }
+        .pomo-stat-label { font-size: 0.5rem; color: var(--text-dim); }
+        
+        /* Notes */
+        .notes-widget { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-bottom: 1px solid var(--border); min-height: 150px; }
+        .notes-header { padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .notes-area { flex: 1; padding: 0 1rem 1rem; background: transparent; border: none; color: var(--text); font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.5; resize: none; outline: none; }
+        .notes-area::placeholder { color: var(--text-dim); }
+        
+        /* Quick Links */
+        .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; }
+        .quick-link { aspect-ratio: 1; background: var(--bg-widget); border: 1px solid var(--border); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: var(--text); }
+        .quick-link:hover { background: var(--purple-dim); border-color: var(--purple); }
+        .quick-link-icon { font-size: 1rem; }
+        .quick-link-label { font-size: 0.5rem; color: var(--text-dim); margin-top: 0.2rem; }
+        
+        /* Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; }
+        .modal-overlay.show { display: flex; }
+        .modal { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; width: 90%; max-width: 400px; }
+        .modal-header { padding: 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { font-size: 0.9rem; }
+        .modal-close { background: none; border: none; color: var(--text-dim); font-size: 1.2rem; cursor: pointer; }
+        .modal-body { padding: 1rem; }
+        .form-group { margin-bottom: 0.75rem; }
+        .form-label { display: block; font-size: 0.7rem; color: var(--text-dim); margin-bottom: 0.3rem; }
+        .form-input { width: 100%; padding: 0.5rem; background: var(--bg-input); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 0.8rem; outline: none; }
+        .form-input:focus { border-color: var(--purple); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .modal-footer { padding: 1rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 0.5rem; }
+        .btn { padding: 0.4rem 0.8rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer; }
+        .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-primary { background: var(--purple); border: 1px solid var(--purple); color: var(--bg-void); }
+        .btn-primary:hover { background: var(--cyan); border-color: var(--cyan); }
+        
+        /* Toast */
+        .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--bg-panel); border: 1px solid var(--purple); padding: 0.6rem 1.25rem; border-radius: 6px; font-size: 0.8rem; opacity: 0; transition: all 0.3s; z-index: 200; }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    </style>
+</head>
+<body>
+    <div class="ambient-bg"></div>
+    
+    <div class="nexus-layout">
+        <header class="header">
+            <div class="header-left">
+                <div class="logo-hex"></div>
+                <div class="header-titles">
+                    <h1>NEXUS</h1>
+                    <div class="tagline">QUARTIER GÉNÉRAL</div>
+                </div>
+            </div>
+            <div class="header-center">
+                <div class="status-pill"><span class="status-dot"></span><span>ONLINE</span></div>
+                <div class="status-pill" id="moodDisplay"><span>😊</span><span>GOOD</span></div>
+            </div>
+            <div class="header-right">
+                <div class="clock" id="clock">00:00</div>
+                <div class="date-display" id="dateDisplay">...</div>
+            </div>
+        </header>
+        
+        <div class="sidebar-left">
+            <div class="search-container">
+                <input type="text" class="search-input" id="searchInput" placeholder="🔍 Rechercher...">
+            </div>
+            <div class="category-tabs">
+                <button class="cat-tab active" data-cat="all">Tout</button>
+                <button class="cat-tab" data-cat="work">Work</button>
+                <button class="cat-tab" data-cat="play">Play</button>
+                <button class="cat-tab" data-cat="tool">Tools</button>
+            </div>
+            <div class="bookmark-list" id="bookmarkList"></div>
+            <div class="ecosystem-section">
+                <div class="ecosystem-header" onclick="toggleEcosystem()">
+                    <div class="ecosystem-title"><span>⬡</span><span>ÉCOSYSTÈME KERN</span></div>
+                    <span class="ecosystem-toggle" id="ecoToggle">▼</span>
+                </div>
+                <div class="ecosystem-content" id="ecosystemContent">
+                    <div class="eco-cat-title">🎛️ Command Centers</div>
+                    <div class="eco-grid">
+                        <div class="eco-tool" onclick="loadEcoTool('00-citadel-command.html', 'CITADEL', '⬡')"><span class="eco-tool-icon">⬡</span><span class="eco-tool-name">CITADEL</span></div>
+                        <div class="eco-tool" onclick="loadEcoTool('07-dashboard.html', 'Dashboard', '📊')"><span class="eco-tool-icon">📊</span><span class="eco-tool-name">Dashboard</span></div>
+                    </div>
+                    <div class="eco-cat-title">🧰 Outils</div>
+                    <div class="eco-grid">
+                        <div class="eco-tool" onclick="loadEcoTool('01-finance-tracker.html', 'Finance', '💰')"><span class="eco-tool-icon">💰</span><span class="eco-tool-name">Finance</span></div>
+                        <div class="eco-tool" onclick="loadEcoTool('02-mission-creator.html', 'Missions', '🎯')"><span class="eco-tool-icon">🎯</span><span class="eco-tool-name">Missions</span></div>
+                        <div class="eco-tool" onclick="loadEcoTool('03-journal.html', 'Journal', '📓')"><span class="eco-tool-icon">📓</span><span class="eco-tool-name">Journal</span></div>
+                        <div class="eco-tool" onclick="loadEcoTool('04-network-map.html', 'Réseau', '🕸️')"><span class="eco-tool-icon">🕸️</span><span class="eco-tool-name">Réseau</span></div>
+                        <div class="eco-tool" onclick="loadEcoTool('05-agenda-politique.html', 'Agenda', '📅')"><span class="eco-tool-icon">📅</span><span class="eco-tool-name">Agenda</span></div>
+                        <div class="eco-tool" onclick="loadEcoTool('06-generateur-documents.html', 'Docs', '📝')"><span class="eco-tool-icon">📝</span><span class="eco-tool-name">Docs</span></div>
+                    </div>
+                    <div class="eco-cat-title">🌐 Sites</div>
+                    <div class="eco-grid">
+                        <div class="eco-tool vitrine" onclick="loadEcoTool('../collectif-site.html', 'Site Tech', '⚡')"><span class="eco-tool-icon">⚡</span><span class="eco-tool-name">Tech</span></div>
+                        <div class="eco-tool vitrine" onclick="loadEcoTool('../site-grand-public.html', 'Site FALC', '🌍')"><span class="eco-tool-icon">🌍</span><span class="eco-tool-name">FALC</span></div>
+                    </div>
+                    <a href="index.html" class="eco-hub-link" target="_blank">🧰 Hub Complet ↗</a>
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <button class="add-btn" onclick="openAddModal()">➕ Ajouter un lien</button>
+            </div>
+        </div>
+        
+        <div class="main-viewer">
+            <div class="viewer-toolbar">
+                <div class="viewer-info">
+                    <div class="viewer-title" id="viewerTitle">Bienvenue</div>
+                    <div class="viewer-url" id="viewerUrl">Sélectionnez un lien</div>
+                </div>
+                <div class="viewer-actions">
+                    <button class="viewer-btn" onclick="refreshFrame()">🔄</button>
+                    <a href="#" class="viewer-btn" id="openExternal" target="_blank">↗️</a>
+                </div>
+            </div>
+            <div class="viewer-frame-container">
+                <iframe class="viewer-frame" id="viewerFrame" src="about:blank"></iframe>
+                <div class="viewer-placeholder" id="viewerPlaceholder">
+                    <div class="placeholder-icon">◈</div>
+                    <p>Cliquez sur un lien pour l'ouvrir</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="sidebar-right">
+            <div class="widget">
+                <div class="widget-title">FOCUS TIMER</div>
+                <div class="pomodoro-display">
+                    <div class="pomodoro-time" id="pomoTime">25:00</div>
+                    <div class="pomodoro-label" id="pomoLabel">PRÊT</div>
+                </div>
+                <div class="pomodoro-controls">
+                    <button class="pomo-btn" id="pomoStart" onclick="togglePomodoro()">▶ Start</button>
+                    <button class="pomo-btn" onclick="resetPomodoro()">↺</button>
+                </div>
+                <div class="pomodoro-stats">
+                    <div class="pomo-stat"><div class="pomo-stat-value" id="pomoCompleted">0</div><div class="pomo-stat-label">DONE</div></div>
+                    <div class="pomo-stat"><div class="pomo-stat-value" id="pomoFocusTime">0m</div><div class="pomo-stat-label">FOCUS</div></div>
+                </div>
+            </div>
+            <div class="notes-widget">
+                <div class="notes-header">
+                    <span class="widget-title" style="margin:0">NOTES</span>
+                    <span style="font-size:0.6rem;color:var(--text-dim)" id="notesCount">0</span>
+                </div>
+                <textarea class="notes-area" id="notesArea" placeholder="Vos notes ici..."></textarea>
+            </div>
+            <div class="widget">
+                <div class="widget-title">RACCOURCIS</div>
+                <div class="quick-grid">
+                    <a class="quick-link" href="https://mail.google.com" target="_blank"><span class="quick-link-icon">📧</span><span class="quick-link-label">Mail</span></a>
+                    <a class="quick-link" href="https://calendar.google.com" target="_blank"><span class="quick-link-icon">📅</span><span class="quick-link-label">Cal</span></a>
+                    <a class="quick-link" href="https://chat.openai.com" target="_blank"><span class="quick-link-icon">🤖</span><span class="quick-link-label">AI</span></a>
+                    <a class="quick-link" href="https://github.com" target="_blank"><span class="quick-link-icon">💻</span><span class="quick-link-label">Git</span></a>
+                    <a class="quick-link" href="https://youtube.com" target="_blank"><span class="quick-link-icon">▶️</span><span class="quick-link-label">YT</span></a>
+                    <a class="quick-link" href="https://twitter.com" target="_blank"><span class="quick-link-icon">🐦</span><span class="quick-link-label">X</span></a>
+                    <a class="quick-link" href="https://spotify.com" target="_blank"><span class="quick-link-icon">🎵</span><span class="quick-link-label">Music</span></a>
+                    <a class="quick-link" href="https://notion.so" target="_blank"><span class="quick-link-icon">📝</span><span class="quick-link-label">Note</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="addModal">
+        <div class="modal">
+            <div class="modal-header"><h3>➕ Ajouter</h3><button class="modal-close" onclick="closeAddModal()">×</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label class="form-label">Titre</label><input type="text" class="form-input" id="addTitle" placeholder="Mon lien"></div>
+                <div class="form-group"><label class="form-label">URL</label><input type="url" class="form-input" id="addUrl" placeholder="https://..."></div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Icône</label><input type="text" class="form-input" id="addIcon" placeholder="🔗" maxlength="2"></div>
+                    <div class="form-group"><label class="form-label">Catégorie</label><select class="form-input" id="addCategory"><option value="work">Work</option><option value="play">Play</option><option value="tool">Tool</option></select></div>
+                </div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-ghost" onclick="closeAddModal()">Annuler</button><button class="btn btn-primary" onclick="saveBookmark()">OK</button></div>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const defaultBookmarks = [
+            { id: 'github', title: 'GitHub', url: 'https://github.com', icon: '💻', category: 'tool' },
+            { id: 'figma', title: 'Figma', url: 'https://figma.com', icon: '🎨', category: 'tool' },
+            { id: 'chatgpt', title: 'ChatGPT', url: 'https://chat.openai.com', icon: '🤖', category: 'tool' },
+            { id: 'youtube', title: 'YouTube', url: 'https://youtube.com', icon: '▶️', category: 'play' },
+            { id: 'spotify', title: 'Spotify', url: 'https://open.spotify.com', icon: '🎵', category: 'play' },
+            { id: 'notion', title: 'Notion', url: 'https://notion.so', icon: '📝', category: 'work' },
+            { id: 'drive', title: 'Drive', url: 'https://drive.google.com', icon: '📁', category: 'work' },
+        ];
+        
+        const categoryNames = { work: 'WORK', play: 'PLAY', tool: 'TOOLS' };
+        let bookmarks = [], activeCategory = 'all', activeBookmark = null, searchQuery = '';
+        let pomoState = 'idle', pomoTime = 25 * 60, pomoInterval = null, pomoCompleted = 0, pomoTotalMinutes = 0;
+        
+        document.addEventListener('DOMContentLoaded', () => { loadData(); startClock(); renderBookmarks(); loadNotes(); loadPomoStats(); });
+        
+        function loadData() { const s = localStorage.getItem('nexusBookmarks'); bookmarks = s ? JSON.parse(s) : [...defaultBookmarks]; }
+        function saveData() { localStorage.setItem('nexusBookmarks', JSON.stringify(bookmarks)); }
+        
+        function startClock() {
+            const update = () => {
+                const now = new Date();
+                document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                document.getElementById('dateDisplay').textContent = now.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+            };
+            update(); setInterval(update, 1000);
+        }
+        
+        function renderBookmarks() {
+            const container = document.getElementById('bookmarkList');
+            let filtered = bookmarks.filter(b => {
+                if (activeCategory !== 'all' && b.category !== activeCategory) return false;
+                if (searchQuery) return (b.title + b.url).toLowerCase().includes(searchQuery.toLowerCase());
+                return true;
+            });
+            const groups = {};
+            filtered.forEach(b => { if (!groups[b.category]) groups[b.category] = []; groups[b.category].push(b); });
+            if (!Object.keys(groups).length) { container.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-dim)">Aucun résultat</div>'; return; }
+            container.innerHTML = Object.entries(groups).map(([cat, items]) => `
+                <div class="group-title">${categoryNames[cat] || cat}</div>
+                ${items.map(b => `<div class="bookmark-item ${activeBookmark?.id === b.id ? 'active' : ''}" onclick="selectBookmark('${b.id}')">
+                    <div class="bookmark-icon">${b.icon}</div>
+                    <div class="bookmark-info"><div class="bookmark-title">${b.title}</div><div class="bookmark-url">${b.url}</div></div>
+                </div>`).join('')}
+            `).join('');
+        }
+        
+        function selectBookmark(id) {
+            const b = bookmarks.find(x => x.id === id); if (!b) return;
+            activeBookmark = b;
+            document.querySelectorAll('.eco-tool').forEach(el => el.classList.remove('active'));
+            document.getElementById('viewerTitle').textContent = b.title;
+            document.getElementById('viewerUrl').textContent = b.url;
+            document.getElementById('viewerFrame').src = b.url;
+            document.getElementById('openExternal').href = b.url;
+            document.getElementById('viewerPlaceholder').style.display = 'none';
+            renderBookmarks();
+        }
+        
+        function refreshFrame() { const f = document.getElementById('viewerFrame'); f.src = f.src; }
+        
+        document.querySelectorAll('.cat-tab').forEach(t => t.addEventListener('click', () => {
+            document.querySelectorAll('.cat-tab').forEach(x => x.classList.remove('active'));
+            t.classList.add('active'); activeCategory = t.dataset.cat; renderBookmarks();
+        }));
+        
+        document.getElementById('searchInput').addEventListener('input', e => { searchQuery = e.target.value; renderBookmarks(); });
+        
+        let ecosystemCollapsed = false;
+        function toggleEcosystem() {
+            ecosystemCollapsed = !ecosystemCollapsed;
+            document.getElementById('ecosystemContent').classList.toggle('collapsed', ecosystemCollapsed);
+            document.getElementById('ecoToggle').classList.toggle('collapsed', ecosystemCollapsed);
+        }
+        
+        function loadEcoTool(url, title, icon) {
+            activeBookmark = null; renderBookmarks();
+            document.querySelectorAll('.eco-tool').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('viewerTitle').textContent = `${icon} ${title}`;
+            document.getElementById('viewerUrl').textContent = url;
+            document.getElementById('viewerFrame').src = url;
+            document.getElementById('openExternal').href = url;
+            document.getElementById('viewerPlaceholder').style.display = 'none';
+            showToast(`${icon} ${title}`);
+        }
+        
+        function openAddModal() { document.getElementById('addModal').classList.add('show'); }
+        function closeAddModal() { document.getElementById('addModal').classList.remove('show'); }
+        
+        function saveBookmark() {
+            const title = document.getElementById('addTitle').value.trim();
+            const url = document.getElementById('addUrl').value.trim();
+            const icon = document.getElementById('addIcon').value.trim() || '🔗';
+            const category = document.getElementById('addCategory').value;
+            if (!title || !url) { showToast('Titre et URL requis'); return; }
+            bookmarks.push({ id: Date.now().toString(36), title, url, icon, category });
+            saveData(); renderBookmarks(); closeAddModal(); showToast('Ajouté ✓');
+        }
+        
+        document.getElementById('addModal').addEventListener('click', e => { if (e.target.id === 'addModal') closeAddModal(); });
+        
+        function togglePomodoro() {
+            if (pomoState === 'idle') {
+                pomoState = 'work'; pomoTime = 25 * 60;
+                document.getElementById('pomoLabel').textContent = 'FOCUS';
+                document.getElementById('pomoStart').textContent = '⏸';
+                document.getElementById('pomoStart').classList.add('active');
+                pomoInterval = setInterval(tickPomodoro, 1000);
+            } else if (pomoInterval) {
+                clearInterval(pomoInterval); pomoInterval = null;
+                document.getElementById('pomoStart').textContent = '▶';
+                document.getElementById('pomoLabel').textContent = 'PAUSE';
+            } else {
+                document.getElementById('pomoStart').textContent = '⏸';
+                document.getElementById('pomoLabel').textContent = pomoState === 'work' ? 'FOCUS' : 'BREAK';
+                pomoInterval = setInterval(tickPomodoro, 1000);
+            }
+        }
+        
+        function resetPomodoro() {
+            clearInterval(pomoInterval); pomoInterval = null; pomoState = 'idle'; pomoTime = 25 * 60;
+            document.getElementById('pomoTime').textContent = '25:00';
+            document.getElementById('pomoLabel').textContent = 'PRÊT';
+            document.getElementById('pomoStart').textContent = '▶ Start';
+            document.getElementById('pomoStart').classList.remove('active');
+        }
+        
+        function tickPomodoro() {
+            pomoTime--;
+            document.getElementById('pomoTime').textContent = `${String(Math.floor(pomoTime/60)).padStart(2,'0')}:${String(pomoTime%60).padStart(2,'0')}`;
+            if (pomoTime <= 0) {
+                if (pomoState === 'work') {
+                    pomoCompleted++; pomoTotalMinutes += 25; updatePomoStats();
+                    pomoState = 'break'; pomoTime = 5 * 60;
+                    document.getElementById('pomoLabel').textContent = 'BREAK';
+                    showToast('🎉 Session terminée !');
+                } else { resetPomodoro(); showToast('Pause finie !'); }
+            }
+        }
+        
+        function updatePomoStats() {
+            document.getElementById('pomoCompleted').textContent = pomoCompleted;
+            const h = Math.floor(pomoTotalMinutes / 60);
+            document.getElementById('pomoFocusTime').textContent = h > 0 ? `${h}h${pomoTotalMinutes % 60}` : `${pomoTotalMinutes}m`;
+            localStorage.setItem('nexusPomo', JSON.stringify({ completed: pomoCompleted, total: pomoTotalMinutes, date: new Date().toDateString() }));
+        }
+        
+        function loadPomoStats() {
+            const s = localStorage.getItem('nexusPomo');
+            if (s) { const d = JSON.parse(s); if (d.date === new Date().toDateString()) { pomoCompleted = d.completed; pomoTotalMinutes = d.total; updatePomoStats(); } }
+        }
+        
+        const notesArea = document.getElementById('notesArea');
+        let notesTimeout;
+        notesArea.addEventListener('input', () => {
+            document.getElementById('notesCount').textContent = notesArea.value.length;
+            clearTimeout(notesTimeout);
+            notesTimeout = setTimeout(() => localStorage.setItem('nexusNotes', notesArea.value), 500);
+        });
+        function loadNotes() { const s = localStorage.getItem('nexusNotes'); if (s) { notesArea.value = s; document.getElementById('notesCount').textContent = s.length; } }
+        
+        function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+        
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && e.key === 'k') { e.preventDefault(); document.getElementById('searchInput').focus(); }
+            if (e.key === 'Escape') closeAddModal();
+        });
+    </script>
+</body>
+</html>
