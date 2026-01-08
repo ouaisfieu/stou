@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KERN::PANOPTICON — Graphe de Pouvoir</title>
+    <script src="kern-core.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        :root {
+            --bg-void: #0a0a0f;
+            --bg-deep: #0f0f18;
+            --bg-surface: #14141f;
+            --bg-card: #1a1a28;
+            --bg-hover: #22222f;
+            --border: #2a2a3a;
+            --text: #e0e0e0;
+            --text-dim: #888;
+            --accent: #6366f1;
+            --cyan: #22d3ee;
+            --green: #4ade80;
+            --amber: #fbbf24;
+            --red: #f87171;
+            --purple: #a78bfa;
+            --pink: #f472b6;
+            --orange: #fb923c;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-void);
+            color: var(--text);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .app {
+            display: grid;
+            grid-template-columns: 300px 1fr 320px;
+            grid-template-rows: auto 1fr;
+            height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            grid-column: 1 / 4;
+            background: var(--bg-deep);
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        
+        .logo-text { font-weight: 700; font-size: 1rem; }
+        .logo-sub { font-size: 0.6rem; color: var(--text-dim); }
+        
+        .header-search {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+        
+        .header-search input {
+            width: 100%;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.85rem;
+        }
+        
+        .header-search input:focus { outline: none; border-color: var(--accent); }
+        .header-search::before {
+            content: '🔍';
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-left: auto;
+        }
+        
+        .hstat { text-align: center; }
+        .hstat-value { font-weight: 700; font-size: 1.1rem; }
+        .hstat-label { font-size: 0.55rem; color: var(--text-dim); text-transform: uppercase; }
+        
+        .header-agent {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-surface);
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .agent-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--purple);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        
+        .agent-info { text-align: left; }
+        .agent-name { font-size: 0.75rem; font-weight: 600; }
+        .agent-xp { font-size: 0.6rem; color: var(--amber); }
+        
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-deep);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sidebar-title { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: var(--text-dim); }
+        
+        .btn-new {
+            padding: 0.4rem 0.8rem;
+            background: var(--purple);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .filters {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 0.25rem 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-dim);
+            font-size: 0.65rem;
+            cursor: pointer;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--purple);
+            border-color: var(--purple);
+            color: white;
+        }
+        
+        .entities-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        
+        .entity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 0.25rem;
+            transition: all 0.2s;
+        }
+        
+        .entity-item:hover { background: var(--bg-hover); }
+        .entity-item.active { background: var(--bg-card); border-left: 3px solid var(--purple); }
+        
+        .entity-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        
+        .entity-avatar.person { background: rgba(99, 102, 241, 0.2); }
+        .entity-avatar.organization { background: rgba(34, 211, 238, 0.2); }
+        .entity-avatar.company { background: rgba(74, 222, 128, 0.2); }
+        .entity-avatar.media { background: rgba(251, 191, 36, 0.2); }
+        .entity-avatar.institution { background: rgba(167, 139, 250, 0.2); }
+        .entity-avatar.event { background: rgba(248, 113, 113, 0.2); }
+        .entity-avatar.document { background: rgba(244, 114, 182, 0.2); }
+        
+        .entity-info { flex: 1; min-width: 0; }
+        .entity-name { font-weight: 500; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .entity-type { font-size: 0.65rem; color: var(--text-dim); }
+        .entity-links { font-size: 0.6rem; color: var(--purple); }
+        
+        /* Main - Graph */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .graph-toolbar {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            background: var(--bg-deep);
+        }
+        
+        .toolbar-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .toolbar-label { font-size: 0.7rem; color: var(--text-dim); }
+        
+        .toolbar-btn {
+            padding: 0.4rem 0.8rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .toolbar-btn:hover { background: var(--bg-hover); }
+        .toolbar-btn.active { background: var(--purple); border-color: var(--purple); }
+        
+        .graph-container {
+            flex: 1;
+            background: var(--bg-surface);
+            position: relative;
+        }
+        
+        .graph-container svg { width: 100%; height: 100%; }
+        
+        .node { cursor: pointer; }
+        .node circle { stroke: var(--bg-void); stroke-width: 2px; transition: all 0.2s; }
+        .node:hover circle { stroke: var(--cyan); stroke-width: 3px; }
+        .node.selected circle { stroke: var(--amber); stroke-width: 4px; }
+        .node text { font-size: 10px; fill: var(--text); pointer-events: none; }
+        
+        .link { stroke: var(--border); stroke-opacity: 0.6; }
+        .link.highlighted { stroke: var(--cyan); stroke-opacity: 1; stroke-width: 2px; }
+        .link-label { font-size: 8px; fill: var(--text-dim); }
+        
+        .graph-legend {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 0.65rem;
+        }
+        
+        .legend-title { font-weight: 600; color: var(--text-dim); text-transform: uppercase; margin-bottom: 0.5rem; }
+        .legend-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        
+        /* Detail Panel */
+        .detail-panel {
+            background: var(--bg-deep);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .detail-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        
+        .detail-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .detail-info { flex: 1; }
+        .detail-name { font-weight: 600; font-size: 1rem; margin-bottom: 0.25rem; }
+        .detail-type { font-size: 0.75rem; color: var(--text-dim); }
+        
+        .detail-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        
+        .detail-section { margin-bottom: 1.25rem; }
+        .detail-section-title {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .detail-field { margin-bottom: 0.75rem; }
+        .detail-field label { display: block; font-size: 0.65rem; color: var(--text-dim); margin-bottom: 0.2rem; }
+        .detail-field-value { font-size: 0.85rem; padding: 0.4rem; background: var(--bg-surface); border-radius: 4px; }
+        
+        .detail-field input, .detail-field select, .detail-field textarea {
+            width: 100%;
+            padding: 0.5rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.8rem;
+            font-family: inherit;
+        }
+        
+        .detail-field input:focus, .detail-field select:focus, .detail-field textarea:focus {
+            outline: none;
+            border-color: var(--purple);
+        }
+        
+        .links-list { display: flex; flex-direction: column; gap: 0.5rem; }
+        
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg-surface);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .link-item:hover { background: var(--bg-hover); }
+        
+        .link-relation {
+            font-size: 0.6rem;
+            color: var(--purple);
+            padding: 0.15rem 0.4rem;
+            background: rgba(167, 139, 250, 0.1);
+            border-radius: 3px;
+        }
+        
+        .add-link-btn {
+            width: 100%;
+            padding: 0.5rem;
+            background: transparent;
+            border: 1px dashed var(--border);
+            border-radius: 6px;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        
+        .add-link-btn:hover { border-color: var(--purple); color: var(--purple); }
+        
+        .detail-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .detail-footer button {
+            flex: 1;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .btn-save { background: var(--purple); border: none; color: white; }
+        .btn-delete { background: transparent; border: 1px solid var(--red); color: var(--red); }
+        
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-dim);
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+        .empty-title { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal.open { display: flex; }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 450px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title { font-weight: 600; }
+        .modal-close { background: none; border: none; color: var(--text-dim); font-size: 1.5rem; cursor: pointer; }
+        .modal-body { padding: 1rem; }
+        .modal-footer { padding: 1rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; justify-content: flex-end; }
+        
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.8rem; margin-bottom: 0.4rem; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.6rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.85rem;
+        }
+        
+        .link-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-surface);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .link-option:hover { background: var(--bg-hover); }
+        
+        /* Notifications */
+        .notifications {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 300px;
+            z-index: 1000;
+        }
+        
+        .notif {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .notif.success { border-left: 3px solid var(--green); }
+        .notif.xp { border-left: 3px solid var(--amber); }
+        
+        /* XP Popup */
+        .xp-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-card);
+            border: 2px solid var(--green);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            z-index: 1001;
+            animation: popIn 0.3s ease-out;
+        }
+        
+        @keyframes popIn {
+            from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        
+        .xp-amount { font-size: 2rem; font-weight: 700; color: var(--green); }
+        .xp-reason { color: var(--text-dim); font-size: 0.85rem; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <a href="00-kern-nexus.html" class="logo">
+                <div class="logo-icon">🕸️</div>
+                <div>
+                    <div class="logo-text">KERN::PANOPTICON</div>
+                    <div class="logo-sub">Graphe de Pouvoir</div>
+                </div>
+            </a>
+            
+            <div class="header-search">
+                <input type="text" id="searchInput" placeholder="Rechercher une entité...">
+            </div>
+            
+            <div class="header-stats">
+                <div class="hstat">
+                    <div class="hstat-value" style="color: var(--purple)" id="statEntities">0</div>
+                    <div class="hstat-label">Entités</div>
+                </div>
+                <div class="hstat">
+                    <div class="hstat-value" style="color: var(--cyan)" id="statLinks">0</div>
+                    <div class="hstat-label">Liens</div>
+                </div>
+                <div class="hstat">
+                    <div class="hstat-value" style="color: var(--amber)" id="statClusters">0</div>
+                    <div class="hstat-label">Clusters</div>
+                </div>
+            </div>
+            
+            <a href="00-kern-nexus.html" class="header-agent">
+                <div class="agent-avatar">🎭</div>
+                <div class="agent-info">
+                    <div class="agent-name" id="agentName">---</div>
+                    <div class="agent-xp">Niv. <span id="agentLevel">1</span></div>
+                </div>
+            </a>
+        </header>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span class="sidebar-title">Entités</span>
+                <button class="btn-new" onclick="openCreateModal()">+ Nouvelle</button>
+            </div>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Tous</button>
+                <button class="filter-btn" data-filter="person">👤 Personnes</button>
+                <button class="filter-btn" data-filter="organization">🏛️ Orgs</button>
+                <button class="filter-btn" data-filter="company">🏢 Entreprises</button>
+                <button class="filter-btn" data-filter="media">📰 Médias</button>
+            </div>
+            
+            <div class="entities-list" id="entitiesList"></div>
+        </aside>
+        
+        <!-- Main - Graph -->
+        <main class="main-content">
+            <div class="graph-toolbar">
+                <div class="toolbar-group">
+                    <span class="toolbar-label">Vue:</span>
+                    <button class="toolbar-btn active" id="btnForce" onclick="setLayout('force')">Force</button>
+                    <button class="toolbar-btn" id="btnRadial" onclick="setLayout('radial')">Radial</button>
+                </div>
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" id="btnLabels" onclick="toggleLabels()">Labels</button>
+                    <button class="toolbar-btn" id="btnRelations" onclick="toggleRelations()">Relations</button>
+                </div>
+                <div style="flex:1"></div>
+                <div class="toolbar-group">
+                    <button class="toolbar-btn" onclick="centerGraph()">🎯 Centrer</button>
+                    <button class="toolbar-btn" onclick="exportGraph()">📤 Export</button>
+                </div>
+            </div>
+            
+            <div class="graph-container" id="graphContainer">
+                <svg id="graphSvg"></svg>
+                <div class="graph-legend">
+                    <div class="legend-title">Types d'entités</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--accent)"></div><span>Personne</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--cyan)"></div><span>Organisation</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--green)"></div><span>Entreprise</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--amber)"></div><span>Média</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background: var(--purple)"></div><span>Institution</span></div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Detail Panel -->
+        <aside class="detail-panel" id="detailPanel">
+            <div id="detailEmpty" class="empty-state">
+                <div class="empty-icon">🕸️</div>
+                <div class="empty-title">Sélectionnez une entité</div>
+                <div>Cliquez sur un nœud du graphe</div>
+            </div>
+            
+            <div id="detailContent" style="display: none; height: 100%; display: flex; flex-direction: column;">
+                <div class="detail-header">
+                    <div class="detail-avatar" id="detailAvatar">👤</div>
+                    <div class="detail-info">
+                        <div class="detail-name" id="detailName">---</div>
+                        <div class="detail-type" id="detailType">---</div>
+                    </div>
+                </div>
+                
+                <div class="detail-body">
+                    <div class="detail-section">
+                        <div class="detail-section-title">📋 Informations</div>
+                        <div class="detail-field">
+                            <label>Nom</label>
+                            <input type="text" id="inputName">
+                        </div>
+                        <div class="detail-field">
+                            <label>Type</label>
+                            <select id="inputType">
+                                <option value="person">👤 Personne</option>
+                                <option value="organization">🏛️ Organisation</option>
+                                <option value="company">🏢 Entreprise</option>
+                                <option value="media">📰 Média</option>
+                                <option value="institution">🏦 Institution</option>
+                                <option value="event">📅 Événement</option>
+                                <option value="document">📄 Document</option>
+                            </select>
+                        </div>
+                        <div class="detail-field">
+                            <label>Rôle / Fonction</label>
+                            <input type="text" id="inputRole" placeholder="Ex: CEO, Député, Journaliste...">
+                        </div>
+                        <div class="detail-field">
+                            <label>Description</label>
+                            <textarea id="inputDescription" rows="3" placeholder="Notes sur cette entité..."></textarea>
+                        </div>
+                        <div class="detail-field">
+                            <label>Tags (séparés par virgules)</label>
+                            <input type="text" id="inputTags" placeholder="politique, finance, lobby...">
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <div class="detail-section-title">🔗 Connexions (<span id="linkCount">0</span>)</div>
+                        <div class="links-list" id="linksList"></div>
+                        <button class="add-link-btn" onclick="openLinkModal()">+ Ajouter une connexion</button>
+                    </div>
+                </div>
+                
+                <div class="detail-footer">
+                    <button class="btn-save" onclick="saveEntity()">💾 Sauvegarder</button>
+                    <button class="btn-delete" onclick="deleteEntity()">🗑️ Supprimer</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+    
+    <!-- Create Modal -->
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">Nouvelle entité</span>
+                <button class="modal-close" onclick="closeCreateModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nom *</label>
+                    <input type="text" id="createName" placeholder="Nom de l'entité">
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="createType">
+                        <option value="person">👤 Personne</option>
+                        <option value="organization">🏛️ Organisation</option>
+                        <option value="company">🏢 Entreprise</option>
+                        <option value="media">📰 Média</option>
+                        <option value="institution">🏦 Institution</option>
+                        <option value="event">📅 Événement</option>
+                        <option value="document">📄 Document</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Rôle / Fonction</label>
+                    <input type="text" id="createRole" placeholder="Ex: CEO, Député...">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="createDescription" rows="3" placeholder="Notes..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="toolbar-btn" onclick="closeCreateModal()">Annuler</button>
+                <button class="btn-save" onclick="createEntity()">Créer</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Link Modal -->
+    <div class="modal" id="linkModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">Ajouter une connexion</span>
+                <button class="modal-close" onclick="closeLinkModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Type de relation</label>
+                    <input type="text" id="linkRelation" placeholder="Ex: travaille pour, finance, membre de...">
+                </div>
+                <div class="form-group">
+                    <label>Connecter à</label>
+                    <input type="text" id="linkSearch" placeholder="Rechercher une entité..." style="margin-bottom: 0.5rem;">
+                    <div id="linkOptions" style="max-height: 200px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notifications -->
+    <div class="notifications" id="notifications"></div>
+
+<script>
+// ==================== STATE ====================
+let currentEntityId = null;
+let currentFilter = 'all';
+let simulation = null;
+let showLabels = true;
+let showRelations = true;
+let layout = 'force';
+
+const TYPE_COLORS = {
+    person: '#6366f1',
+    organization: '#22d3ee',
+    company: '#4ade80',
+    media: '#fbbf24',
+    institution: '#a78bfa',
+    event: '#f87171',
+    document: '#f472b6'
+};
+
+const TYPE_ICONS = {
+    person: '👤',
+    organization: '🏛️',
+    company: '🏢',
+    media: '📰',
+    institution: '🏦',
+    event: '📅',
+    document: '📄'
+};
+
+// ==================== INITIALIZATION ====================
+KERN.ready(() => {
+    renderEntitiesList();
+    renderGraph();
+    updateStats();
+    updateAgentInfo();
+    setupEventListeners();
+    
+    KERN.on('xp:gained', (data) => {
+        showXPPopup(data.amount, data.reason);
+        updateAgentInfo();
+    });
+    
+    KERN.on('entity:created', () => {
+        renderEntitiesList();
+        renderGraph();
+        updateStats();
+    });
+    
+    KERN.on('entity:linked', () => {
+        renderGraph();
+        updateStats();
+        if (currentEntityId) updateDetailLinks();
+    });
+});
+
+// ==================== AGENT ====================
+function updateAgentInfo() {
+    const agent = KERN.getAgent();
+    if (agent) {
+        document.getElementById('agentName').textContent = agent.codename;
+        document.getElementById('agentLevel').textContent = agent.level;
+    }
+}
+
+// ==================== ENTITIES CRUD ====================
+function openCreateModal() {
+    document.getElementById('createName').value = '';
+    document.getElementById('createType').value = 'person';
+    document.getElementById('createRole').value = '';
+    document.getElementById('createDescription').value = '';
+    document.getElementById('createModal').classList.add('open');
+}
+
+function closeCreateModal() {
+    document.getElementById('createModal').classList.remove('open');
+}
+
+function createEntity() {
+    const name = document.getElementById('createName').value.trim();
+    if (!name) {
+        alert('Nom requis');
+        return;
+    }
+    
+    const entity = KERN.createEntity({
+        name,
+        type: document.getElementById('createType').value,
+        role: document.getElementById('createRole').value.trim(),
+        description: document.getElementById('createDescription').value.trim(),
+        tags: []
+    });
+    
+    closeCreateModal();
+    selectEntity(entity.id);
+    showNotification('success', 'Entité créée ! +15 XP');
+}
+
+function selectEntity(id) {
+    currentEntityId = id;
+    const entity = KERN.getEntity(id);
+    if (!entity) return;
+    
+    // Show detail panel
+    document.getElementById('detailEmpty').style.display = 'none';
+    document.getElementById('detailContent').style.display = 'flex';
+    
+    // Fill form
+    document.getElementById('detailAvatar').textContent = TYPE_ICONS[entity.type] || '❓';
+    document.getElementById('detailAvatar').className = `detail-avatar ${entity.type}`;
+    document.getElementById('detailName').textContent = entity.name;
+    document.getElementById('detailType').textContent = entity.type;
+    
+    document.getElementById('inputName').value = entity.name || '';
+    document.getElementById('inputType').value = entity.type || 'person';
+    document.getElementById('inputRole').value = entity.role || '';
+    document.getElementById('inputDescription').value = entity.description || '';
+    document.getElementById('inputTags').value = (entity.tags || []).join(', ');
+    
+    updateDetailLinks();
+    highlightEntity(id);
+    
+    // Update list selection
+    document.querySelectorAll('.entity-item').forEach(el => {
+        el.classList.toggle('active', el.dataset.id === id);
+    });
+}
+
+function saveEntity() {
+    if (!currentEntityId) return;
+    
+    const entity = KERN.getEntity(currentEntityId);
+    if (!entity) return;
+    
+    const tags = document.getElementById('inputTags').value
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => t);
+    
+    // Update entity (KERN-CORE doesn't have updateEntity, so we modify directly and save)
+    entity.name = document.getElementById('inputName').value || 'Sans nom';
+    entity.type = document.getElementById('inputType').value;
+    entity.role = document.getElementById('inputRole').value;
+    entity.description = document.getElementById('inputDescription').value;
+    entity.tags = tags;
+    
+    // Save to localStorage
+    localStorage.setItem('kern_entities', JSON.stringify(KERN.getAllEntities()));
+    
+    // Update UI
+    document.getElementById('detailName').textContent = entity.name;
+    document.getElementById('detailType').textContent = entity.type;
+    document.getElementById('detailAvatar').textContent = TYPE_ICONS[entity.type] || '❓';
+    
+    renderEntitiesList();
+    renderGraph();
+    showNotification('success', 'Entité sauvegardée');
+}
+
+function deleteEntity() {
+    if (!currentEntityId) return;
+    if (!confirm('Supprimer cette entité ?')) return;
+    
+    // Remove from all entities' links
+    KERN.getAllEntities().forEach(e => {
+        e.links = (e.links || []).filter(l => l.target !== currentEntityId);
+    });
+    
+    // Remove entity
+    const entities = KERN.getAllEntities().filter(e => e.id !== currentEntityId);
+    localStorage.setItem('kern_entities', JSON.stringify(entities));
+    
+    currentEntityId = null;
+    document.getElementById('detailEmpty').style.display = 'flex';
+    document.getElementById('detailContent').style.display = 'none';
+    
+    renderEntitiesList();
+    renderGraph();
+    updateStats();
+    showNotification('success', 'Entité supprimée');
+}
+
+// ==================== LINKS ====================
+function updateDetailLinks() {
+    const entity = KERN.getEntity(currentEntityId);
+    if (!entity) return;
+    
+    const links = entity.links || [];
+    document.getElementById('linkCount').textContent = links.length;
+    
+    const container = document.getElementById('linksList');
+    
+    if (links.length === 0) {
+        container.innerHTML = '<div style="color: var(--text-dim); font-size: 0.75rem; text-align: center; padding: 1rem;">Aucune connexion</div>';
+        return;
+    }
+    
+    container.innerHTML = links.map(link => {
+        const target = KERN.getEntity(link.target);
+        if (!target) return '';
+        
+        return `
+            <div class="link-item" onclick="selectEntity('${target.id}')">
+                <span>${TYPE_ICONS[target.type] || '❓'}</span>
+                <span style="flex:1">${target.name}</span>
+                <span class="link-relation">${link.relation || 'lié à'}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+function openLinkModal() {
+    if (!currentEntityId) return;
+    document.getElementById('linkRelation').value = '';
+    document.getElementById('linkSearch').value = '';
+    renderLinkOptions();
+    document.getElementById('linkModal').classList.add('open');
+}
+
+function closeLinkModal() {
+    document.getElementById('linkModal').classList.remove('open');
+}
+
+function renderLinkOptions(query = '') {
+    const container = document.getElementById('linkOptions');
+    const currentEntity = KERN.getEntity(currentEntityId);
+    const currentLinks = (currentEntity?.links || []).map(l => l.target);
+    
+    const entities = KERN.getAllEntities().filter(e => 
+        e.id !== currentEntityId &&
+        !currentLinks.includes(e.id) &&
+        (!query || e.name.toLowerCase().includes(query.toLowerCase()))
+    );
+    
+    if (entities.length === 0) {
+        container.innerHTML = '<div style="color: var(--text-dim); text-align: center; padding: 1rem;">Aucune entité disponible</div>';
+        return;
+    }
+    
+    container.innerHTML = entities.map(e => `
+        <div class="link-option" onclick="addLink('${e.id}')">
+            <span>${TYPE_ICONS[e.type] || '❓'}</span>
+            <span>${e.name}</span>
+            <span style="font-size: 0.65rem; color: var(--text-dim)">${e.type}</span>
+        </div>
+    `).join('');
+}
+
+function addLink(targetId) {
+    const relation = document.getElementById('linkRelation').value.trim() || 'lié à';
+    
+    KERN.linkEntities(currentEntityId, targetId, relation);
+    
+    closeLinkModal();
+    updateDetailLinks();
+    showNotification('success', 'Connexion ajoutée ! +10 XP');
+}
+
+// ==================== RENDER LIST ====================
+function renderEntitiesList() {
+    const allEntities = KERN.getAllEntities();
+    const filtered = currentFilter === 'all' 
+        ? allEntities 
+        : allEntities.filter(e => e.type === currentFilter);
+    
+    const container = document.getElementById('entitiesList');
+    
+    if (filtered.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state" style="padding: 2rem;">
+                <div class="empty-icon">🕸️</div>
+                <div>Aucune entité</div>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = filtered.map(e => `
+        <div class="entity-item ${e.id === currentEntityId ? 'active' : ''}" 
+             data-id="${e.id}" onclick="selectEntity('${e.id}')">
+            <div class="entity-avatar ${e.type}">${TYPE_ICONS[e.type] || '❓'}</div>
+            <div class="entity-info">
+                <div class="entity-name">${e.name}</div>
+                <div class="entity-type">${e.role || e.type}</div>
+                ${(e.links?.length || 0) > 0 ? `<div class="entity-links">🔗 ${e.links.length} connexions</div>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+// ==================== GRAPH ====================
+function renderGraph() {
+    const container = document.getElementById('graphContainer');
+    const svg = d3.select('#graphSvg');
+    svg.selectAll('*').remove();
+    
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    
+    const entities = KERN.getAllEntities();
+    
+    if (entities.length === 0) return;
+    
+    // Build nodes
+    const nodes = entities.map(e => ({
+        id: e.id,
+        name: e.name,
+        type: e.type,
+        linkCount: (e.links || []).length
+    }));
+    
+    // Build links
+    const links = [];
+    entities.forEach(e => {
+        (e.links || []).forEach(link => {
+            // Avoid duplicates (only add if source < target alphabetically)
+            if (e.id < link.target) {
+                links.push({
+                    source: e.id,
+                    target: link.target,
+                    relation: link.relation || 'lié à'
+                });
+            }
+        });
+    });
+    
+    // Simulation
+    simulation = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(links).id(d => d.id).distance(120))
+        .force('charge', d3.forceManyBody().strength(-400))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collision', d3.forceCollide().radius(40));
+    
+    // Draw links
+    const link = svg.append('g')
+        .selectAll('line')
+        .data(links)
+        .join('line')
+        .attr('class', 'link')
+        .attr('stroke-width', 1.5);
+    
+    // Draw link labels
+    const linkLabel = svg.append('g')
+        .selectAll('text')
+        .data(links)
+        .join('text')
+        .attr('class', 'link-label')
+        .text(d => showRelations ? d.relation : '')
+        .attr('text-anchor', 'middle');
+    
+    // Draw nodes
+    const node = svg.append('g')
+        .selectAll('g')
+        .data(nodes)
+        .join('g')
+        .attr('class', 'node')
+        .call(d3.drag()
+            .on('start', dragstarted)
+            .on('drag', dragged)
+            .on('end', dragended))
+        .on('click', (event, d) => {
+            event.stopPropagation();
+            selectEntity(d.id);
+        });
+    
+    node.append('circle')
+        .attr('r', d => 12 + Math.min(d.linkCount * 2, 10))
+        .attr('fill', d => TYPE_COLORS[d.type] || '#888');
+    
+    if (showLabels) {
+        node.append('text')
+            .text(d => d.name.length > 15 ? d.name.substring(0, 15) + '...' : d.name)
+            .attr('x', 18)
+            .attr('y', 4);
+    }
+    
+    simulation.on('tick', () => {
+        link
+            .attr('x1', d => d.source.x)
+            .attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x)
+            .attr('y2', d => d.target.y);
+        
+        linkLabel
+            .attr('x', d => (d.source.x + d.target.x) / 2)
+            .attr('y', d => (d.source.y + d.target.y) / 2);
+        
+        node.attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+    
+    function dragstarted(event) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        event.subject.fx = event.subject.x;
+        event.subject.fy = event.subject.y;
+    }
+    
+    function dragged(event) {
+        event.subject.fx = event.x;
+        event.subject.fy = event.y;
+    }
+    
+    function dragended(event) {
+        if (!event.active) simulation.alphaTarget(0);
+        event.subject.fx = null;
+        event.subject.fy = null;
+    }
+}
+
+function highlightEntity(id) {
+    d3.selectAll('.node').classed('selected', d => d.id === id);
+    d3.selectAll('.link').classed('highlighted', d => d.source.id === id || d.target.id === id);
+}
+
+function setLayout(type) {
+    layout = type;
+    document.getElementById('btnForce').classList.toggle('active', type === 'force');
+    document.getElementById('btnRadial').classList.toggle('active', type === 'radial');
+    renderGraph();
+}
+
+function toggleLabels() {
+    showLabels = !showLabels;
+    document.getElementById('btnLabels').classList.toggle('active', showLabels);
+    renderGraph();
+}
+
+function toggleRelations() {
+    showRelations = !showRelations;
+    document.getElementById('btnRelations').classList.toggle('active', showRelations);
+    renderGraph();
+}
+
+function centerGraph() {
+    if (simulation) simulation.alpha(1).restart();
+}
+
+function exportGraph() {
+    const data = { entities: KERN.getAllEntities(), exported: new Date().toISOString() };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'panopticon_export.json';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ==================== STATS ====================
+function updateStats() {
+    const entities = KERN.getAllEntities();
+    let totalLinks = 0;
+    entities.forEach(e => totalLinks += (e.links || []).length);
+    
+    document.getElementById('statEntities').textContent = entities.length;
+    document.getElementById('statLinks').textContent = Math.floor(totalLinks / 2); // Each link counted twice
+    document.getElementById('statClusters').textContent = countClusters(entities);
+}
+
+function countClusters(entities) {
+    // Simple cluster counting using connected components
+    const visited = new Set();
+    let clusters = 0;
+    
+    function dfs(id) {
+        if (visited.has(id)) return;
+        visited.add(id);
+        const entity = entities.find(e => e.id === id);
+        if (entity) {
+            (entity.links || []).forEach(l => dfs(l.target));
+        }
+    }
+    
+    entities.forEach(e => {
+        if (!visited.has(e.id)) {
+            clusters++;
+            dfs(e.id);
+        }
+    });
+    
+    return clusters;
+}
+
+// ==================== EVENT LISTENERS ====================
+function setupEventListeners() {
+    // Filters
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            renderEntitiesList();
+        });
+    });
+    
+    // Search
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('.entity-item').forEach(item => {
+            const name = item.querySelector('.entity-name').textContent.toLowerCase();
+            item.style.display = name.includes(query) ? 'flex' : 'none';
+        });
+    });
+    
+    // Link search
+    document.getElementById('linkSearch').addEventListener('input', (e) => {
+        renderLinkOptions(e.target.value);
+    });
+    
+    // Window resize
+    window.addEventListener('resize', () => renderGraph());
+}
+
+// ==================== UTILS ====================
+function showNotification(type, message) {
+    const container = document.getElementById('notifications');
+    const notif = document.createElement('div');
+    notif.className = `notif ${type}`;
+    notif.innerHTML = `<span>${type === 'success' ? '✅' : '⭐'}</span><span>${message}</span>`;
+    container.appendChild(notif);
+    setTimeout(() => notif.remove(), 3000);
+}
+
+function showXPPopup(amount, reason) {
+    const popup = document.createElement('div');
+    popup.className = 'xp-popup';
+    popup.innerHTML = `
+        <div class="xp-amount">+${amount} XP</div>
+        <div class="xp-reason">${reason.replace(':', ' ')}</div>
+    `;
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 2000);
+}
+</script>
+</body>
+</html>

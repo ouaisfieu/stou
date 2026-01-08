@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 KERN Wiki</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        :root{--bg:#0f0f14;--bg-surface:#16161e;--bg-card:#1a1a24;--border:#2a2a3a;--accent:#6366f1;--cyan:#22d3ee;--green:#4ade80;--orange:#fb923c;--text:#e2e8f0;--text-dim:#64748b}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+        .layout{display:flex;min-height:100vh}
+        .sidebar{width:280px;background:var(--bg-surface);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;overflow-y:auto;padding:1.5rem 0}
+        .sidebar-header{padding:0 1.5rem 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+        .sidebar-header h1{font-size:1.2rem;background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .lang-sel{display:flex;gap:.3rem;padding:0 1.5rem;margin-bottom:1rem}
+        .lang-btn{padding:.35rem .6rem;background:var(--bg-card);border:1px solid var(--border);border-radius:4px;color:var(--text-dim);font-size:.65rem;cursor:pointer}
+        .lang-btn.active{background:var(--accent);color:#fff}
+        .nav-section{margin-bottom:1.5rem}
+        .nav-title{padding:.5rem 1.5rem;font-size:.65rem;text-transform:uppercase;color:var(--text-dim)}
+        .nav-item{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.5rem;color:var(--text);text-decoration:none;font-size:.85rem;cursor:pointer;border-left:3px solid transparent}
+        .nav-item:hover{background:var(--bg-card);color:var(--cyan)}
+        .nav-item.active{background:rgba(99,102,241,.15);border-left-color:var(--accent);color:var(--accent)}
+        .main{flex:1;margin-left:280px;padding:2rem 3rem;max-width:900px}
+        .article{display:none}
+        .article.active{display:block}
+        .article h1{font-size:2rem;margin-bottom:1rem}
+        .article h2{font-size:1.4rem;margin:2rem 0 1rem;color:var(--cyan);border-bottom:1px solid var(--border);padding-bottom:.5rem}
+        .article h3{font-size:1.1rem;margin:1.5rem 0 .75rem;color:var(--green)}
+        .article p{margin-bottom:1rem}
+        .article ul,.article ol{margin-bottom:1rem;padding-left:1.5rem}
+        .article li{margin-bottom:.5rem}
+        .article code{font-family:'JetBrains Mono',monospace;background:var(--bg-card);padding:.2rem .5rem;border-radius:4px;font-size:.85rem;color:var(--cyan)}
+        .article pre{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;margin-bottom:1.5rem}
+        .article pre code{background:none;padding:0;font-size:.8rem}
+        .callout{padding:1rem;border-radius:8px;margin:1.5rem 0;border-left:4px solid var(--cyan);background:rgba(34,211,238,.1)}
+        .module-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+        .module-card:hover{border-color:var(--accent);transform:translateX(5px)}
+        .module-card-header{display:flex;align-items:center;gap:1rem;margin-bottom:.75rem}
+        .module-card-icon{font-size:1.5rem}
+        .module-card-title{font-weight:600}
+        .module-card-file{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text-dim);margin-left:auto}
+        .module-card-desc{font-size:.85rem;color:var(--text-dim)}
+        .tag{display:inline-block;padding:.2rem .5rem;background:var(--bg);border-radius:4px;font-size:.65rem;margin-right:.3rem;margin-top:.5rem}
+        .tag.data{color:var(--cyan)}.tag.tools{color:var(--green)}.tag.game{color:var(--orange)}.tag.new{background:var(--green);color:#000}
+        table{width:100%;border-collapse:collapse;margin:1.5rem 0}
+        th,td{padding:.75rem 1rem;text-align:left;border-bottom:1px solid var(--border)}
+        th{background:var(--bg-card);font-size:.75rem;text-transform:uppercase;color:var(--text-dim)}
+        @media(max-width:900px){.sidebar{display:none}.main{margin-left:0;padding:1.5rem}}
+    </style>
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1>📚 KERN WIKI</h1>
+            <p style="font-size:.7rem;color:var(--text-dim)">Documentation v2.0</p>
+        </div>
+        <div class="lang-sel">
+            <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+            <button class="lang-btn" onclick="setLang('en')">EN</button>
+            <button class="lang-btn" onclick="setLang('nl')">NL</button>
+            <button class="lang-btn" onclick="setLang('de')">DE</button>
+        </div>
+        <nav>
+            <div class="nav-section">
+                <div class="nav-title">Démarrage</div>
+                <a class="nav-item active" onclick="show('intro')">🏠 Introduction</a>
+                <a class="nav-item" onclick="show('install')">⚡ Installation</a>
+                <a class="nav-item" onclick="show('quick')">🚀 Démarrage rapide</a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-title">Modules</div>
+                <a class="nav-item" onclick="show('command')">🎯 Commandement</a>
+                <a class="nav-item" onclick="show('data')">📊 Données politiques</a>
+                <a class="nav-item" onclick="show('tools')">🛠️ Outils</a>
+                <a class="nav-item" onclick="show('game')">🎮 Gamification</a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-title">Référence</div>
+                <a class="nav-item" onclick="show('arch')">🏗️ Architecture</a>
+                <a class="nav-item" onclick="show('i18n')">🌍 Traductions</a>
+                <a class="nav-item" onclick="show('roadmap')">🗺️ Roadmap</a>
+            </div>
+        </nav>
+    </aside>
+    <main class="main">
+        <article class="article active" id="intro">
+            <h1>🏛️ KERN — Hub Citoyen Belge</h1>
+            <div class="callout"><strong>💡 Qu'est-ce que KERN?</strong><br>Plateforme citoyenne autonome pour la Belgique. 100% offline, données vérifiées, outils pour l'engagement démocratique.</div>
+            <h2>Vision</h2>
+            <p>KERN vise à donner aux citoyens belges les outils pour <strong>comprendre</strong>, <strong>surveiller</strong> et <strong>participer</strong> à la vie démocratique.</p>
+            <h2>Principes</h2>
+            <ul>
+                <li><strong>100% Offline</strong> — Fonctionne sans internet</li>
+                <li><strong>Données vérifiées</strong> — Sources officielles uniquement</li>
+                <li><strong>Open source</strong> — Code transparent</li>
+                <li><strong>Multilingue</strong> — FR/NL/DE/EN</li>
+            </ul>
+            <h2>Couverture</h2>
+            <table><thead><tr><th>Niveau</th><th>Données</th><th>Statut</th></tr></thead><tbody>
+                <tr><td>🇪🇺 Européen</td><td>22 MEPs belges</td><td>✅</td></tr>
+                <tr><td>🇧🇪 Fédéral</td><td>Gouvernement Arizona</td><td>✅</td></tr>
+                <tr><td>🏛️ Régional</td><td>Wallonie, Bruxelles, Flandre, DG</td><td>✅</td></tr>
+                <tr><td>📍 Provincial</td><td>10 provinces</td><td>🔄</td></tr>
+                <tr><td>🏘️ Communal</td><td>581 communes</td><td>🔄</td></tr>
+            </tbody></table>
+        </article>
+        <article class="article" id="install">
+            <h1>⚡ Installation</h1>
+            <div class="callout">✅ <strong>Aucun prérequis!</strong> KERN fonctionne directement dans un navigateur moderne.</div>
+            <h2>Méthode</h2>
+            <ol><li>Téléchargez l'archive ZIP</li><li>Extrayez dans un dossier</li><li>Ouvrez <code>index.html</code></li></ol>
+            <h2>Structure</h2>
+            <pre><code>kern/
+├── index.html      # Hub multilingue
+├── wiki.html       # Documentation
+├── i18n/           # Packs de langue
+│   ├── fr.json
+│   ├── en.json
+│   ├── nl.json
+│   └── de.json
+└── outils/         # 16 modules</code></pre>
+        </article>
+        <article class="article" id="quick">
+            <h1>🚀 Démarrage rapide</h1>
+            <h2>1. Explorer le Hub</h2><p>Ouvrez <code>index.html</code>, sélectionnez votre langue.</p>
+            <h2>2. Consulter BELDATA</h2><p>Explorez les données politiques: 22 MEPs, gouvernements.</p>
+            <h2>3. Créer des dossiers</h2><p>Utilisez KERN::DOSSIERS pour créer des fiches.</p>
+            <h2>4. Visualiser</h2><p>PANOPTICON pour le graphe de relations.</p>
+        </article>
+        <article class="article" id="command">
+            <h1>🎯 Modules Commandement</h1>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">🏰</span><span class="module-card-title">CITADEL Command</span><span class="module-card-file">00-citadel-command.html</span></div><div class="module-card-desc">Centre de commandement opérationnel</div></div>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">🌐</span><span class="module-card-title">NEXUS HQ</span><span class="module-card-file">00-nexus-hq.html</span></div><div class="module-card-desc">Quartier général du réseau</div></div>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">📊</span><span class="module-card-title">Dashboard</span><span class="module-card-file">07-dashboard.html</span></div><div class="module-card-desc">Tableau de bord synthétique</div></div>
+        </article>
+        <article class="article" id="data">
+            <h1>📊 Modules Données</h1>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">🇧🇪</span><span class="module-card-title">BELDATA Citoyen v2</span><span class="module-card-file">10-beldata-citoyen-v2.html</span></div><div class="module-card-desc">Base de données politique complète</div><span class="tag data">Data</span><span class="tag">Vérifié</span></div>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">📁</span><span class="module-card-title">KERN::DOSSIERS</span><span class="module-card-file">11-kern-dossiers.html</span></div><div class="module-card-desc">Fiches personnalités style NSA</div><span class="tag data">Data</span></div>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">🔺</span><span class="module-card-title">PANOPTICON</span><span class="module-card-file">12-panopticon.html</span></div><div class="module-card-desc">Graphe D3.js + carte Belgique</div><span class="tag data">Data</span><span class="tag new">NEW</span></div>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">📅</span><span class="module-card-title">Agenda Politique</span><span class="module-card-file">05-agenda-politique.html</span></div><div class="module-card-desc">Calendrier événements</div><span class="tag data">Data</span></div>
+        </article>
+        <article class="article" id="tools">
+            <h1>🛠️ Modules Outils</h1>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">⚡</span><span class="module-card-title">FORGE Studio</span><span class="module-card-file">08-forge-studio.html</span></div><div class="module-card-desc">Studio création documents, 13 templates</div><span class="tag tools">Tools</span><span class="tag new">v2</span></div>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">💰</span><span class="module-card-title">Finance Tracker</span><span class="module-card-file">01-finance-tracker.html</span></div><div class="module-card-desc">Gestion financière</div><span class="tag tools">Tools</span></div>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">🎯</span><span class="module-card-title">Mission Creator</span><span class="module-card-file">02-mission-creator.html</span></div><div class="module-card-desc">Gestion de projets</div><span class="tag tools">Tools</span></div>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">📓</span><span class="module-card-title">Journal</span><span class="module-card-file">03-journal.html</span></div><div class="module-card-desc">Carnet de bord</div><span class="tag tools">Tools</span></div>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">🔗</span><span class="module-card-title">Network Map</span><span class="module-card-file">04-network-map.html</span></div><div class="module-card-desc">Cartographie contacts</div><span class="tag tools">Tools</span></div>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">📚</span><span class="module-card-title">Bibliothèque</span><span class="module-card-file">06-bibliotheque.html</span></div><div class="module-card-desc">Ressources documentaires</div><span class="tag tools">Tools</span></div>
+        </article>
+        <article class="article" id="game">
+            <h1>🎮 Gamification & ARG</h1>
+            <div class="callout">🎯 <strong>Objectif:</strong> Transformer l'engagement citoyen en expérience immersive.</div>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">⬡</span><span class="module-card-title">NEXUS PRIME</span><span class="module-card-file">13-nexus-prime.html</span></div><div class="module-card-desc">Hub gamifié (100KB): XP, niveaux, 5 arbres de compétences, quêtes, achievements, knowledge graph style Obsidian</div><span class="tag game">Game</span><span class="tag new">NEW</span></div>
+            <div class="module-card"><div class="module-card-header"><span class="module-card-icon">◈</span><span class="module-card-title">NEXUS ARG</span><span class="module-card-file">14-nexus-arg.html</span></div><div class="module-card-desc">Alternate Reality Game (85KB): Missions terrain, 5 niveaux clearance, Handler, dead drops, base intel</div><span class="tag game">Game</span><span class="tag new">NEW</span></div>
+            <h3>NEXUS PRIME Features</h3>
+            <ul><li>Profil Agent avec 7 classes évolutives</li><li>5 branches de compétences</li><li>Quêtes quotidiennes, hebdo, épiques</li><li>Streak avec bonus XP</li><li>Knowledge graph personnel</li></ul>
+            <h3>NEXUS ARG Features</h3>
+            <ul><li>Clearance: ALPHA → BETA → GAMMA → DELTA → OMEGA</li><li>Missions: Reconnaissance, HUMINT, Infiltration, Activation</li><li>Le gameplay EST l'action citoyenne réelle</li></ul>
+        </article>
+        <article class="article" id="arch">
+            <h1>🏗️ Architecture</h1>
+            <h2>Principes</h2>
+            <ul><li><strong>Fichiers autonomes</strong> — Un seul .html par module</li><li><strong>localStorage</strong> — Persistance locale</li><li><strong>Vanilla JS</strong> — Pas de framework</li><li><strong>D3.js</strong> — Visualisations</li></ul>
+            <h2>Clés localStorage</h2>
+            <pre><code>kern_dossiers     → Fiches
+kern_lang         → Langue
+nexus_prime_state → État gamification
+nexus_arg_state   → État ARG
+panopticon_data   → Graphe
+forge_projects_v2 → Documents</code></pre>
+        </article>
+        <article class="article" id="i18n">
+            <h1>🌍 Traductions</h1>
+            <h2>Langues (Index + Wiki)</h2>
+            <table><thead><tr><th>Langue</th><th>Couverture</th></tr></thead><tbody>
+                <tr><td>🇫🇷 Français</td><td>✅ 100%</td></tr>
+                <tr><td>🇬🇧 English</td><td>✅ 100%</td></tr>
+                <tr><td>🇳🇱 Nederlands</td><td>✅ 100%</td></tr>
+                <tr><td>🇩🇪 Deutsch</td><td>✅ 100%</td></tr>
+            </tbody></table>
+            <h2>Modules à traduire</h2>
+            <table><thead><tr><th>Module</th><th>Priorité</th></tr></thead><tbody>
+                <tr><td>BELDATA Citoyen</td><td>🔴 Haute</td></tr>
+                <tr><td>KERN::DOSSIERS</td><td>🔴 Haute</td></tr>
+                <tr><td>PANOPTICON</td><td>🟡 Moyenne</td></tr>
+                <tr><td>FORGE Studio</td><td>🟡 Moyenne</td></tr>
+                <tr><td>NEXUS PRIME/ARG</td><td>🟢 Basse</td></tr>
+            </tbody></table>
+        </article>
+        <article class="article" id="roadmap">
+            <h1>🗺️ Roadmap</h1>
+            <h2>✅ v2.0 (Actuel)</h2>
+            <ul><li>Hub multilingue FR/EN/NL/DE</li><li>16 modules complets</li><li>BELDATA avec données vérifiées</li><li>PANOPTICON graphe + carte</li><li>NEXUS PRIME + ARG gamification</li><li>Wiki documentation</li></ul>
+            <h2>🔜 v2.1</h2>
+            <ul><li>Traduction modules individuels</li><li>Données communales</li><li>Timeline mandats</li><li>Mode PWA</li></ul>
+            <h2>🔮 Long terme</h2>
+            <ul><li>Scraping automatisé</li><li>Analyse votes parlementaires</li><li>App mobile</li></ul>
+        </article>
+    </main>
+</div>
+<script>
+function show(id){document.querySelectorAll('.article').forEach(a=>a.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById(id)?.classList.add('active');event.currentTarget?.classList.add('active');window.scrollTo(0,0)}
+function setLang(l){localStorage.setItem('kern_lang',l);document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent===l.toUpperCase()))}
+document.addEventListener('DOMContentLoaded',()=>{const l=localStorage.getItem('kern_lang')||'fr';document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent===l.toUpperCase()))})
+</script>
+</body>
+</html>

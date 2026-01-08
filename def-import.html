@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⬡ KERN — Import Direct</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        h2 {
+            color: #4ade80;
+            margin-bottom: 2rem;
+        }
+        .drop-zone {
+            border: 3px dashed #444;
+            border-radius: 16px;
+            padding: 3rem;
+            margin: 2rem 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: #4ade80;
+            background: rgba(74, 222, 128, 0.1);
+        }
+        .drop-zone p {
+            font-size: 1.2rem;
+            color: #888;
+        }
+        input[type="file"] { display: none; }
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #4ade80;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0.5rem;
+            text-decoration: none;
+        }
+        .btn:hover { background: #22c55e; }
+        .btn.secondary {
+            background: #333;
+            color: #fff;
+        }
+        .btn.secondary:hover { background: #444; }
+        .btn.danger {
+            background: #ef4444;
+        }
+        #status {
+            margin: 2rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+        #status.success {
+            display: block;
+            background: rgba(74, 222, 128, 0.2);
+            border: 1px solid #4ade80;
+            color: #4ade80;
+        }
+        #status.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+        #preview {
+            text-align: left;
+            background: #1a1a2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow: auto;
+            display: none;
+        }
+        .current-data {
+            background: #1a1a2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        .current-data h3 {
+            color: #fbbf24;
+            margin-bottom: 0.5rem;
+        }
+        .current-data ul {
+            list-style: none;
+            color: #888;
+        }
+        .current-data li {
+            padding: 0.25rem 0;
+        }
+        .current-data .count {
+            color: #4ade80;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⬡</h1>
+        <h2>Import Direct KERN</h2>
+        
+        <div class="current-data" id="currentData">
+            <h3>📊 Données actuelles dans localStorage :</h3>
+            <ul id="currentStats"></ul>
+        </div>
+        
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <p>📁 Glissez votre fichier JSON ici<br><small>ou cliquez pour sélectionner</small></p>
+        </div>
+        
+        <input type="file" id="fileInput" accept=".json">
+        
+        <div id="preview"></div>
+        <div id="status"></div>
+        
+        <div>
+            <button class="btn" id="importBtn" style="display:none" onclick="doImport()">✅ Importer ces données</button>
+        </div>
+        
+        <div style="margin-top: 2rem;">
+            <a href="00-kern-nexus.html" class="btn secondary">← Retour à NEXUS</a>
+            <a href="wiki-data.html" class="btn secondary">📚 Wiki Données</a>
+            <button class="btn danger" onclick="clearAll()">🗑️ Tout effacer</button>
+        </div>
+    </div>
+    
+    <script>
+        let pendingData = null;
+        
+        // Show current localStorage state
+        function showCurrentData() {
+            const stats = [];
+            const keys = [
+                ['kern_agent', 'Agent'],
+                ['kern_dossiers', 'Dossiers'],
+                ['kern_entities', 'Entités'],
+                ['kern_network_contacts', 'Contacts'],
+                ['kern_knowledge', 'Notes'],
+                ['kern_missions', 'Missions'],
+                ['kern_journal', 'Journal'],
+                ['kern_partners', 'Partenaires'],
+                ['kern_protocole', 'Protocole']
+            ];
+            
+            keys.forEach(([key, label]) => {
+                try {
+                    const data = localStorage.getItem(key);
+                    if (data) {
+                        const parsed = JSON.parse(data);
+                        const count = Array.isArray(parsed) ? parsed.length : (typeof parsed === 'object' ? 1 : 0);
+                        stats.push(`<li>${label}: <span class="count">${count}</span></li>`);
+                    } else {
+                        stats.push(`<li>${label}: <span style="color:#666">vide</span></li>`);
+                    }
+                } catch (e) {
+                    stats.push(`<li>${label}: <span style="color:#ef4444">erreur</span></li>`);
+                }
+            });
+            
+            document.getElementById('currentStats').innerHTML = stats.join('');
+        }
+        
+        // File handling
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+        
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFile(e.dataTransfer.files[0]);
+        });
+        
+        fileInput.addEventListener('change', () => {
+            handleFile(fileInput.files[0]);
+        });
+        
+        function handleFile(file) {
+            if (!file) return;
+            
+            const status = document.getElementById('status');
+            const preview = document.getElementById('preview');
+            const importBtn = document.getElementById('importBtn');
+            
+            status.className = '';
+            status.style.display = 'none';
+            preview.style.display = 'none';
+            importBtn.style.display = 'none';
+            
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    pendingData = data;
+                    
+                    // Build preview
+                    let previewText = '📦 Contenu du fichier:\n\n';
+                    
+                    if (data.kern_agent) {
+                        previewText += `👤 Agent: ${data.kern_agent.codename || 'N/A'} (Niv.${data.kern_agent.level || '?'})\n`;
+                    }
+                    if (data.kern_dossiers) {
+                        previewText += `📁 Dossiers: ${data.kern_dossiers.length}\n`;
+                    }
+                    if (data.kern_entities) {
+                        previewText += `🏛️ Entités: ${data.kern_entities.length}\n`;
+                    }
+                    if (data.kern_network_contacts) {
+                        previewText += `👥 Contacts: ${data.kern_network_contacts.length}\n`;
+                    }
+                    if (data.kern_knowledge) {
+                        previewText += `🧠 Notes: ${data.kern_knowledge.length}\n`;
+                    }
+                    if (data.kern_missions) {
+                        previewText += `🎯 Missions: ${data.kern_missions.length}\n`;
+                    }
+                    if (data.kern_journal) {
+                        previewText += `📓 Journal: ${data.kern_journal.length}\n`;
+                    }
+                    if (data.kern_partners) {
+                        previewText += `🤝 Partenaires: ${data.kern_partners.length}\n`;
+                    }
+                    if (data.kern_protocole) {
+                        previewText += `⚡ Protocole: ✓\n`;
+                    }
+                    
+                    preview.textContent = previewText;
+                    preview.style.display = 'block';
+                    
+                    status.textContent = '✅ Fichier JSON valide ! Cliquez sur Importer.';
+                    status.className = 'success';
+                    importBtn.style.display = 'inline-block';
+                    
+                } catch (err) {
+                    status.textContent = '❌ Erreur: ' + err.message;
+                    status.className = 'error';
+                    pendingData = null;
+                }
+            };
+            
+            reader.onerror = () => {
+                status.textContent = '❌ Impossible de lire le fichier';
+                status.className = 'error';
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function doImport() {
+            if (!pendingData) return;
+            
+            const status = document.getElementById('status');
+            
+            try {
+                let imported = 0;
+                
+                // Key mapping: JSON key -> localStorage key (for kern-core.js compatibility)
+                const keyMap = {
+                    'kern_agent': 'kern_agent_profile',  // FIX: kern-core.js uses _profile
+                    'kern_agent_profile': 'kern_agent_profile',
+                    'kern_dossiers': 'kern_dossiers',
+                    'kern_entities': 'kern_entities',
+                    'kern_network_contacts': 'kern_network_contacts',
+                    'kern_knowledge': 'kern_knowledge',
+                    'kern_missions': 'kern_missions',
+                    'kern_journal': 'kern_journal',
+                    'kern_partners': 'kern_partners',
+                    'kern_protocole': 'kern_protocole',
+                    'kern_settings': 'kern_settings',
+                    'kern_activity_log': 'kern_activity_log'
+                };
+                
+                // FIX AGENT PROFILE - add missing stats/settings
+                let agent = pendingData['kern_agent_profile'] || pendingData['kern_agent'];
+                if (agent) {
+                    // Add missing stats
+                    if (!agent.stats) {
+                        agent.stats = {
+                            dossiersCreated: (pendingData.kern_dossiers || []).length,
+                            entitiesCreated: (pendingData.kern_entities || []).length,
+                            contactsAdded: (pendingData.kern_network_contacts || []).length,
+                            notesWritten: (pendingData.kern_knowledge || []).length,
+                            missionsCompleted: 0,
+                            linksDiscovered: 0,
+                            daysActive: 1,
+                            totalActions: 0
+                        };
+                        console.log('Fixed: Added agent.stats');
+                    }
+                    // Add missing achievements
+                    if (!agent.achievements) {
+                        agent.achievements = [];
+                    }
+                    // Add missing settings
+                    if (!agent.settings) {
+                        agent.settings = { theme: 'dark', notifications: true, soundEffects: true };
+                    }
+                    // Ensure required fields
+                    if (!agent.xpToNext) agent.xpToNext = 1000;
+                    if (!agent.level) agent.level = 1;
+                    if (!agent.xp) agent.xp = 0;
+                    
+                    pendingData['kern_agent_profile'] = agent;
+                    delete pendingData['kern_agent'];
+                }
+                
+                Object.keys(pendingData).forEach(key => {
+                    if (pendingData[key] !== null && pendingData[key] !== undefined) {
+                        // Use mapped key if exists, otherwise use original
+                        const targetKey = keyMap[key] || key;
+                        localStorage.setItem(targetKey, JSON.stringify(pendingData[key]));
+                        imported++;
+                        console.log(`Imported: ${key} -> ${targetKey}`);
+                    }
+                });
+                
+                status.textContent = `✅ ${imported} clés importées avec succès ! Rechargement...`;
+                status.className = 'success';
+                
+                setTimeout(() => {
+                    window.location.href = '00-kern-nexus.html';
+                }, 1500);
+                
+            } catch (err) {
+                status.textContent = '❌ Erreur import: ' + err.message;
+                status.className = 'error';
+            }
+        }
+        
+        function clearAll() {
+            if (confirm('⚠️ Effacer TOUTES les données KERN ?')) {
+                const keys = Object.keys(localStorage).filter(k => k.startsWith('kern_'));
+                keys.forEach(k => localStorage.removeItem(k));
+                showCurrentData();
+                document.getElementById('status').textContent = '🗑️ Données effacées';
+                document.getElementById('status').className = 'success';
+            }
+        }
+        
+        // Init
+        showCurrentData();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Répertoire Éducation Permanente — Cartographie des Piliers</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --pilier-socialiste: #e53935;
+            --pilier-chretien: #ff9800;
+            --pilier-liberal: #2196f3;
+            --pilier-ecolo: #4caf50;
+            --pilier-communiste: #9c27b0;
+            --pilier-neutre: #607d8b;
+            --pilier-autre: #795548;
+            --bg-dark: #0a0a0f;
+            --bg-panel: #0f0f18;
+            --bg-card: #14141f;
+            --border: #2a2a3a;
+            --text: #e0e0e0;
+            --text-muted: #888;
+        }
+        
+        html, body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .app {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            height: 100%;
+        }
+        
+        /* === SIDEBAR === */
+        .sidebar {
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #e53935, #ff9800, #4caf50, #2196f3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .title { font-weight: 700; font-size: 0.95rem; }
+        .subtitle { font-size: 0.65rem; color: var(--text-muted); }
+        
+        .stats-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        
+        .stat-box {
+            flex: 1;
+            background: var(--bg-card);
+            padding: 0.5rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .stat-value { font-size: 1.2rem; font-weight: 700; color: #6366f1; }
+        .stat-label { font-size: 0.6rem; color: var(--text-muted); }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.4rem;
+            margin-top: 0.75rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.7rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+        
+        .btn:hover { background: var(--border); }
+        .btn.primary { background: #6366f1; border-color: #6366f1; }
+        
+        /* Légende piliers */
+        .piliers-section {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        
+        .section-title {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .pilier-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 2px;
+            font-size: 0.75rem;
+        }
+        
+        .pilier-item:hover { background: var(--bg-card); }
+        .pilier-item.active { background: var(--bg-card); }
+        
+        .pilier-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        
+        .pilier-count {
+            margin-left: auto;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            background: var(--bg-dark);
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        /* Search & Filter */
+        .search-section {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.8rem;
+        }
+        
+        .search-input::placeholder { color: var(--text-muted); }
+        
+        /* Liste non classées */
+        .unclassified-section {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .unclassified-header {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        
+        .unclassified-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 0.5rem 0.5rem;
+        }
+        
+        .mini-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem;
+            margin-bottom: 4px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .mini-card:hover { border-color: #6366f1; }
+        .mini-card.dragging { opacity: 0.5; }
+        
+        .mini-card-logo {
+            width: 28px;
+            height: 28px;
+            background: var(--border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .mini-card-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .mini-card-info { flex: 1; min-width: 0; }
+        .mini-card-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mini-card-sigle { font-size: 0.65rem; color: var(--text-muted); }
+        
+        /* === MAIN GRID === */
+        .main-area {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .grid-header {
+            padding: 0.75rem 1rem;
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .grid-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+        
+        .grid-controls select, .grid-controls input {
+            padding: 0.4rem 0.6rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            font-size: 0.75rem;
+        }
+        
+        .grid-container {
+            flex: 1;
+            overflow: auto;
+            padding: 1rem;
+            background: var(--bg-dark);
+        }
+        
+        .grid {
+            display: grid;
+            gap: 4px;
+            width: fit-content;
+            margin: 0 auto;
+        }
+        
+        .grid-cell {
+            width: 80px;
+            height: 80px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.15s ease;
+            overflow: hidden;
+        }
+        
+        .grid-cell:hover { transform: scale(1.05); z-index: 10; }
+        .grid-cell.empty { opacity: 0.4; }
+        .grid-cell.empty:hover { opacity: 0.7; border-color: #6366f1; }
+        .grid-cell.drag-over { border-color: #6366f1; background: rgba(99, 102, 241, 0.2); }
+        
+        /* Bordures piliers */
+        .grid-cell.pilier-socialiste { border-color: var(--pilier-socialiste); }
+        .grid-cell.pilier-chretien { border-color: var(--pilier-chretien); }
+        .grid-cell.pilier-liberal { border-color: var(--pilier-liberal); }
+        .grid-cell.pilier-ecolo { border-color: var(--pilier-ecolo); }
+        .grid-cell.pilier-communiste { border-color: var(--pilier-communiste); }
+        .grid-cell.pilier-neutre { border-color: var(--pilier-neutre); }
+        .grid-cell.pilier-autre { border-color: var(--pilier-autre); }
+        
+        .cell-logo {
+            width: 40px;
+            height: 40px;
+            background: var(--border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            margin-bottom: 4px;
+            overflow: hidden;
+        }
+        
+        .cell-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .cell-name {
+            font-size: 0.55rem;
+            text-align: center;
+            line-height: 1.2;
+            max-height: 2.4em;
+            overflow: hidden;
+            padding: 0 2px;
+            word-break: break-word;
+        }
+        
+        .cell-number {
+            position: absolute;
+            top: 2px;
+            right: 4px;
+            font-size: 0.5rem;
+            color: var(--text-muted);
+        }
+        
+        /* === MODAL === */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+        }
+        
+        .modal-overlay.open { display: flex; }
+        
+        .modal {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .modal-logo {
+            width: 64px;
+            height: 64px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .modal-logo:hover::after {
+            content: '📷';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .modal-title-section { flex: 1; }
+        .modal-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .modal-sigle { font-size: 0.85rem; color: var(--text-muted); }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .modal-close:hover { color: var(--text); }
+        
+        .modal-body {
+            padding: 1.25rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .field-group {
+            margin-bottom: 1rem;
+        }
+        
+        .field-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+        
+        .field-input, .field-select, .field-textarea {
+            width: 100%;
+            padding: 0.6rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.85rem;
+        }
+        
+        .field-textarea { resize: vertical; min-height: 80px; }
+        
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        
+        .pilier-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .pilier-btn {
+            padding: 0.4rem 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            background: var(--bg-card);
+            color: var(--text);
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .pilier-btn:hover { border-color: var(--text-muted); }
+        .pilier-btn.selected { border-width: 3px; }
+        .pilier-btn.socialiste.selected { border-color: var(--pilier-socialiste); background: rgba(229, 57, 53, 0.2); }
+        .pilier-btn.chretien.selected { border-color: var(--pilier-chretien); background: rgba(255, 152, 0, 0.2); }
+        .pilier-btn.liberal.selected { border-color: var(--pilier-liberal); background: rgba(33, 150, 243, 0.2); }
+        .pilier-btn.ecolo.selected { border-color: var(--pilier-ecolo); background: rgba(76, 175, 80, 0.2); }
+        .pilier-btn.communiste.selected { border-color: var(--pilier-communiste); background: rgba(156, 39, 176, 0.2); }
+        .pilier-btn.neutre.selected { border-color: var(--pilier-neutre); background: rgba(96, 125, 139, 0.2); }
+        .pilier-btn.autre.selected { border-color: var(--pilier-autre); background: rgba(121, 85, 72, 0.2); }
+        
+        .modal-footer {
+            padding: 1rem 1.25rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        
+        .modal-footer .btn { flex: none; padding: 0.6rem 1.25rem; }
+        
+        /* Hidden inputs */
+        #csvInput, #jsonInput, #logoInput { display: none; }
+        
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: #4caf50;
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            z-index: 2000;
+            display: none;
+        }
+        
+        .toast.show { display: block; animation: fadeInOut 3s ease; }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateY(20px); }
+            10%, 90% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-row">
+                    <div class="logo">🏛️</div>
+                    <div>
+                        <div class="title">Répertoire EP</div>
+                        <div class="subtitle">Éducation Permanente — Piliers</div>
+                    </div>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <div class="stat-value" id="statTotal">0</div>
+                        <div class="stat-label">ASSOCIATIONS</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="statClassified">0</div>
+                        <div class="stat-label">CLASSÉES</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="statUnclassified">0</div>
+                        <div class="stat-label">À CLASSER</div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn" onclick="document.getElementById('csvInput').click()">📥 Import</button>
+                    <button class="btn" onclick="exportJSON()">📤 Export</button>
+                    <button class="btn primary" onclick="openAddModal()">+</button>
+                </div>
+                <div class="action-buttons" style="margin-top:0.4rem;">
+                    <button class="btn" onclick="document.getElementById('jsonInput').click()">📂 Charger JSON</button>
+                    <button class="btn" onclick="clearAllData()" style="color:#f87171;">🗑️ Reset</button>
+                </div>
+            </div>
+            
+            <div class="piliers-section">
+                <div class="section-title">Piliers</div>
+                <div class="pilier-item" onclick="filterByPilier(null)">
+                    <div class="pilier-color" style="background: linear-gradient(135deg, #e53935, #2196f3, #4caf50);"></div>
+                    <span>Tous</span>
+                    <span class="pilier-count" id="countAll">0</span>
+                </div>
+                <div class="pilier-item" onclick="filterByPilier('socialiste')">
+                    <div class="pilier-color" style="background: var(--pilier-socialiste);"></div>
+                    <span>Socialiste (PS/FGTB)</span>
+                    <span class="pilier-count" id="countSocialiste">0</span>
+                </div>
+                <div class="pilier-item" onclick="filterByPilier('chretien')">
+                    <div class="pilier-color" style="background: var(--pilier-chretien);"></div>
+                    <span>Chrétien (Engagés/CSC)</span>
+                    <span class="pilier-count" id="countChretien">0</span>
+                </div>
+                <div class="pilier-item" onclick="filterByPilier('liberal')">
+                    <div class="pilier-color" style="background: var(--pilier-liberal);"></div>
+                    <span>Libéral (MR)</span>
+                    <span class="pilier-count" id="countLiberal">0</span>
+                </div>
+                <div class="pilier-item" onclick="filterByPilier('ecolo')">
+                    <div class="pilier-color" style="background: var(--pilier-ecolo);"></div>
+                    <span>Écologiste</span>
+                    <span class="pilier-count" id="countEcolo">0</span>
+                </div>
+                <div class="pilier-item" onclick="filterByPilier('communiste')">
+                    <div class="pilier-color" style="background: var(--pilier-communiste);"></div>
+                    <span>Communiste (PTB)</span>
+                    <span class="pilier-count" id="countCommuniste">0</span>
+                </div>
+                <div class="pilier-item" onclick="filterByPilier('neutre')">
+                    <div class="pilier-color" style="background: var(--pilier-neutre);"></div>
+                    <span>Neutre / Pluraliste</span>
+                    <span class="pilier-count" id="countNeutre">0</span>
+                </div>
+                <div class="pilier-item" onclick="filterByPilier('autre')">
+                    <div class="pilier-color" style="background: var(--pilier-autre);"></div>
+                    <span>Autre</span>
+                    <span class="pilier-count" id="countAutre">0</span>
+                </div>
+            </div>
+            
+            <div class="search-section">
+                <input type="text" class="search-input" placeholder="🔍 Rechercher une association..." id="searchInput" oninput="handleSearch()">
+            </div>
+            
+            <div class="unclassified-section">
+                <div class="unclassified-header">
+                    <span class="section-title" style="margin:0;">Non classées</span>
+                </div>
+                <div class="unclassified-list" id="unclassifiedList"></div>
+            </div>
+        </aside>
+        
+        <!-- MAIN GRID -->
+        <main class="main-area">
+            <div class="grid-header">
+                <span style="font-weight:600;">Damier des associations</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);">Glissez les associations depuis la liste ou cliquez sur une case</span>
+                
+                <div class="grid-controls">
+                    <select id="gridCols" onchange="updateGrid()">
+                        <option value="10">10 colonnes</option>
+                        <option value="15">15 colonnes</option>
+                        <option value="20" selected>20 colonnes</option>
+                        <option value="25">25 colonnes</option>
+                    </select>
+                    <select id="filterPilier" onchange="filterGrid()">
+                        <option value="">Tous les piliers</option>
+                        <option value="socialiste">🔴 Socialiste</option>
+                        <option value="chretien">🟠 Chrétien</option>
+                        <option value="liberal">🔵 Libéral</option>
+                        <option value="ecolo">🟢 Écolo</option>
+                        <option value="communiste">🟣 Communiste</option>
+                        <option value="neutre">⚪ Neutre</option>
+                        <option value="autre">🟤 Autre</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="grid-container" id="gridContainer">
+                <div class="grid" id="grid"></div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-logo" id="modalLogo" onclick="document.getElementById('logoInput').click()">🏛️</div>
+                <div class="modal-title-section">
+                    <div class="modal-name" id="modalName">Association</div>
+                    <div class="modal-sigle" id="modalSigle">Sigle</div>
+                </div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="field-group">
+                    <label class="field-label">Pilier</label>
+                    <div class="pilier-selector" id="pilierSelector">
+                        <button type="button" class="pilier-btn socialiste" onclick="selectPilier('socialiste')">🔴 Socialiste</button>
+                        <button type="button" class="pilier-btn chretien" onclick="selectPilier('chretien')">🟠 Chrétien</button>
+                        <button type="button" class="pilier-btn liberal" onclick="selectPilier('liberal')">🔵 Libéral</button>
+                        <button type="button" class="pilier-btn ecolo" onclick="selectPilier('ecolo')">🟢 Écolo</button>
+                        <button type="button" class="pilier-btn communiste" onclick="selectPilier('communiste')">🟣 Communiste</button>
+                        <button type="button" class="pilier-btn neutre" onclick="selectPilier('neutre')">⚪ Neutre</button>
+                        <button type="button" class="pilier-btn autre" onclick="selectPilier('autre')">🟤 Autre</button>
+                    </div>
+                </div>
+                
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label">Nom complet</label>
+                        <input type="text" class="field-input" id="fieldNom">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Sigle</label>
+                        <input type="text" class="field-input" id="fieldSigle">
+                    </div>
+                </div>
+                
+                <div class="field-group">
+                    <label class="field-label">Adresse</label>
+                    <input type="text" class="field-input" id="fieldAdresse">
+                </div>
+                
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label">Code postal</label>
+                        <input type="text" class="field-input" id="fieldCP">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Localité</label>
+                        <input type="text" class="field-input" id="fieldLocalite">
+                    </div>
+                </div>
+                
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label">Téléphone</label>
+                        <input type="text" class="field-input" id="fieldTel">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Email</label>
+                        <input type="email" class="field-input" id="fieldEmail">
+                    </div>
+                </div>
+                
+                <div class="field-group">
+                    <label class="field-label">Site web</label>
+                    <input type="url" class="field-input" id="fieldWeb">
+                </div>
+                
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label">Reconnaissance</label>
+                        <input type="text" class="field-input" id="fieldReconnaissance">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Axes</label>
+                        <input type="text" class="field-input" id="fieldAxes">
+                    </div>
+                </div>
+                
+                <div class="field-group">
+                    <label class="field-label">Notes</label>
+                    <textarea class="field-textarea" id="fieldNotes"></textarea>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn" onclick="deleteAssociation()" style="color:#f87171;margin-right:auto;">🗑️ Supprimer</button>
+                <button class="btn" onclick="closeModal()">Annuler</button>
+                <button class="btn primary" onclick="saveAssociation()">💾 Enregistrer</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+    
+    <input type="file" id="csvInput" accept=".csv,.xlsx,.xls" onchange="importFile(event)">
+    <input type="file" id="jsonInput" accept=".json" onchange="importJSON(event)">
+    <input type="file" id="logoInput" accept="image/*" onchange="handleLogoUpload(event)">
+
+<script>
+// ============ STATE ============
+const STORAGE_KEY = 'repertoire_ep_data';
+const GRID_SIZE = 500;
+
+let data = {
+    associations: [],
+    gridPositions: {} // { assocId: cellIndex }
+};
+
+let currentAssocId = null;
+let currentPilier = null;
+let draggedAssocId = null;
+let searchQuery = '';
+let filterPilierValue = null;
+
+// ============ INIT ============
+document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    renderAll();
+});
+
+// ============ DATA ============
+function loadData() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        try {
+            data = JSON.parse(saved);
+            if (!data.gridPositions) data.gridPositions = {};
+        } catch (e) {
+            console.error('Failed to load data');
+        }
+    }
+}
+
+function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function generateId() {
+    return 'assoc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+// ============ RENDER ============
+function renderAll() {
+    renderGrid();
+    renderUnclassifiedList();
+    updateStats();
+}
+
+function updateStats() {
+    const total = data.associations.length;
+    const classified = Object.keys(data.gridPositions).length;
+    const unclassified = total - classified;
+    
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statClassified').textContent = classified;
+    document.getElementById('statUnclassified').textContent = unclassified;
+    document.getElementById('countAll').textContent = total;
+    
+    const counts = { socialiste: 0, chretien: 0, liberal: 0, ecolo: 0, communiste: 0, neutre: 0, autre: 0 };
+    data.associations.forEach(a => {
+        if (a.pilier && counts[a.pilier] !== undefined) counts[a.pilier]++;
+    });
+    
+    document.getElementById('countSocialiste').textContent = counts.socialiste;
+    document.getElementById('countChretien').textContent = counts.chretien;
+    document.getElementById('countLiberal').textContent = counts.liberal;
+    document.getElementById('countEcolo').textContent = counts.ecolo;
+    document.getElementById('countCommuniste').textContent = counts.communiste;
+    document.getElementById('countNeutre').textContent = counts.neutre;
+    document.getElementById('countAutre').textContent = counts.autre;
+}
+
+function renderGrid() {
+    const cols = parseInt(document.getElementById('gridCols').value);
+    const grid = document.getElementById('grid');
+    grid.style.gridTemplateColumns = `repeat(${cols}, 80px)`;
+    
+    // Build reverse map: cellIndex -> assocId
+    const cellToAssoc = {};
+    for (const [assocId, cellIndex] of Object.entries(data.gridPositions)) {
+        cellToAssoc[cellIndex] = assocId;
+    }
+    
+    let html = '';
+    for (let i = 0; i < GRID_SIZE; i++) {
+        const assocId = cellToAssoc[i];
+        const assoc = assocId ? data.associations.find(a => a.id === assocId) : null;
+        
+        // Filter
+        if (filterPilierValue && assoc && assoc.pilier !== filterPilierValue) {
+            html += `<div class="grid-cell empty" data-index="${i}"></div>`;
+            continue;
+        }
+        
+        if (assoc) {
+            const pilierClass = assoc.pilier ? `pilier-${assoc.pilier}` : '';
+            const logoContent = assoc.logo 
+                ? `<img src="${assoc.logo}" alt="">`
+                : (assoc.sigle || assoc.nom.substring(0, 2));
+            
+            html += `
+                <div class="grid-cell ${pilierClass}" data-index="${i}" data-assoc="${assoc.id}"
+                     onclick="openModal('${assoc.id}')"
+                     ondragover="handleDragOver(event)" ondrop="handleDrop(event, ${i})" ondragleave="handleDragLeave(event)">
+                    <span class="cell-number">${i + 1}</span>
+                    <div class="cell-logo">${logoContent}</div>
+                    <div class="cell-name">${assoc.sigle || assoc.nom.substring(0, 15)}</div>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="grid-cell empty" data-index="${i}"
+                     ondragover="handleDragOver(event)" ondrop="handleDrop(event, ${i})" ondragleave="handleDragLeave(event)">
+                    <span class="cell-number">${i + 1}</span>
+                </div>
+            `;
+        }
+    }
+    
+    grid.innerHTML = html;
+}
+
+function renderUnclassifiedList() {
+    const container = document.getElementById('unclassifiedList');
+    const positionedIds = new Set(Object.keys(data.gridPositions));
+    
+    let unclassified = data.associations.filter(a => !positionedIds.has(a.id));
+    
+    // Apply search
+    if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        unclassified = unclassified.filter(a => 
+            a.nom.toLowerCase().includes(q) || 
+            (a.sigle && a.sigle.toLowerCase().includes(q))
+        );
+    }
+    
+    // Apply pilier filter
+    if (filterPilierValue) {
+        unclassified = unclassified.filter(a => a.pilier === filterPilierValue);
+    }
+    
+    if (unclassified.length === 0) {
+        container.innerHTML = `<div style="text-align:center;color:var(--text-muted);padding:1rem;font-size:0.75rem;">
+            ${data.associations.length === 0 
+                ? `<div style="margin-bottom:0.5rem;">📂 Importez un fichier</div>
+                   <div style="font-size:0.65rem;line-height:1.4;">
+                   Formats: .xlsx, .xls, .csv, .json<br><br>
+                   <a href="https://educationpermanente.cfwb.be/fileadmin/sites/edu_perm/uploads/Document/Listing_associations/RepertoirecoordonneesAEP_SITE_21-10-25.xlsx" 
+                      target="_blank" style="color:#6366f1;">📥 Télécharger le fichier officiel FWB</a>
+                   </div>` 
+                : '✅ Toutes les associations sont placées'}
+        </div>`;
+        return;
+    }
+    
+    container.innerHTML = unclassified.map(a => {
+        const pilierClass = a.pilier ? `pilier-${a.pilier}` : '';
+        const borderColor = a.pilier ? `border-color: var(--pilier-${a.pilier})` : '';
+        const logoContent = a.logo 
+            ? `<img src="${a.logo}" alt="">`
+            : (a.sigle ? a.sigle.substring(0, 2) : '🏛️');
+        
+        return `
+            <div class="mini-card" style="${borderColor}" draggable="true" 
+                 ondragstart="handleDragStart(event, '${a.id}')" ondragend="handleDragEnd(event)"
+                 onclick="openModal('${a.id}')">
+                <div class="mini-card-logo">${logoContent}</div>
+                <div class="mini-card-info">
+                    <div class="mini-card-name">${a.nom}</div>
+                    ${a.sigle ? `<div class="mini-card-sigle">${a.sigle}</div>` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ============ DRAG & DROP ============
+function handleDragStart(event, assocId) {
+    draggedAssocId = assocId;
+    event.target.classList.add('dragging');
+    event.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDragEnd(event) {
+    event.target.classList.remove('dragging');
+    draggedAssocId = null;
+}
+
+function handleDragOver(event) {
+    event.preventDefault();
+    event.currentTarget.classList.add('drag-over');
+}
+
+function handleDragLeave(event) {
+    event.currentTarget.classList.remove('drag-over');
+}
+
+function handleDrop(event, cellIndex) {
+    event.preventDefault();
+    event.currentTarget.classList.remove('drag-over');
+    
+    if (!draggedAssocId) return;
+    
+    // Remove from old position if any
+    for (const [id, idx] of Object.entries(data.gridPositions)) {
+        if (idx === cellIndex) {
+            delete data.gridPositions[id];
+            break;
+        }
+    }
+    
+    // Remove old position of dragged item
+    delete data.gridPositions[draggedAssocId];
+    
+    // Set new position
+    data.gridPositions[draggedAssocId] = cellIndex;
+    
+    saveData();
+    renderAll();
+    showToast('Association placée');
+}
+
+// ============ MODAL ============
+function openModal(assocId) {
+    currentAssocId = assocId;
+    const assoc = data.associations.find(a => a.id === assocId);
+    if (!assoc) return;
+    
+    document.getElementById('modalName').textContent = assoc.nom;
+    document.getElementById('modalSigle').textContent = assoc.sigle || '';
+    
+    const logoEl = document.getElementById('modalLogo');
+    if (assoc.logo) {
+        logoEl.innerHTML = `<img src="${assoc.logo}" alt="">`;
+    } else {
+        logoEl.textContent = assoc.sigle ? assoc.sigle.substring(0, 2) : '🏛️';
+    }
+    
+    document.getElementById('fieldNom').value = assoc.nom || '';
+    document.getElementById('fieldSigle').value = assoc.sigle || '';
+    document.getElementById('fieldAdresse').value = assoc.adresse || '';
+    document.getElementById('fieldCP').value = assoc.cp || '';
+    document.getElementById('fieldLocalite').value = assoc.localite || '';
+    document.getElementById('fieldTel').value = assoc.tel || '';
+    document.getElementById('fieldEmail').value = assoc.email || '';
+    document.getElementById('fieldWeb').value = assoc.web || '';
+    document.getElementById('fieldReconnaissance').value = assoc.reconnaissance || '';
+    document.getElementById('fieldAxes').value = assoc.axes || '';
+    document.getElementById('fieldNotes').value = assoc.notes || '';
+    
+    currentPilier = assoc.pilier || null;
+    updatePilierButtons();
+    
+    document.getElementById('modal').classList.add('open');
+}
+
+function openAddModal() {
+    currentAssocId = null;
+    currentPilier = null;
+    
+    document.getElementById('modalName').textContent = 'Nouvelle association';
+    document.getElementById('modalSigle').textContent = '';
+    document.getElementById('modalLogo').textContent = '🏛️';
+    
+    document.getElementById('fieldNom').value = '';
+    document.getElementById('fieldSigle').value = '';
+    document.getElementById('fieldAdresse').value = '';
+    document.getElementById('fieldCP').value = '';
+    document.getElementById('fieldLocalite').value = '';
+    document.getElementById('fieldTel').value = '';
+    document.getElementById('fieldEmail').value = '';
+    document.getElementById('fieldWeb').value = '';
+    document.getElementById('fieldReconnaissance').value = '';
+    document.getElementById('fieldAxes').value = '';
+    document.getElementById('fieldNotes').value = '';
+    
+    updatePilierButtons();
+    
+    document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+    currentAssocId = null;
+    currentPilier = null;
+}
+
+function selectPilier(pilier) {
+    currentPilier = currentPilier === pilier ? null : pilier;
+    updatePilierButtons();
+}
+
+function updatePilierButtons() {
+    document.querySelectorAll('.pilier-btn').forEach(btn => {
+        const p = btn.classList[1]; // socialiste, chretien, etc.
+        btn.classList.toggle('selected', p === currentPilier);
+    });
+}
+
+function saveAssociation() {
+    const nom = document.getElementById('fieldNom').value.trim();
+    if (!nom) {
+        alert('Le nom est requis');
+        return;
+    }
+    
+    const assocData = {
+        nom,
+        sigle: document.getElementById('fieldSigle').value.trim(),
+        adresse: document.getElementById('fieldAdresse').value.trim(),
+        cp: document.getElementById('fieldCP').value.trim(),
+        localite: document.getElementById('fieldLocalite').value.trim(),
+        tel: document.getElementById('fieldTel').value.trim(),
+        email: document.getElementById('fieldEmail').value.trim(),
+        web: document.getElementById('fieldWeb').value.trim(),
+        reconnaissance: document.getElementById('fieldReconnaissance').value.trim(),
+        axes: document.getElementById('fieldAxes').value.trim(),
+        notes: document.getElementById('fieldNotes').value.trim(),
+        pilier: currentPilier
+    };
+    
+    if (currentAssocId) {
+        // Update
+        const idx = data.associations.findIndex(a => a.id === currentAssocId);
+        if (idx !== -1) {
+            const existing = data.associations[idx];
+            data.associations[idx] = { ...existing, ...assocData };
+        }
+    } else {
+        // Create
+        assocData.id = generateId();
+        data.associations.push(assocData);
+    }
+    
+    saveData();
+    closeModal();
+    renderAll();
+    showToast('Association enregistrée');
+}
+
+function deleteAssociation() {
+    if (!currentAssocId) return;
+    if (!confirm('Supprimer cette association ?')) return;
+    
+    data.associations = data.associations.filter(a => a.id !== currentAssocId);
+    delete data.gridPositions[currentAssocId];
+    
+    saveData();
+    closeModal();
+    renderAll();
+    showToast('Association supprimée');
+}
+
+function handleLogoUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const logoData = e.target.result;
+        document.getElementById('modalLogo').innerHTML = `<img src="${logoData}" alt="">`;
+        
+        if (currentAssocId) {
+            const assoc = data.associations.find(a => a.id === currentAssocId);
+            if (assoc) {
+                assoc.logo = logoData;
+                saveData();
+            }
+        }
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+}
+
+// ============ SEARCH & FILTER ============
+function handleSearch() {
+    searchQuery = document.getElementById('searchInput').value;
+    renderUnclassifiedList();
+}
+
+function filterByPilier(pilier) {
+    filterPilierValue = pilier;
+    document.getElementById('filterPilier').value = pilier || '';
+    renderAll();
+}
+
+function filterGrid() {
+    filterPilierValue = document.getElementById('filterPilier').value || null;
+    renderAll();
+}
+
+function updateGrid() {
+    renderGrid();
+}
+
+// ============ IMPORT / EXPORT ============
+function importFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const fileName = file.name.toLowerCase();
+    console.log('Importing file:', fileName);
+    
+    if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+        importXLSX(file);
+    } else if (fileName.endsWith('.csv')) {
+        importCSV(file);
+    } else {
+        alert('Format non supporté. Utilisez .xlsx, .xls ou .csv');
+    }
+    
+    event.target.value = '';
+}
+
+function importXLSX(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data_arr = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data_arr, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+            
+            console.log('XLSX parsed:', jsonData.length, 'rows');
+            console.log('First row:', jsonData[0]);
+            
+            processImportedData(jsonData);
+        } catch (err) {
+            console.error('XLSX parse error:', err);
+            alert('Erreur lors de la lecture du fichier Excel: ' + err.message);
+        }
+    };
+    reader.onerror = () => alert('Erreur de lecture du fichier');
+    reader.readAsArrayBuffer(file);
+}
+
+function importCSV(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const text = e.target.result;
+            parseCSV(text);
+        } catch (err) {
+            console.error('CSV parse error:', err);
+            alert('Erreur lors de la lecture du fichier CSV: ' + err.message);
+        }
+    };
+    reader.onerror = () => alert('Erreur de lecture du fichier');
+    reader.readAsText(file);
+}
+
+function parseCSV(text) {
+    // Handle BOM and normalize line endings
+    text = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    
+    const lines = text.split('\n').filter(l => l.trim());
+    if (lines.length < 2) {
+        alert('Fichier CSV vide ou invalide');
+        return;
+    }
+    
+    // Parse header
+    const headers = lines[0].split(';').map(h => h.trim());
+    console.log('CSV headers:', headers);
+    
+    const jsonData = [];
+    for (let i = 1; i < lines.length; i++) {
+        const values = lines[i].split(';').map(v => v.trim().replace(/^"|"$/g, ''));
+        const row = {};
+        headers.forEach((h, idx) => {
+            row[h] = values[idx] || '';
+        });
+        jsonData.push(row);
+    }
+    
+    processImportedData(jsonData);
+}
+
+function processImportedData(jsonData) {
+    if (!jsonData || jsonData.length === 0) {
+        alert('Aucune donnée trouvée dans le fichier');
+        return;
+    }
+    
+    const newAssocs = [];
+    let skipped = 0;
+    
+    for (const row of jsonData) {
+        // Try different column names (handle variations)
+        const nom = row['NOM_ASSOCIATION'] || row['Nom'] || row['nom'] || row['Association'] || '';
+        
+        if (!nom || nom.trim() === '') {
+            skipped++;
+            continue;
+        }
+        
+        // Check if already exists
+        const exists = data.associations.some(a => 
+            a.nom.toLowerCase().trim() === nom.toLowerCase().trim()
+        );
+        
+        if (exists) {
+            skipped++;
+            continue;
+        }
+        
+        newAssocs.push({
+            id: generateId(),
+            nom: nom.trim(),
+            sigle: (row['Sigle'] || row['sigle'] || '').toString().trim() || null,
+            reconnaissance: (row['RECONNAISSANCE'] || row['Reconnaissance'] || '').toString().trim(),
+            axes: (row['AXES'] || row['Axes'] || '').toString().trim(),
+            adresse: (row['ADRESSE'] || row['Adresse'] || '').toString().trim(),
+            cp: (row['C.P.'] || row['CP'] || row['Code postal'] || '').toString().trim(),
+            localite: (row['LOCALITE'] || row['Localité'] || row['Localite'] || '').toString().trim(),
+            tel: (row['TEL.'] || row['Tel'] || row['Téléphone'] || '').toString().trim(),
+            fax: (row['FAX'] || row['Fax'] || '').toString().trim(),
+            email: (row['E.MAIL'] || row['Email'] || row['E-mail'] || '').toString().trim(),
+            web: (row['Site Web'] || row['Website'] || row['Site web'] || '').toString().trim(),
+            pilier: null,
+            logo: null,
+            notes: ''
+        });
+    }
+    
+    if (newAssocs.length === 0) {
+        alert(`Aucune nouvelle association à importer (${skipped} déjà présentes ou lignes vides)`);
+        return;
+    }
+    
+    data.associations = [...data.associations, ...newAssocs];
+    saveData();
+    renderAll();
+    showToast(`${newAssocs.length} associations importées` + (skipped > 0 ? ` (${skipped} ignorées)` : ''));
+}
+
+function importJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const imported = JSON.parse(e.target.result);
+            console.log('JSON imported:', imported);
+            
+            if (imported.associations && Array.isArray(imported.associations)) {
+                data = imported;
+                if (!data.gridPositions) data.gridPositions = {};
+                saveData();
+                renderAll();
+                showToast(`${data.associations.length} associations chargées`);
+            } else {
+                alert('Format JSON invalide: le fichier doit contenir un tableau "associations"');
+            }
+        } catch (err) {
+            console.error('JSON parse error:', err);
+            alert('Erreur de parsing JSON: ' + err.message);
+        }
+    };
+    reader.onerror = () => alert('Erreur de lecture du fichier');
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+function exportJSON() {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'repertoire-ep-export.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Export téléchargé');
+}
+
+// ============ TOAST ============
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// ============ CLEAR DATA ============
+function clearAllData() {
+    if (!confirm('Supprimer toutes les données ? Cette action est irréversible.')) return;
+    
+    data = { associations: [], gridPositions: {} };
+    saveData();
+    renderAll();
+    showToast('Données effacées');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KERN_BREACH — Comprendre et agir sur la politique en Belgique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fafafa;
+            --bg-card: #ffffff;
+            --text: #1a1a2e;
+            --text-light: #5a5a6e;
+            --vert: #2d8a4e;
+            --vert-light: #e8f5ec;
+            --vert-bg: #f0faf3;
+            --lilas: #7c5295;
+            --lilas-light: #f3eef7;
+            --border: #e8e8ec;
+            --shadow: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-hover: 0 8px 24px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 18px;
+        }
+
+        /* Navigation simple */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--vert);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--vert);
+            border-radius: 50%;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--vert);
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-large {
+            max-width: 1100px;
+        }
+
+        /* Hero - simple et accueillant */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            padding-top: 6rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--vert-light);
+            color: var(--vert);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+
+        .hero h1 span {
+            color: var(--vert);
+        }
+
+        .hero-text {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 100px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--vert);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #236b3d;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--vert);
+            color: var(--vert);
+        }
+
+        /* Scroll indicator */
+        .scroll-hint {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
+
+        /* Section headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-tag {
+            display: inline-block;
+            background: var(--lilas-light);
+            color: var(--lilas);
+            padding: 0.4rem 1rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Cards visuelles */
+        .visual-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .visual-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .visual-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--vert);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        .card-text {
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Le problème - section visuelle */
+        .problem-section {
+            background: var(--lilas-light);
+            border-radius: 24px;
+            padding: 3rem;
+            margin: 4rem 0;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .problem-visual {
+            text-align: center;
+        }
+
+        .problem-visual svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .problem-text h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--lilas);
+        }
+
+        .problem-text p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        /* Solution steps */
+        .solution-section {
+            background: var(--vert-bg);
+            border-radius: 24px;
+            padding: 3rem;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .step {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .step:hover {
+            border-color: var(--vert);
+            box-shadow: var(--shadow);
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: var(--vert);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        /* Ateliers simplifiés */
+        .atelier-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .atelier-item {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            background: white;
+            padding: 1.25rem 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .atelier-item:hover {
+            border-color: var(--vert);
+            background: var(--vert-light);
+        }
+
+        .atelier-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            background: var(--vert-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .atelier-info {
+            flex: 1;
+        }
+
+        .atelier-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .atelier-info p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .atelier-badge {
+            padding: 0.3rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-open {
+            background: var(--vert-light);
+            color: var(--vert);
+        }
+
+        .badge-soon {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        /* Valeurs */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .value-item {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .value-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .value-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .value-desc {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* FAQ simple */
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .faq-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 1.25rem 1.5rem;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text);
+        }
+
+        .faq-question:hover {
+            background: var(--vert-light);
+        }
+
+        .faq-icon {
+            font-size: 1.5rem;
+            color: var(--vert);
+            transition: transform 0.3s;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer-inner {
+            padding: 0 1.5rem 1.25rem;
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        /* CTA final */
+        .final-cta {
+            background: linear-gradient(135deg, var(--vert) 0%, #3da066 100%);
+            border-radius: 24px;
+            padding: 4rem 3rem;
+            text-align: center;
+            color: white;
+        }
+
+        .final-cta h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .final-cta p {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .final-cta .btn {
+            background: white;
+            color: var(--vert);
+        }
+
+        .final-cta .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--vert);
+        }
+
+        .footer-copy {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .problem-grid { grid-template-columns: 1fr; }
+            .values-grid { grid-template-columns: 1fr; }
+            section { padding: 3rem 1.5rem; }
+            .hero { padding-top: 5rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <span class="logo-dot"></span>
+            KERN_BREACH
+        </div>
+        <ul class="nav-links">
+            <li><a href="#pourquoi">Pourquoi</a></li>
+            <li><a href="#comment">Comment</a></li>
+            <li><a href="#ateliers">Ateliers</a></li>
+            <li><a href="#faq">Questions</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero simple et accueillant -->
+    <section class="hero">
+        <span class="hero-badge">🇧🇪 Initiative citoyenne en Belgique</span>
+        <h1>Comprendre la politique.<br><span>Agir ensemble.</span></h1>
+        <p class="hero-text">
+            Un collectif ouvert qui aide les citoyens à comprendre 
+            comment fonctionne le pouvoir en Belgique — et comment peser dessus.
+        </p>
+        <div class="hero-cta">
+            <a href="#comment" class="btn btn-primary">
+                Découvrir comment ça marche
+            </a>
+            <a href="#ateliers" class="btn btn-secondary">
+                Voir les ateliers gratuits
+            </a>
+        </div>
+        <div class="scroll-hint">
+            <span>↓</span>
+        </div>
+    </section>
+
+    <!-- C'est quoi le problème ? -->
+    <section id="pourquoi" class="section-large">
+        <div class="section-header">
+            <span class="section-tag">Le constat</span>
+            <h2 class="section-title">Pourquoi c'est important ?</h2>
+        </div>
+
+        <div class="visual-cards">
+            <div class="visual-card animate-on-scroll">
+                <span class="card-icon">🏛️</span>
+                <h3 class="card-title">Le système est complexe</h3>
+                <p class="card-text">
+                    Fédéral, régions, communautés, provinces, communes... 
+                    En Belgique, il y a beaucoup de niveaux de pouvoir. 
+                    C'est difficile de s'y retrouver.
+                </p>
+            </div>
+            <div class="visual-card animate-on-scroll">
+                <span class="card-icon">🔒</span>
+                <h3 class="card-title">Les décisions sont opaques</h3>
+                <p class="card-text">
+                    Beaucoup de décisions importantes sont prises 
+                    dans des réunions fermées. Les citoyens ne savent 
+                    pas toujours ce qui se passe ni pourquoi.
+                </p>
+            </div>
+            <div class="visual-card animate-on-scroll">
+                <span class="card-icon">🤷</span>
+                <h3 class="card-title">On ne sait pas comment agir</h3>
+                <p class="card-text">
+                    Pourtant, il existe des outils pour participer : 
+                    pétitions, interpellations, consultations... 
+                    Mais peu de gens les connaissent.
+                </p>
+            </div>
+        </div>
+
+        <div class="problem-section animate-on-scroll">
+            <div class="problem-grid">
+                <div class="problem-visual">
+                    <svg viewBox="0 0 200 200" width="200" height="200">
+                        <circle cx="100" cy="100" r="80" fill="none" stroke="#7c5295" stroke-width="2" opacity="0.3"/>
+                        <circle cx="100" cy="100" r="60" fill="none" stroke="#7c5295" stroke-width="2" opacity="0.5"/>
+                        <circle cx="100" cy="100" r="40" fill="none" stroke="#7c5295" stroke-width="2" opacity="0.7"/>
+                        <circle cx="100" cy="100" r="20" fill="#7c5295"/>
+                        <text x="100" y="105" text-anchor="middle" fill="white" font-size="12" font-weight="bold">KERN</text>
+                        <text x="100" y="165" text-anchor="middle" fill="#7c5295" font-size="10">Gouvernement</text>
+                        <text x="100" y="180" text-anchor="middle" fill="#7c5295" font-size="10">Parlement</text>
+                        <text x="100" y="195" text-anchor="middle" fill="#7c5295" font-size="10">Citoyens</text>
+                    </svg>
+                </div>
+                <div class="problem-text">
+                    <h3>Le "KERN", c'est quoi ?</h3>
+                    <p>
+                        C'est une petite réunion où le Premier ministre 
+                        et quelques ministres importants prennent les grandes décisions.
+                    </p>
+                    <p>
+                        <strong>Le problème :</strong> cette réunion n'existe pas dans la loi. 
+                        Il n'y a pas de compte-rendu public. 
+                        C'est là que beaucoup de choses se décident — mais dans l'ombre.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notre solution -->
+    <section id="comment">
+        <div class="section-header">
+            <span class="section-tag">Notre approche</span>
+            <h2 class="section-title">Comment on fait ?</h2>
+            <p class="section-subtitle">
+                Pas besoin d'être expert. On apprend ensemble, 
+                chacun à son rythme.
+            </p>
+        </div>
+
+        <div class="solution-section">
+            <div class="steps">
+                <div class="step animate-on-scroll">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>On décortique le système</h4>
+                        <p>
+                            Des ateliers gratuits pour comprendre comment fonctionne 
+                            le pouvoir en Belgique. Qui décide quoi ? Où ? Comment ?
+                        </p>
+                    </div>
+                </div>
+                <div class="step animate-on-scroll">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>On découvre les outils existants</h4>
+                        <p>
+                            Pétitions, interpellations citoyennes, consultations publiques... 
+                            Ces outils existent déjà. On vous montre comment les utiliser.
+                        </p>
+                    </div>
+                </div>
+                <div class="step animate-on-scroll">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>On passe à l'action — ensemble</h4>
+                        <p>
+                            Des missions concrètes à faire chez soi ou dans sa commune. 
+                            Petits gestes, grands effets. Et on partage nos expériences.
+                        </p>
+                    </div>
+                </div>
+                <div class="step animate-on-scroll">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>On partage tout en open source</h4>
+                        <p>
+                            Tout ce qu'on apprend, on le met à disposition gratuitement. 
+                            Nos ressources sont libres : copiez, adaptez, diffusez.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ateliers -->
+    <section id="ateliers">
+        <div class="section-header">
+            <span class="section-tag">Se former</span>
+            <h2 class="section-title">Les ateliers</h2>
+            <p class="section-subtitle">
+                Gratuits et à votre rythme. Pas de cours en direct : 
+                vous avancez quand vous voulez.
+            </p>
+        </div>
+
+        <div class="atelier-list">
+            <div class="atelier-item animate-on-scroll">
+                <div class="atelier-icon">🏛️</div>
+                <div class="atelier-info">
+                    <h4>Comprendre le pouvoir en Belgique</h4>
+                    <p>Les bases : qui fait quoi, à quel niveau, avec quel pouvoir.</p>
+                </div>
+                <span class="atelier-badge badge-open">Disponible</span>
+            </div>
+            <div class="atelier-item animate-on-scroll">
+                <div class="atelier-icon">🗳️</div>
+                <div class="atelier-info">
+                    <h4>Participer dans sa commune</h4>
+                    <p>Interpeller le conseil communal, assister aux séances, déposer une pétition locale.</p>
+                </div>
+                <span class="atelier-badge badge-open">Disponible</span>
+            </div>
+            <div class="atelier-item animate-on-scroll">
+                <div class="atelier-icon">📢</div>
+                <div class="atelier-info">
+                    <h4>Se faire entendre</h4>
+                    <p>Techniques pour porter un message, construire une coalition, interpeller les médias.</p>
+                </div>
+                <span class="atelier-badge badge-open">Disponible</span>
+            </div>
+            <div class="atelier-item animate-on-scroll">
+                <div class="atelier-icon">🔍</div>
+                <div class="atelier-info">
+                    <h4>Le KERN et les coulisses du pouvoir</h4>
+                    <p>Comment se prennent vraiment les décisions au sommet de l'État.</p>
+                </div>
+                <span class="atelier-badge badge-soon">Bientôt</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nos valeurs -->
+    <section>
+        <div class="section-header">
+            <span class="section-tag">Ce qu'on défend</span>
+            <h2 class="section-title">Nos principes</h2>
+        </div>
+
+        <div class="values-grid">
+            <div class="value-item animate-on-scroll">
+                <div class="value-icon">🔓</div>
+                <h4 class="value-title">Transparence totale</h4>
+                <p class="value-desc">Nos finances, nos décisions, notre code : tout est public.</p>
+            </div>
+            <div class="value-item animate-on-scroll">
+                <div class="value-icon">⏰</div>
+                <h4 class="value-title">À votre rythme</h4>
+                <p class="value-desc">Pas de pression. Vous participez quand vous pouvez, comme vous pouvez.</p>
+            </div>
+            <div class="value-item animate-on-scroll">
+                <div class="value-icon">🤝</div>
+                <h4 class="value-title">Horizontalité</h4>
+                <p class="value-desc">Pas de chef, pas de hiérarchie. On s'organise ensemble.</p>
+            </div>
+            <div class="value-item animate-on-scroll">
+                <div class="value-icon">🆓</div>
+                <h4 class="value-title">Gratuit et libre</h4>
+                <p class="value-desc">Tout ce qu'on produit est gratuit et réutilisable sans restriction.</p>
+            </div>
+            <div class="value-item animate-on-scroll">
+                <div class="value-icon">🛡️</div>
+                <h4 class="value-title">Respect de la vie privée</h4>
+                <p class="value-desc">On ne collecte pas vos données. On n'utilise pas de tracking.</p>
+            </div>
+            <div class="value-item animate-on-scroll">
+                <div class="value-icon">🌍</div>
+                <h4 class="value-title">Accessible à tous</h4>
+                <p class="value-desc">Pas de jargon. On explique simplement, sans condescendance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+        <div class="section-header">
+            <span class="section-tag">Questions fréquentes</span>
+            <h2 class="section-title">Vos questions</h2>
+        </div>
+
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-question">
+                    C'est gratuit ?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Oui, tout est gratuit. Les ateliers, les ressources, les outils. 
+                        On fonctionne avec des subventions et des dons, jamais avec vos données.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    Je n'y connais rien en politique, c'est pour moi ?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Justement ! On part de zéro. Pas besoin de connaissances préalables. 
+                        Les ateliers sont faits pour les débutants, avec des explications claires.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    C'est un parti politique ?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Non. On n'est pas un parti, on ne présente pas de candidats, 
+                        on ne dit pas pour qui voter. On veut juste que les citoyens 
+                        comprennent mieux le système et sachent comment agir.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    Je dois participer à des réunions en direct ?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Non, tout est asynchrone. Vous lisez, regardez ou écoutez 
+                        quand vous avez le temps. On a aussi un chat pour discuter, 
+                        mais c'est optionnel.
+                    </div>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    Comment je peux aider ?
+                    <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Plein de façons : suivre un atelier, partager nos ressources, 
+                        corriger une erreur, proposer un sujet, traduire un contenu, 
+                        faire une mission citoyenne... Chaque contribution compte.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA final -->
+    <section>
+        <div class="final-cta animate-on-scroll">
+            <h2>Prêt à commencer ?</h2>
+            <p>
+                Rejoignez le collectif. C'est gratuit, sans engagement, 
+                et vous pouvez partir quand vous voulez.
+            </p>
+            <a href="#" class="btn">
+                Rejoindre le collectif →
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">Mastodon</a>
+            <a href="#">GitHub</a>
+            <a href="#">Contact</a>
+            <a href="#">Version avancée du site</a>
+        </div>
+        <p class="footer-copy">
+            Domaine public (CC0) — Copiez, adaptez, diffusez librement<br>
+            Fait avec soin en Belgique 🇧🇪
+        </p>
+    </footer>
+
+    <script>
+        // FAQ toggle
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const item = button.parentElement;
+                item.classList.toggle('open');
+            });
+        });
+
+        // Animate on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for nav
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

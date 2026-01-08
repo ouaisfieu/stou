@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Répertoire Entités Belges — Cartographie des Piliers</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --pilier-socialiste: #e53935;
+            --pilier-chretien: #ff9800;
+            --pilier-liberal: #2196f3;
+            --pilier-ecolo: #4caf50;
+            --pilier-communiste: #9c27b0;
+            --pilier-neutre: #607d8b;
+            --pilier-officiel: #1565c0;
+            --pilier-prive: #6d4c41;
+            --bg-dark: #0a0a0f;
+            --bg-panel: #0f0f18;
+            --bg-card: #14141f;
+            --border: #2a2a3a;
+            --text: #e0e0e0;
+            --text-muted: #888;
+        }
+        
+        html, body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .app {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            height: 100%;
+        }
+        
+        /* SIDEBAR */
+        .sidebar {
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #e53935, #ff9800, #4caf50, #2196f3, #9c27b0);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        
+        .title { font-weight: 700; font-size: 0.9rem; }
+        .subtitle { font-size: 0.6rem; color: var(--text-muted); }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.4rem;
+            margin-top: 0.6rem;
+        }
+        
+        .stat-box {
+            background: var(--bg-card);
+            padding: 0.4rem;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .stat-value { font-size: 1rem; font-weight: 700; color: #6366f1; }
+        .stat-label { font-size: 0.55rem; color: var(--text-muted); }
+        
+        .action-row {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.5rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 0.45rem 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            color: var(--text);
+            font-size: 0.65rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.2rem;
+        }
+        
+        .btn:hover { background: var(--border); }
+        .btn.primary { background: #6366f1; border-color: #6366f1; }
+        .btn.danger { color: #f87171; }
+        .btn.success { background: #4caf50; border-color: #4caf50; }
+        
+        /* Filters */
+        .filter-section {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        
+        .section-title {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+        }
+        
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.4rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        
+        .filter-item:hover { background: var(--bg-card); }
+        .filter-item.active { background: var(--bg-card); font-weight: 600; }
+        
+        .filter-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+        
+        .filter-count {
+            margin-left: auto;
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            background: var(--bg-dark);
+            padding: 1px 4px;
+            border-radius: 6px;
+        }
+        
+        /* Search */
+        .search-section {
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.4rem 0.6rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            color: var(--text);
+            font-size: 0.75rem;
+        }
+        
+        /* Entity list */
+        .entity-section {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .entity-header {
+            padding: 0.4rem 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+        }
+        
+        .entity-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 0.5rem 0.5rem;
+        }
+        
+        .entity-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 5px;
+            padding: 0.4rem;
+            margin-bottom: 3px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.65rem;
+            transition: all 0.15s;
+        }
+        
+        .entity-card:hover { border-color: #6366f1; }
+        .entity-card.dragging { opacity: 0.4; cursor: grabbing; }
+        
+        .entity-card.pilier-socialiste { border-left: 3px solid var(--pilier-socialiste); }
+        .entity-card.pilier-chretien { border-left: 3px solid var(--pilier-chretien); }
+        .entity-card.pilier-liberal { border-left: 3px solid var(--pilier-liberal); }
+        .entity-card.pilier-ecolo { border-left: 3px solid var(--pilier-ecolo); }
+        .entity-card.pilier-communiste { border-left: 3px solid var(--pilier-communiste); }
+        .entity-card.pilier-neutre { border-left: 3px solid var(--pilier-neutre); }
+        .entity-card.pilier-officiel { border-left: 3px solid var(--pilier-officiel); }
+        .entity-card.pilier-prive { border-left: 3px solid var(--pilier-prive); }
+        
+        .entity-logo {
+            width: 28px;
+            height: 28px;
+            background: var(--border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .entity-logo img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .entity-info { flex: 1; min-width: 0; }
+        .entity-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .entity-meta { font-size: 0.55rem; color: var(--text-muted); }
+        
+        .entity-case {
+            font-size: 0.5rem;
+            background: #6366f1;
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        
+        /* MAIN GRID */
+        .main-area {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .grid-header {
+            padding: 0.5rem 1rem;
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .grid-title { font-weight: 600; font-size: 0.8rem; }
+        .grid-subtitle { font-size: 0.6rem; color: var(--text-muted); }
+        
+        .grid-controls {
+            display: flex;
+            gap: 0.4rem;
+            margin-left: auto;
+        }
+        
+        .grid-controls select {
+            padding: 0.3rem 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            font-size: 0.65rem;
+        }
+        
+        .grid-container {
+            flex: 1;
+            overflow: auto;
+            padding: 1rem;
+            background: var(--bg-dark);
+        }
+        
+        .grid {
+            display: grid;
+            gap: 3px;
+            width: fit-content;
+            margin: 0 auto;
+        }
+        
+        .grid-cell {
+            width: 70px;
+            height: 70px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.12s ease;
+            overflow: hidden;
+        }
+        
+        .grid-cell:hover { transform: scale(1.04); z-index: 10; border-color: #6366f1; }
+        .grid-cell.empty { opacity: 0.25; }
+        .grid-cell.empty:hover { opacity: 0.6; }
+        .grid-cell.drag-over { border-color: #6366f1; background: rgba(99, 102, 241, 0.2); transform: scale(1.05); }
+        .grid-cell.occupied { cursor: grab; }
+        .grid-cell.occupied.dragging { opacity: 0.4; cursor: grabbing; }
+        
+        .grid-cell.pilier-socialiste { border-color: var(--pilier-socialiste); }
+        .grid-cell.pilier-chretien { border-color: var(--pilier-chretien); }
+        .grid-cell.pilier-liberal { border-color: var(--pilier-liberal); }
+        .grid-cell.pilier-ecolo { border-color: var(--pilier-ecolo); }
+        .grid-cell.pilier-communiste { border-color: var(--pilier-communiste); }
+        .grid-cell.pilier-neutre { border-color: var(--pilier-neutre); }
+        .grid-cell.pilier-officiel { border-color: var(--pilier-officiel); }
+        .grid-cell.pilier-prive { border-color: var(--pilier-prive); }
+        
+        .cell-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+            overflow: hidden;
+        }
+        
+        .cell-logo img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .cell-name {
+            font-size: 0.45rem;
+            text-align: center;
+            line-height: 1.1;
+            max-height: 2em;
+            overflow: hidden;
+            padding: 0 2px;
+        }
+        
+        .cell-number {
+            position: absolute;
+            top: 2px;
+            left: 3px;
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        
+        /* MODALS */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .modal-overlay.open { display: flex; }
+        
+        .modal {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .modal-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .modal-logo img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .modal-title { flex: 1; }
+        .modal-name { font-size: 0.95rem; font-weight: 600; }
+        .modal-meta { font-size: 0.7rem; color: var(--text-muted); }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 1rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .field-group { margin-bottom: 0.75rem; }
+        
+        .field-label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+            display: block;
+        }
+        
+        .field-input, .field-select, .field-textarea {
+            width: 100%;
+            padding: 0.45rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            font-size: 0.75rem;
+        }
+        
+        .field-textarea { resize: vertical; min-height: 50px; }
+        
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+        
+        .field-row-3 {
+            display: grid;
+            grid-template-columns: 80px 1fr 1fr;
+            gap: 0.5rem;
+        }
+        
+        .selector-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+        
+        .selector-btn {
+            padding: 0.3rem 0.5rem;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            background: var(--bg-card);
+            color: var(--text);
+            font-size: 0.6rem;
+            cursor: pointer;
+        }
+        
+        .selector-btn:hover { border-color: var(--text-muted); }
+        .selector-btn.selected { font-weight: 600; }
+        
+        .selector-btn.socialiste.selected { border-color: var(--pilier-socialiste); background: rgba(229, 57, 53, 0.15); }
+        .selector-btn.chretien.selected { border-color: var(--pilier-chretien); background: rgba(255, 152, 0, 0.15); }
+        .selector-btn.liberal.selected { border-color: var(--pilier-liberal); background: rgba(33, 150, 243, 0.15); }
+        .selector-btn.ecolo.selected { border-color: var(--pilier-ecolo); background: rgba(76, 175, 80, 0.15); }
+        .selector-btn.communiste.selected { border-color: var(--pilier-communiste); background: rgba(156, 39, 176, 0.15); }
+        .selector-btn.neutre.selected { border-color: var(--pilier-neutre); background: rgba(96, 125, 139, 0.15); }
+        .selector-btn.officiel.selected { border-color: var(--pilier-officiel); background: rgba(21, 101, 192, 0.15); }
+        .selector-btn.prive.selected { border-color: var(--pilier-prive); background: rgba(109, 76, 65, 0.15); }
+        
+        .modal-footer {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.4rem;
+            justify-content: flex-end;
+        }
+        
+        .modal-footer .btn { flex: none; padding: 0.45rem 0.9rem; font-size: 0.7rem; }
+        
+        /* Case selector modal */
+        .case-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .case-input-group input {
+            width: 80px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .case-input-group .btn {
+            flex: none;
+            padding: 0.45rem 0.6rem;
+        }
+        
+        /* Picker modal */
+        .picker-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .picker-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 3px;
+        }
+        
+        .picker-item:hover { background: var(--bg-card); }
+        
+        .picker-search {
+            margin-bottom: 0.75rem;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: #4caf50;
+            color: white;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            z-index: 2000;
+            display: none;
+        }
+        
+        .toast.show { display: block; animation: fadeInOut 3s ease; }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateY(20px); }
+            10%, 90% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+        }
+        
+        .empty-state a { color: #6366f1; }
+        
+        input[type="file"] { display: none; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-row">
+                    <div class="logo">🏛️</div>
+                    <div>
+                        <div class="title">Répertoire Entités</div>
+                        <div class="subtitle">Belgique — Piliers & Formes juridiques</div>
+                    </div>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <div class="stat-value" id="statTotal">0</div>
+                        <div class="stat-label">TOTAL</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="statPlaced">0</div>
+                        <div class="stat-label">PLACÉES</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="statPending">0</div>
+                        <div class="stat-label">À PLACER</div>
+                    </div>
+                </div>
+                
+                <div class="action-row">
+                    <button class="btn" onclick="document.getElementById('fileInput').click()">📥 Import</button>
+                    <button class="btn" onclick="exportJSON()">📤 Export</button>
+                    <button class="btn primary" onclick="openAddModal()">+ Nouveau</button>
+                </div>
+                <div class="action-row">
+                    <button class="btn" onclick="showSourcesModal()">📚 Sources</button>
+                    <button class="btn danger" onclick="clearAllData()">🗑️ Reset</button>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="section-title">Filtrer par pilier</div>
+                <div class="filter-item active" data-pilier="" onclick="setFilter(null)">
+                    <div class="filter-color" style="background: linear-gradient(135deg, #e53935, #2196f3, #4caf50);"></div>
+                    <span>Tous</span>
+                    <span class="filter-count" id="countAll">0</span>
+                </div>
+                <div class="filter-item" data-pilier="socialiste" onclick="setFilter('socialiste')">
+                    <div class="filter-color" style="background: var(--pilier-socialiste);"></div>
+                    <span>Socialiste</span>
+                    <span class="filter-count" id="countSocialiste">0</span>
+                </div>
+                <div class="filter-item" data-pilier="chretien" onclick="setFilter('chretien')">
+                    <div class="filter-color" style="background: var(--pilier-chretien);"></div>
+                    <span>Chrétien</span>
+                    <span class="filter-count" id="countChretien">0</span>
+                </div>
+                <div class="filter-item" data-pilier="liberal" onclick="setFilter('liberal')">
+                    <div class="filter-color" style="background: var(--pilier-liberal);"></div>
+                    <span>Libéral</span>
+                    <span class="filter-count" id="countLiberal">0</span>
+                </div>
+                <div class="filter-item" data-pilier="ecolo" onclick="setFilter('ecolo')">
+                    <div class="filter-color" style="background: var(--pilier-ecolo);"></div>
+                    <span>Écologiste</span>
+                    <span class="filter-count" id="countEcolo">0</span>
+                </div>
+                <div class="filter-item" data-pilier="communiste" onclick="setFilter('communiste')">
+                    <div class="filter-color" style="background: var(--pilier-communiste);"></div>
+                    <span>Communiste</span>
+                    <span class="filter-count" id="countCommuniste">0</span>
+                </div>
+                <div class="filter-item" data-pilier="officiel" onclick="setFilter('officiel')">
+                    <div class="filter-color" style="background: var(--pilier-officiel);"></div>
+                    <span>Officiel</span>
+                    <span class="filter-count" id="countOfficiel">0</span>
+                </div>
+                <div class="filter-item" data-pilier="prive" onclick="setFilter('prive')">
+                    <div class="filter-color" style="background: var(--pilier-prive);"></div>
+                    <span>Privé</span>
+                    <span class="filter-count" id="countPrive">0</span>
+                </div>
+                <div class="filter-item" data-pilier="neutre" onclick="setFilter('neutre')">
+                    <div class="filter-color" style="background: var(--pilier-neutre);"></div>
+                    <span>Neutre</span>
+                    <span class="filter-count" id="countNeutre">0</span>
+                </div>
+            </div>
+            
+            <div class="search-section">
+                <input type="text" class="search-input" placeholder="🔍 Rechercher..." id="searchInput" oninput="renderList()">
+            </div>
+            
+            <div class="entity-section">
+                <div class="entity-header">
+                    <span>Liste des entités</span>
+                    <span id="listCount">0</span>
+                </div>
+                <div class="entity-list" id="entityList"></div>
+            </div>
+        </aside>
+        
+        <!-- MAIN -->
+        <main class="main-area">
+            <div class="grid-header">
+                <div>
+                    <div class="grid-title">Damier des entités</div>
+                    <div class="grid-subtitle">Glissez depuis la liste ou le damier • Cliquez sur une case pour éditer/placer</div>
+                </div>
+                <div class="grid-controls">
+                    <select id="gridCols" onchange="renderGrid()">
+                        <option value="15">15 colonnes</option>
+                        <option value="20" selected>20 colonnes</option>
+                        <option value="25">25 colonnes</option>
+                    </select>
+                    <select id="gridSize" onchange="renderGrid()">
+                        <option value="500" selected>500 cases</option>
+                        <option value="300">300 cases</option>
+                        <option value="200">200 cases</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="grid-container">
+                <div class="grid" id="grid"></div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- MODAL EDIT ENTITY -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-logo" id="modalLogo" onclick="document.getElementById('logoInput').click()">🏛️</div>
+                <div class="modal-title">
+                    <div class="modal-name" id="modalName">Entité</div>
+                    <div class="modal-meta" id="modalMeta"></div>
+                </div>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- CASE NUMBER -->
+                <div class="field-group">
+                    <label class="field-label">📍 Position dans le damier</label>
+                    <div class="case-input-group">
+                        <input type="number" class="field-input" id="fieldCase" min="1" max="500" placeholder="—">
+                        <button class="btn success" onclick="placeAtCase()">Placer</button>
+                        <button class="btn" onclick="removeFromGrid()">Retirer</button>
+                    </div>
+                </div>
+                
+                <!-- PILIER -->
+                <div class="field-group">
+                    <label class="field-label">Pilier</label>
+                    <div class="selector-group" id="pilierSelector">
+                        <button type="button" class="selector-btn socialiste" onclick="selectPilier('socialiste')">🔴 Socialiste</button>
+                        <button type="button" class="selector-btn chretien" onclick="selectPilier('chretien')">🟠 Chrétien</button>
+                        <button type="button" class="selector-btn liberal" onclick="selectPilier('liberal')">🔵 Libéral</button>
+                        <button type="button" class="selector-btn ecolo" onclick="selectPilier('ecolo')">🟢 Écolo</button>
+                        <button type="button" class="selector-btn communiste" onclick="selectPilier('communiste')">🟣 Communiste</button>
+                        <button type="button" class="selector-btn officiel" onclick="selectPilier('officiel')">🏛️ Officiel</button>
+                        <button type="button" class="selector-btn prive" onclick="selectPilier('prive')">🏢 Privé</button>
+                        <button type="button" class="selector-btn neutre" onclick="selectPilier('neutre')">⚪ Neutre</button>
+                    </div>
+                </div>
+                
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label">Nom</label>
+                        <input type="text" class="field-input" id="fieldNom">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Sigle</label>
+                        <input type="text" class="field-input" id="fieldSigle">
+                    </div>
+                </div>
+                
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label">N° BCE</label>
+                        <input type="text" class="field-input" id="fieldBCE" placeholder="0XXX.XXX.XXX">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Forme juridique</label>
+                        <select class="field-select" id="fieldForme">
+                            <option value="">—</option>
+                            <option value="ASBL">ASBL</option>
+                            <option value="AISBL">AISBL</option>
+                            <option value="Fondation">Fondation</option>
+                            <option value="SA">SA</option>
+                            <option value="SRL">SRL</option>
+                            <option value="SC">SC (Coop)</option>
+                            <option value="Public">Organisme public</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="field-group">
+                    <label class="field-label">Adresse</label>
+                    <input type="text" class="field-input" id="fieldAdresse">
+                </div>
+                
+                <div class="field-row-3">
+                    <div class="field-group">
+                        <label class="field-label">CP</label>
+                        <input type="text" class="field-input" id="fieldCP">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Localité</label>
+                        <input type="text" class="field-input" id="fieldLocalite">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Téléphone</label>
+                        <input type="text" class="field-input" id="fieldTel">
+                    </div>
+                </div>
+                
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label">Email</label>
+                        <input type="email" class="field-input" id="fieldEmail">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Site web</label>
+                        <input type="url" class="field-input" id="fieldWeb">
+                    </div>
+                </div>
+                
+                <div class="field-group">
+                    <label class="field-label">Notes</label>
+                    <textarea class="field-textarea" id="fieldNotes"></textarea>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn danger" onclick="deleteEntity()" style="margin-right:auto;">🗑️ Supprimer définitivement</button>
+                <button class="btn" onclick="closeEditModal()">Annuler</button>
+                <button class="btn primary" onclick="saveEntity()">💾 Enregistrer</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL PICKER (for empty cell click) -->
+    <div class="modal-overlay" id="pickerModal">
+        <div class="modal" style="max-width:450px;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="modal-name">Placer une entité</div>
+                    <div class="modal-meta">Case n°<span id="pickerCaseNum">0</span></div>
+                </div>
+                <button class="modal-close" onclick="closePickerModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="picker-search">
+                    <input type="text" class="search-input" id="pickerSearch" placeholder="🔍 Rechercher..." oninput="renderPickerList()">
+                </div>
+                <div class="picker-list" id="pickerList"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closePickerModal()">Annuler</button>
+                <button class="btn primary" onclick="openAddModalForCase()">+ Créer nouvelle</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- MODAL SOURCES -->
+    <div class="modal-overlay" id="sourcesModal">
+        <div class="modal" style="max-width:500px;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="modal-name">📚 Sources Open Data</div>
+                </div>
+                <button class="modal-close" onclick="closeSourcesModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="field-group">
+                    <label class="field-label">🏛️ BCE / KBO Open Data</label>
+                    <p style="font-size:0.7rem;margin-bottom:0.4rem;">1.5M+ entités belges (ASBL, SA, SRL...)</p>
+                    <a href="https://kbopub.economie.fgov.be/kbo-open-data/login?lang=fr" target="_blank" class="btn" style="display:inline-flex;width:auto;">Accéder</a>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">📖 Éducation Permanente FWB</label>
+                    <p style="font-size:0.7rem;margin-bottom:0.4rem;">274 associations reconnues</p>
+                    <a href="https://educationpermanente.cfwb.be/fileadmin/sites/edu_perm/uploads/Document/Listing_associations/RepertoirecoordonneesAEP_SITE_21-10-25.xlsx" target="_blank" class="btn" style="display:inline-flex;width:auto;">Télécharger XLSX</a>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">🔍 Recherche BCE individuelle</label>
+                    <a href="https://kbopub.economie.fgov.be/kbopub/zoeknaamfonetischform.html?lang=fr" target="_blank" class="btn" style="display:inline-flex;width:auto;">Public Search</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+    <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json" onchange="importFile(event)">
+    <input type="file" id="logoInput" accept="image/*" onchange="handleLogoUpload(event)">
+
+<script>
+// ============ STATE ============
+const STORAGE_KEY = 'repertoire_entites_v2';
+let data = { entities: [], gridPositions: {} }; // gridPositions: { entityId: caseIndex }
+let currentEntityId = null;
+let currentPilier = null;
+let currentFilter = null;
+let draggedEntityId = null;
+let pickerCaseIndex = null;
+
+// ============ INIT ============
+document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    renderAll();
+});
+
+function loadData() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            data = JSON.parse(saved);
+            if (!data.entities) data.entities = [];
+            if (!data.gridPositions) data.gridPositions = {};
+        }
+    } catch(e) { console.error(e); }
+}
+
+function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function generateId() {
+    return 'e' + Date.now() + Math.random().toString(36).substr(2, 5);
+}
+
+// ============ RENDER ============
+function renderAll() {
+    renderGrid();
+    renderList();
+    updateStats();
+    updateFilterUI();
+}
+
+function updateStats() {
+    const total = data.entities.length;
+    const placed = Object.keys(data.gridPositions).length;
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statPlaced').textContent = placed;
+    document.getElementById('statPending').textContent = total - placed;
+    
+    // Count by pilier
+    const counts = {};
+    data.entities.forEach(e => {
+        if (e.pilier) counts[e.pilier] = (counts[e.pilier] || 0) + 1;
+    });
+    
+    document.getElementById('countAll').textContent = total;
+    ['socialiste','chretien','liberal','ecolo','communiste','officiel','prive','neutre'].forEach(p => {
+        const el = document.getElementById('count' + p.charAt(0).toUpperCase() + p.slice(1));
+        if (el) el.textContent = counts[p] || 0;
+    });
+}
+
+function updateFilterUI() {
+    document.querySelectorAll('.filter-item').forEach(el => {
+        const p = el.dataset.pilier;
+        el.classList.toggle('active', currentFilter === p || (currentFilter === null && p === ''));
+    });
+}
+
+function getEntityCase(entityId) {
+    return data.gridPositions[entityId];
+}
+
+function getCaseEntity(caseIndex) {
+    for (const [eid, idx] of Object.entries(data.gridPositions)) {
+        if (idx === caseIndex) return eid;
+    }
+    return null;
+}
+
+function renderGrid() {
+    const size = parseInt(document.getElementById('gridSize').value);
+    const cols = parseInt(document.getElementById('gridCols').value);
+    const grid = document.getElementById('grid');
+    grid.style.gridTemplateColumns = `repeat(${cols}, 70px)`;
+    
+    let html = '';
+    for (let i = 0; i < size; i++) {
+        const entityId = getCaseEntity(i);
+        const entity = entityId ? data.entities.find(e => e.id === entityId) : null;
+        
+        // Apply filter
+        if (currentFilter && entity && entity.pilier !== currentFilter) {
+            html += renderEmptyCell(i);
+            continue;
+        }
+        
+        if (entity) {
+            html += renderOccupiedCell(i, entity);
+        } else {
+            html += renderEmptyCell(i);
+        }
+    }
+    grid.innerHTML = html;
+}
+
+function renderEmptyCell(index) {
+    return `<div class="grid-cell empty" data-index="${index}" 
+                 onclick="onCellClick(${index})"
+                 ondragover="onDragOver(event)" 
+                 ondrop="onDrop(event, ${index})" 
+                 ondragleave="onDragLeave(event)">
+        <span class="cell-number">${index + 1}</span>
+    </div>`;
+}
+
+function renderOccupiedCell(index, entity) {
+    const pc = entity.pilier ? `pilier-${entity.pilier}` : '';
+    const logo = entity.logo ? `<img src="${entity.logo}">` : (entity.sigle || entity.nom.substring(0, 2));
+    
+    return `<div class="grid-cell occupied ${pc}" data-index="${index}" data-entity="${entity.id}"
+                 draggable="true"
+                 onclick="openEditModal('${entity.id}')"
+                 ondragstart="onDragStartCell(event, '${entity.id}')"
+                 ondragend="onDragEnd(event)"
+                 ondragover="onDragOver(event)" 
+                 ondrop="onDrop(event, ${index})" 
+                 ondragleave="onDragLeave(event)">
+        <span class="cell-number">${index + 1}</span>
+        <div class="cell-logo">${logo}</div>
+        <div class="cell-name">${entity.sigle || entity.nom.substring(0, 10)}</div>
+    </div>`;
+}
+
+function renderList() {
+    const container = document.getElementById('entityList');
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    
+    let list = [...data.entities];
+    
+    // Filter by search
+    if (search) {
+        list = list.filter(e => 
+            e.nom.toLowerCase().includes(search) || 
+            (e.sigle && e.sigle.toLowerCase().includes(search))
+        );
+    }
+    
+    // Filter by pilier
+    if (currentFilter) {
+        list = list.filter(e => e.pilier === currentFilter);
+    }
+    
+    // Sort: non-placed first, then by name
+    list.sort((a, b) => {
+        const aPlaced = getEntityCase(a.id) !== undefined;
+        const bPlaced = getEntityCase(b.id) !== undefined;
+        if (aPlaced !== bPlaced) return aPlaced ? 1 : -1;
+        return a.nom.localeCompare(b.nom);
+    });
+    
+    document.getElementById('listCount').textContent = list.length;
+    
+    if (list.length === 0) {
+        container.innerHTML = `<div class="empty-state">
+            ${data.entities.length === 0 
+                ? `Importez un fichier pour commencer<br><br><a href="https://educationpermanente.cfwb.be/fileadmin/sites/edu_perm/uploads/Document/Listing_associations/RepertoirecoordonneesAEP_SITE_21-10-25.xlsx" target="_blank">📥 Fichier EP officiel</a>`
+                : 'Aucun résultat'}
+        </div>`;
+        return;
+    }
+    
+    container.innerHTML = list.slice(0, 300).map(e => {
+        const pc = e.pilier ? `pilier-${e.pilier}` : '';
+        const caseNum = getEntityCase(e.id);
+        const logo = e.logo ? `<img src="${e.logo}">` : (e.sigle ? e.sigle.substring(0, 2) : '🏛️');
+        
+        return `<div class="entity-card ${pc}" draggable="true"
+                     data-entity="${e.id}"
+                     onclick="openEditModal('${e.id}')"
+                     ondragstart="onDragStartList(event, '${e.id}')"
+                     ondragend="onDragEnd(event)">
+            <div class="entity-logo">${logo}</div>
+            <div class="entity-info">
+                <div class="entity-name">${e.nom}</div>
+                <div class="entity-meta">${[e.sigle, e.forme, e.localite].filter(Boolean).join(' • ')}</div>
+            </div>
+            ${caseNum !== undefined ? `<span class="entity-case">#${caseNum + 1}</span>` : ''}
+        </div>`;
+    }).join('');
+}
+
+// ============ DRAG & DROP ============
+function onDragStartList(event, entityId) {
+    draggedEntityId = entityId;
+    event.target.classList.add('dragging');
+    event.dataTransfer.effectAllowed = 'move';
+}
+
+function onDragStartCell(event, entityId) {
+    draggedEntityId = entityId;
+    event.target.classList.add('dragging');
+    event.dataTransfer.effectAllowed = 'move';
+}
+
+function onDragEnd(event) {
+    event.target.classList.remove('dragging');
+    draggedEntityId = null;
+    document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+}
+
+function onDragOver(event) {
+    event.preventDefault();
+    event.currentTarget.classList.add('drag-over');
+}
+
+function onDragLeave(event) {
+    event.currentTarget.classList.remove('drag-over');
+}
+
+function onDrop(event, targetIndex) {
+    event.preventDefault();
+    event.currentTarget.classList.remove('drag-over');
+    
+    if (!draggedEntityId) return;
+    
+    // Remove entity currently in target cell (if any)
+    const existingEntityId = getCaseEntity(targetIndex);
+    if (existingEntityId && existingEntityId !== draggedEntityId) {
+        delete data.gridPositions[existingEntityId];
+    }
+    
+    // Remove dragged entity from old position
+    delete data.gridPositions[draggedEntityId];
+    
+    // Place in new position
+    data.gridPositions[draggedEntityId] = targetIndex;
+    
+    saveData();
+    renderAll();
+    showToast('Entité placée en case ' + (targetIndex + 1));
+}
+
+// ============ CELL CLICK ============
+function onCellClick(index) {
+    const entityId = getCaseEntity(index);
+    if (entityId) {
+        openEditModal(entityId);
+    } else {
+        openPickerModal(index);
+    }
+}
+
+// ============ FILTER ============
+function setFilter(pilier) {
+    currentFilter = pilier;
+    renderAll();
+}
+
+// ============ EDIT MODAL ============
+function openEditModal(entityId) {
+    currentEntityId = entityId;
+    const e = data.entities.find(x => x.id === entityId);
+    if (!e) return;
+    
+    document.getElementById('modalName').textContent = e.nom;
+    document.getElementById('modalMeta').textContent = [e.sigle, e.forme, e.localite].filter(Boolean).join(' • ');
+    
+    const logoEl = document.getElementById('modalLogo');
+    logoEl.innerHTML = e.logo ? `<img src="${e.logo}">` : (e.sigle || '🏛️');
+    
+    // Case number
+    const caseNum = getEntityCase(entityId);
+    document.getElementById('fieldCase').value = caseNum !== undefined ? caseNum + 1 : '';
+    
+    // Fields
+    document.getElementById('fieldNom').value = e.nom || '';
+    document.getElementById('fieldSigle').value = e.sigle || '';
+    document.getElementById('fieldBCE').value = e.bce || '';
+    document.getElementById('fieldForme').value = e.forme || '';
+    document.getElementById('fieldAdresse').value = e.adresse || '';
+    document.getElementById('fieldCP').value = e.cp || '';
+    document.getElementById('fieldLocalite').value = e.localite || '';
+    document.getElementById('fieldTel').value = e.tel || '';
+    document.getElementById('fieldEmail').value = e.email || '';
+    document.getElementById('fieldWeb').value = e.web || '';
+    document.getElementById('fieldNotes').value = e.notes || '';
+    
+    currentPilier = e.pilier || null;
+    updatePilierButtons();
+    
+    document.getElementById('editModal').classList.add('open');
+}
+
+function openAddModal() {
+    currentEntityId = null;
+    currentPilier = null;
+    
+    document.getElementById('modalName').textContent = 'Nouvelle entité';
+    document.getElementById('modalMeta').textContent = '';
+    document.getElementById('modalLogo').textContent = '🏛️';
+    document.getElementById('fieldCase').value = '';
+    
+    ['Nom','Sigle','BCE','Adresse','CP','Localite','Tel','Email','Web','Notes'].forEach(f => {
+        document.getElementById('field' + f).value = '';
+    });
+    document.getElementById('fieldForme').value = '';
+    
+    updatePilierButtons();
+    document.getElementById('editModal').classList.add('open');
+}
+
+function openAddModalForCase() {
+    closePickerModal();
+    openAddModal();
+    if (pickerCaseIndex !== null) {
+        document.getElementById('fieldCase').value = pickerCaseIndex + 1;
+    }
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').classList.remove('open');
+    currentEntityId = null;
+    currentPilier = null;
+}
+
+function selectPilier(p) {
+    currentPilier = currentPilier === p ? null : p;
+    updatePilierButtons();
+}
+
+function updatePilierButtons() {
+    document.querySelectorAll('#pilierSelector .selector-btn').forEach(btn => {
+        const cls = [...btn.classList].find(c => ['socialiste','chretien','liberal','ecolo','communiste','officiel','prive','neutre'].includes(c));
+        btn.classList.toggle('selected', cls === currentPilier);
+    });
+}
+
+function placeAtCase() {
+    if (!currentEntityId) {
+        showToast('Enregistrez d\'abord l\'entité');
+        return;
+    }
+    
+    const caseInput = document.getElementById('fieldCase').value;
+    const caseNum = parseInt(caseInput);
+    const maxSize = parseInt(document.getElementById('gridSize').value);
+    
+    if (!caseNum || caseNum < 1 || caseNum > maxSize) {
+        showToast('Numéro de case invalide (1-' + maxSize + ')');
+        return;
+    }
+    
+    const targetIndex = caseNum - 1;
+    
+    // Remove existing entity from target
+    const existingId = getCaseEntity(targetIndex);
+    if (existingId && existingId !== currentEntityId) {
+        delete data.gridPositions[existingId];
+    }
+    
+    // Remove current from old position
+    delete data.gridPositions[currentEntityId];
+    
+    // Place
+    data.gridPositions[currentEntityId] = targetIndex;
+    
+    saveData();
+    renderAll();
+    showToast('Placé en case ' + caseNum);
+}
+
+function removeFromGrid() {
+    if (!currentEntityId) return;
+    
+    const caseNum = getEntityCase(currentEntityId);
+    if (caseNum === undefined) {
+        showToast('Entité pas dans le damier');
+        return;
+    }
+    
+    delete data.gridPositions[currentEntityId];
+    document.getElementById('fieldCase').value = '';
+    
+    saveData();
+    renderAll();
+    showToast('Retiré du damier (entité conservée)');
+}
+
+function saveEntity() {
+    const nom = document.getElementById('fieldNom').value.trim();
+    if (!nom) {
+        alert('Le nom est requis');
+        return;
+    }
+    
+    const entityData = {
+        nom,
+        sigle: document.getElementById('fieldSigle').value.trim() || null,
+        bce: document.getElementById('fieldBCE').value.trim() || null,
+        forme: document.getElementById('fieldForme').value || null,
+        adresse: document.getElementById('fieldAdresse').value.trim() || null,
+        cp: document.getElementById('fieldCP').value.trim() || null,
+        localite: document.getElementById('fieldLocalite').value.trim() || null,
+        tel: document.getElementById('fieldTel').value.trim() || null,
+        email: document.getElementById('fieldEmail').value.trim() || null,
+        web: document.getElementById('fieldWeb').value.trim() || null,
+        notes: document.getElementById('fieldNotes').value.trim() || null,
+        pilier: currentPilier
+    };
+    
+    if (currentEntityId) {
+        // Update
+        const idx = data.entities.findIndex(e => e.id === currentEntityId);
+        if (idx !== -1) {
+            data.entities[idx] = { ...data.entities[idx], ...entityData };
+        }
+    } else {
+        // Create
+        entityData.id = generateId();
+        data.entities.push(entityData);
+        currentEntityId = entityData.id;
+        
+        // Auto-place if case specified
+        const caseInput = document.getElementById('fieldCase').value;
+        if (caseInput) {
+            const caseNum = parseInt(caseInput);
+            if (caseNum >= 1 && caseNum <= 500) {
+                const existingId = getCaseEntity(caseNum - 1);
+                if (existingId) delete data.gridPositions[existingId];
+                data.gridPositions[currentEntityId] = caseNum - 1;
+            }
+        }
+    }
+    
+    saveData();
+    closeEditModal();
+    renderAll();
+    showToast('Enregistré');
+}
+
+function deleteEntity() {
+    if (!currentEntityId) return;
+    if (!confirm('Supprimer DÉFINITIVEMENT cette entité ?\n\nPour juste la retirer du damier, utilisez "Retirer".')) return;
+    
+    data.entities = data.entities.filter(e => e.id !== currentEntityId);
+    delete data.gridPositions[currentEntityId];
+    
+    saveData();
+    closeEditModal();
+    renderAll();
+    showToast('Entité supprimée');
+}
+
+function handleLogoUpload(event) {
+    const file = event.target.files[0];
+    if (!file || !currentEntityId) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const ent = data.entities.find(x => x.id === currentEntityId);
+        if (ent) {
+            ent.logo = e.target.result;
+            document.getElementById('modalLogo').innerHTML = `<img src="${e.target.result}">`;
+            saveData();
+            renderAll();
+        }
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+}
+
+// ============ PICKER MODAL ============
+function openPickerModal(caseIndex) {
+    pickerCaseIndex = caseIndex;
+    document.getElementById('pickerCaseNum').textContent = caseIndex + 1;
+    document.getElementById('pickerSearch').value = '';
+    renderPickerList();
+    document.getElementById('pickerModal').classList.add('open');
+}
+
+function closePickerModal() {
+    document.getElementById('pickerModal').classList.remove('open');
+    pickerCaseIndex = null;
+}
+
+function renderPickerList() {
+    const container = document.getElementById('pickerList');
+    const search = document.getElementById('pickerSearch').value.toLowerCase();
+    
+    // Show only unplaced entities
+    let list = data.entities.filter(e => getEntityCase(e.id) === undefined);
+    
+    if (search) {
+        list = list.filter(e => 
+            e.nom.toLowerCase().includes(search) || 
+            (e.sigle && e.sigle.toLowerCase().includes(search))
+        );
+    }
+    
+    list.sort((a, b) => a.nom.localeCompare(b.nom));
+    
+    if (list.length === 0) {
+        container.innerHTML = `<div class="empty-state">Aucune entité disponible</div>`;
+        return;
+    }
+    
+    container.innerHTML = list.slice(0, 100).map(e => {
+        const logo = e.logo ? `<img src="${e.logo}" style="width:24px;height:24px;border-radius:3px;">` : '🏛️';
+        return `<div class="picker-item" onclick="pickEntity('${e.id}')">
+            <span>${logo}</span>
+            <span style="flex:1;">${e.nom}</span>
+            ${e.sigle ? `<span style="color:var(--text-muted);font-size:0.65rem;">${e.sigle}</span>` : ''}
+        </div>`;
+    }).join('');
+}
+
+function pickEntity(entityId) {
+    if (pickerCaseIndex === null) return;
+    
+    // Remove existing from target
+    const existingId = getCaseEntity(pickerCaseIndex);
+    if (existingId) delete data.gridPositions[existingId];
+    
+    // Remove picked from old position
+    delete data.gridPositions[entityId];
+    
+    // Place
+    data.gridPositions[entityId] = pickerCaseIndex;
+    
+    saveData();
+    closePickerModal();
+    renderAll();
+    showToast('Placé en case ' + (pickerCaseIndex + 1));
+}
+
+// ============ SOURCES MODAL ============
+function showSourcesModal() {
+    document.getElementById('sourcesModal').classList.add('open');
+}
+
+function closeSourcesModal() {
+    document.getElementById('sourcesModal').classList.remove('open');
+}
+
+// ============ IMPORT / EXPORT ============
+function importFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const fn = file.name.toLowerCase();
+    if (fn.endsWith('.json')) importJSON(file);
+    else if (fn.endsWith('.xlsx') || fn.endsWith('.xls')) importXLSX(file);
+    else if (fn.endsWith('.csv')) importCSV(file);
+    else alert('Format non supporté');
+    
+    event.target.value = '';
+}
+
+function importXLSX(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+            const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+            processImport(json);
+        } catch (err) {
+            alert('Erreur XLSX: ' + err.message);
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function importCSV(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            let txt = e.target.result.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
+            const lines = txt.split('\n').filter(l => l.trim());
+            const sep = lines[0].includes(';') ? ';' : ',';
+            const headers = lines[0].split(sep).map(h => h.trim().replace(/^"|"$/g, ''));
+            const json = [];
+            for (let i = 1; i < lines.length; i++) {
+                const vals = lines[i].split(sep).map(v => v.trim().replace(/^"|"$/g, ''));
+                const row = {};
+                headers.forEach((h, idx) => row[h] = vals[idx] || '');
+                json.push(row);
+            }
+            processImport(json);
+        } catch (err) {
+            alert('Erreur CSV: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+}
+
+function importJSON(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const imp = JSON.parse(e.target.result);
+            if (imp.entities) {
+                data = imp;
+                if (!data.gridPositions) data.gridPositions = {};
+                saveData();
+                renderAll();
+                showToast(data.entities.length + ' entités chargées');
+            } else {
+                alert('Format JSON invalide');
+            }
+        } catch (err) {
+            alert('Erreur JSON: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+}
+
+function processImport(json) {
+    if (!json || !json.length) {
+        alert('Aucune donnée');
+        return;
+    }
+    
+    let added = 0, skipped = 0;
+    
+    for (const row of json) {
+        const nom = row['NOM_ASSOCIATION'] || row['Denomination'] || row['Dénomination'] || row['Nom'] || row['Name'] || '';
+        if (!nom.trim()) { skipped++; continue; }
+        
+        if (data.entities.some(e => e.nom.toLowerCase().trim() === nom.toLowerCase().trim())) {
+            skipped++;
+            continue;
+        }
+        
+        let forme = row['Forme juridique'] || '';
+        if (!forme) {
+            const nl = nom.toLowerCase();
+            if (nl.includes('asbl') || nl.includes('vzw')) forme = 'ASBL';
+            else if (nl.includes('aisbl')) forme = 'AISBL';
+            else if (nl.includes('fondation')) forme = 'Fondation';
+        }
+        
+        data.entities.push({
+            id: generateId(),
+            nom: nom.trim(),
+            sigle: (row['Sigle'] || '').toString().trim() || null,
+            bce: (row['BCE'] || row['EnterpriseNumber'] || '').toString().trim() || null,
+            forme: forme || null,
+            adresse: (row['ADRESSE'] || row['Adresse'] || '').toString().trim() || null,
+            cp: (row['C.P.'] || row['CP'] || '').toString().trim() || null,
+            localite: (row['LOCALITE'] || row['Localité'] || '').toString().trim() || null,
+            tel: (row['TEL.'] || row['Tel'] || '').toString().trim() || null,
+            email: (row['E.MAIL'] || row['Email'] || '').toString().trim() || null,
+            web: (row['Site Web'] || row['Website'] || '').toString().trim() || null,
+            pilier: null,
+            logo: null,
+            notes: null
+        });
+        added++;
+    }
+    
+    saveData();
+    renderAll();
+    showToast(added + ' importées' + (skipped ? ` (${skipped} ignorées)` : ''));
+}
+
+function exportJSON() {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'repertoire-export.json';
+    a.click();
+    showToast('Export téléchargé');
+}
+
+function clearAllData() {
+    if (!confirm('Supprimer TOUTES les données ?\n\nCette action est irréversible.')) return;
+    data = { entities: [], gridPositions: {} };
+    saveData();
+    renderAll();
+    showToast('Données effacées');
+}
+
+// ============ TOAST ============
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+    o.addEventListener('click', e => {
+        if (e.target === o) o.classList.remove('open');
+    });
+});
+</script>
+</body>
+</html>

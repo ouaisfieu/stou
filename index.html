@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⬡ KERN</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #888;
+            margin-bottom: 3rem;
+        }
+        
+        /* Main CTA - Big and obvious */
+        .main-cta {
+            display: block;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .main-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+        }
+        
+        .main-cta .icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+        
+        .main-cta small {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+        
+        /* Secondary options */
+        .options {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+        
+        .option-btn {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #ccc;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .option-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+        
+        .option-btn .icon {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Hidden file input */
+        #fileInput { display: none; }
+        
+        /* Data loaded state */
+        .data-status {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: #4ade80;
+        }
+        
+        .data-status.empty {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+        }
+        
+        /* Quick links at bottom */
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .quick-link {
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 6px;
+            color: #666;
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .quick-link:hover {
+            background: rgba(255,255,255,0.08);
+            color: #aaa;
+        }
+        
+        /* Loading state */
+        .loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .success-msg {
+            display: none;
+            color: #4ade80;
+            font-size: 1.2rem;
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <script src="kern-core.js"></script>
+    <div class="container">
+        <div class="logo">⬡</div>
+        <h1>KERN</h1>
+        <p class="subtitle">Système d'Intelligence Personnelle</p>
+        
+        <!-- Status indicator -->
+        <div class="data-status empty" id="dataStatus">
+            💡 Aucune donnée. Commencez par en importer ou charger la démo.
+        </div>
+        
+        <!-- Main content area -->
+        <div id="mainContent">
+            <!-- Primary action -->
+            <button class="main-cta" onclick="loadDemo()">
+                <span class="icon">🎮</span> Charger les données de démo
+                <small>Explorez avec des exemples concrets (recommandé)</small>
+            </button>
+            
+            <!-- Secondary options -->
+            <div class="options">
+                <button class="option-btn" onclick="document.getElementById('fileInput').click()">
+                    <span class="icon">📁</span>
+                    Importer un fichier
+                </button>
+                <a href="00-kern-nexus.html" class="option-btn">
+                    <span class="icon">✨</span>
+                    Commencer vide
+                </a>
+            </div>
+            
+            <input type="file" id="fileInput" accept=".json,.csv" onchange="importFile(this.files[0])">
+        </div>
+        
+        <!-- Loading state -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <span>Chargement des données...</span>
+        </div>
+        
+        <!-- Success message -->
+        <div class="success-msg" id="successMsg">
+            ✅ Données chargées ! Redirection...
+        </div>
+        
+        <!-- Quick links -->
+        <div class="quick-links">
+            <a href="00-kern-nexus.html" class="quick-link">🏠 NEXUS</a>
+            <a href="import.html" class="quick-link" style="color: #4ade80;">📥 Import</a>
+            <a href="wiki-data.html" class="quick-link" style="color: #22d3ee;">📚 Wiki Données</a>
+            <a href="11-kern-dossiers.html" class="quick-link">📁 Dossiers</a>
+            <a href="17-contact-network.html" class="quick-link">👥 Contacts</a>
+            <a href="synergy-game.html" class="quick-link" style="color: #fbbf24;">⚔️ SYNERGY</a>
+        </div>
+    </div>
+    
+    <script>
+        // Check if data exists
+        function checkData() {
+            const keys = ['kern_dossiers', 'kern_entities', 'kern_network_contacts', 'kern_missions'];
+            let total = 0;
+            
+            keys.forEach(key => {
+                try {
+                    const data = localStorage.getItem(key);
+                    if (data) total += JSON.parse(data).length;
+                } catch(e) {}
+            });
+            
+            const status = document.getElementById('dataStatus');
+            
+            if (total > 0) {
+                status.classList.remove('empty');
+                status.innerHTML = `✅ ${total} éléments chargés. <a href="00-kern-nexus.html" style="color: inherit; text-decoration: underline;">Ouvrir KERN →</a>`;
+                
+                // Change main CTA to "Open KERN"
+                document.querySelector('.main-cta').outerHTML = `
+                    <a href="00-kern-nexus.html" class="main-cta">
+                        <span class="icon">🚀</span> Ouvrir KERN
+                        <small>${total} éléments prêts à explorer</small>
+                    </a>
+                `;
+            }
+        }
+        
+        // Load backup JSON data
+        function loadDemo() {
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('loading').style.display = 'flex';
+            
+            // Key mapping for kern-core.js compatibility
+            const keyMap = {
+                'kern_agent': 'kern_agent_profile',
+                'kern_agent_profile': 'kern_agent_profile'
+            };
+            
+            // Try fixed version first, then original
+            fetch('kern-data-fixed.json')
+                .then(response => {
+                    if (!response.ok) return fetch('kern-data-backup.json');
+                    return response;
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Fichier non trouvé');
+                    return response.json();
+                })
+                .then(data => {
+                    // Import all keys into localStorage with mapping
+                    Object.keys(data).forEach(key => {
+                        if (data[key]) {
+                            const targetKey = keyMap[key] || key;
+                            localStorage.setItem(targetKey, JSON.stringify(data[key]));
+                        }
+                    });
+                    
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('successMsg').style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = '00-kern-nexus.html';
+                    }, 800);
+                })
+                .catch(err => {
+                    // Fallback to demo-data.js
+                    console.log('JSON not found, trying demo-data.js...');
+                    const script = document.createElement('script');
+                    script.src = 'demo-data.js';
+                    script.onload = () => {
+                        document.getElementById('loading').style.display = 'none';
+                        document.getElementById('successMsg').style.display = 'block';
+                        setTimeout(() => {
+                            window.location.href = '00-kern-nexus.html';
+                        }, 800);
+                    };
+                    script.onerror = () => {
+                        alert('Erreur de chargement: ' + err.message);
+                        location.reload();
+                    };
+                    document.body.appendChild(script);
+                });
+        }
+        
+        // Import file
+        function importFile(file) {
+            if (!file) return;
+            
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('loading').style.display = 'flex';
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const content = e.target.result;
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    
+                    if (ext === 'json') {
+                        const data = JSON.parse(content);
+                        importJSON(data);
+                    } else if (ext === 'csv') {
+                        importCSV(content);
+                    }
+                    
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('successMsg').style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = '00-kern-nexus.html';
+                    }, 800);
+                    
+                } catch(err) {
+                    alert('Erreur: ' + err.message);
+                    location.reload();
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        function importJSON(data) {
+            // Utiliser KERN.importData si disponible
+            if (window.KERN && KERN.importData) {
+                const report = KERN.importData(data);
+                console.log('KERN Import Report:', report);
+                return;
+            }
+            
+            // Fallback si KERN pas encore chargé (ne devrait pas arriver)
+            console.warn('KERN not loaded, using fallback import');
+            
+            const keyFixes = { 'kern_agent': 'kern_agent_profile' };
+            
+            Object.keys(data).forEach(key => {
+                if (key.startsWith('kern_') || key === '_meta') {
+                    if (key === '_meta') return;
+                    const targetKey = keyFixes[key] || key;
+                    localStorage.setItem(targetKey, JSON.stringify(data[key]));
+                }
+            });
+        }
+        
+        function importCSV(content) {
+            const lines = content.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, '').toLowerCase());
+            
+            const items = [];
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+                const item = { id: 'import_' + i };
+                headers.forEach((h, idx) => {
+                    item[h] = values[idx] || '';
+                });
+                items.push(item);
+            }
+            
+            // Detect type from headers
+            const headerStr = headers.join(' ');
+            if (headerStr.includes('email') || headerStr.includes('phone') || headerStr.includes('name')) {
+                // Transform to contact format
+                const contacts = items.map(item => ({
+                    id: item.id,
+                    firstName: item.firstname || item.first_name || item.prenom || (item.name || '').split(' ')[0] || 'Contact',
+                    lastName: item.lastname || item.last_name || item.nom || (item.name || '').split(' ').slice(1).join(' ') || '',
+                    email: item.email || '',
+                    phone: item.phone || item.tel || '',
+                    organization: item.organization || item.company || item.entreprise || '',
+                    role: item.role || item.titre || item.function || '',
+                    category: 'professional',
+                    notes: item.notes || item.description || ''
+                }));
+                localStorage.setItem('kern_network_contacts', JSON.stringify(contacts));
+            } else {
+                // Generic import as entities
+                const entities = items.map(item => ({
+                    id: item.id,
+                    name: item.name || item.nom || item.title || 'Item ' + item.id,
+                    type: item.type || 'other',
+                    description: item.description || item.notes || '',
+                    tags: (item.tags || '').split(';').filter(t => t),
+                    links: []
+                }));
+                localStorage.setItem('kern_entities', JSON.stringify(entities));
+            }
+        }
+        
+        // Init
+        checkData();
+    </script>
+</body>
+</html>

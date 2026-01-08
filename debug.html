@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔧 KERN Debug</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        h1 { color: #4ade80; margin-bottom: 1rem; }
+        h2 { color: #fbbf24; margin: 2rem 0 1rem; font-size: 1.2rem; }
+        .key-box {
+            background: #1a1a2e;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #4ade80;
+        }
+        .key-box.empty { border-left-color: #ef4444; }
+        .key-box.error { border-left-color: #fbbf24; background: #2a1a1e; }
+        .key-name { color: #22d3ee; font-weight: bold; }
+        .key-type { color: #888; font-size: 0.85rem; }
+        .key-preview { 
+            color: #888; 
+            font-size: 0.8rem; 
+            max-height: 100px; 
+            overflow: auto; 
+            margin-top: 0.5rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #4ade80;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            text-decoration: none;
+        }
+        .btn:hover { background: #22c55e; }
+        .btn.danger { background: #ef4444; color: #fff; }
+        .btn.secondary { background: #333; color: #fff; }
+        .status { 
+            padding: 1rem; 
+            border-radius: 8px; 
+            margin: 1rem 0; 
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid #4ade80;
+        }
+        .count { color: #4ade80; font-weight: bold; }
+        .actions { margin: 2rem 0; }
+    </style>
+</head>
+<body>
+    <h1>🔧 KERN Debug Console</h1>
+    
+    <div class="actions">
+        <button class="btn" onclick="refresh()">🔄 Rafraîchir</button>
+        <button class="btn danger" onclick="clearKern()">🗑️ Effacer KERN</button>
+        <button class="btn danger" onclick="clearAll()">💥 Effacer TOUT</button>
+        <a href="import.html" class="btn secondary">📥 Import</a>
+        <a href="00-kern-nexus.html" class="btn secondary">🏠 NEXUS</a>
+    </div>
+    
+    <div id="status" class="status"></div>
+    
+    <h2>📦 Clés KERN dans localStorage</h2>
+    <div id="kernKeys"></div>
+    
+    <h2>📋 Toutes les clés localStorage</h2>
+    <div id="allKeys"></div>
+
+    <script>
+        const EXPECTED_KEYS = [
+            'kern_agent_profile',
+            'kern_dossiers',
+            'kern_entities',
+            'kern_network_contacts',
+            'kern_knowledge',
+            'kern_missions',
+            'kern_journal',
+            'kern_partners',
+            'kern_protocole'
+        ];
+        
+        function refresh() {
+            const kernKeysDiv = document.getElementById('kernKeys');
+            const allKeysDiv = document.getElementById('allKeys');
+            const statusDiv = document.getElementById('status');
+            
+            // Check KERN keys
+            let kernHtml = '';
+            let foundCount = 0;
+            let totalItems = 0;
+            
+            EXPECTED_KEYS.forEach(key => {
+                const data = localStorage.getItem(key);
+                
+                if (data) {
+                    foundCount++;
+                    let parsed, count, preview;
+                    try {
+                        parsed = JSON.parse(data);
+                        if (Array.isArray(parsed)) {
+                            count = parsed.length + ' items';
+                            totalItems += parsed.length;
+                            preview = JSON.stringify(parsed.slice(0, 2), null, 2).substring(0, 500);
+                        } else if (typeof parsed === 'object') {
+                            count = 'object';
+                            totalItems += 1;
+                            preview = JSON.stringify(parsed, null, 2).substring(0, 500);
+                        }
+                        kernHtml += `
+                            <div class="key-box">
+                                <span class="key-name">${key}</span>
+                                <span class="key-type"> — ${count}</span>
+                                <div class="key-preview">${preview}...</div>
+                            </div>
+                        `;
+                    } catch (e) {
+                        kernHtml += `
+                            <div class="key-box error">
+                                <span class="key-name">${key}</span>
+                                <span class="key-type"> — ⚠️ ERREUR PARSE: ${e.message}</span>
+                            </div>
+                        `;
+                    }
+                } else {
+                    kernHtml += `
+                        <div class="key-box empty">
+                            <span class="key-name">${key}</span>
+                            <span class="key-type"> — ❌ VIDE / NON TROUVÉ</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            kernKeysDiv.innerHTML = kernHtml;
+            
+            // Check all keys
+            let allHtml = '';
+            const allKeys = Object.keys(localStorage).sort();
+            
+            allKeys.forEach(key => {
+                const data = localStorage.getItem(key);
+                const size = data ? data.length : 0;
+                allHtml += `
+                    <div class="key-box" style="border-left-color: ${key.startsWith('kern_') ? '#22d3ee' : '#666'}">
+                        <span class="key-name">${key}</span>
+                        <span class="key-type"> — ${size} bytes</span>
+                    </div>
+                `;
+            });
+            
+            allKeysDiv.innerHTML = allHtml || '<p style="color:#888">Aucune clé dans localStorage</p>';
+            
+            // Status
+            statusDiv.innerHTML = `
+                <strong>État:</strong> 
+                <span class="count">${foundCount}/${EXPECTED_KEYS.length}</span> clés KERN trouvées, 
+                <span class="count">${totalItems}</span> éléments total, 
+                <span class="count">${allKeys.length}</span> clés localStorage total
+            `;
+            
+            // Special check for agent
+            const agent = localStorage.getItem('kern_agent_profile');
+            if (agent) {
+                try {
+                    const a = JSON.parse(agent);
+                    const hasStats = a.stats ? '✅' : '❌';
+                    const hasSkills = a.skills ? '✅' : '❌';
+                    const hasAchievements = a.achievements ? '✅' : '❌';
+                    const hasSettings = a.settings ? '✅' : '❌';
+                    statusDiv.innerHTML += `<br><br><strong>Agent ${a.codename}:</strong> stats ${hasStats} | skills ${hasSkills} | achievements ${hasAchievements} | settings ${hasSettings}`;
+                } catch(e) {}
+            }
+        }
+        
+        function clearKern() {
+            if (confirm('Effacer toutes les données KERN ?')) {
+                EXPECTED_KEYS.forEach(k => localStorage.removeItem(k));
+                // Also remove old key
+                localStorage.removeItem('kern_agent');
+                refresh();
+            }
+        }
+        
+        function clearAll() {
+            if (confirm('Effacer TOUT le localStorage ?')) {
+                localStorage.clear();
+                refresh();
+            }
+        }
+        
+        // Auto refresh
+        refresh();
+    </script>
+</body>
+</html>

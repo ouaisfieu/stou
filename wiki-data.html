@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 KERN — Wiki Données & Formats</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-code: #1a1a2e;
+            --text: #e0e0e0;
+            --text-dim: #888;
+            --accent: #6366f1;
+            --green: #4ade80;
+            --red: #f87171;
+            --amber: #fbbf24;
+            --cyan: #22d3ee;
+            --purple: #a855f7;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Header */
+        header {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 3rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+        
+        /* Navigation */
+        nav {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            position: sticky;
+            top: 1rem;
+            z-index: 100;
+        }
+        
+        nav ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            list-style: none;
+            justify-content: center;
+        }
+        
+        nav a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        
+        nav a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+        }
+        
+        /* Sections */
+        section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 5rem;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            color: var(--green);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--green);
+        }
+        
+        h3 {
+            font-size: 1.3rem;
+            color: var(--cyan);
+            margin: 2rem 0 1rem;
+        }
+        
+        h4 {
+            font-size: 1.1rem;
+            color: var(--amber);
+            margin: 1.5rem 0 0.75rem;
+        }
+        
+        p { margin-bottom: 1rem; }
+        
+        /* Code blocks */
+        pre {
+            background: var(--bg-code);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent);
+        }
+        
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+        
+        pre code {
+            color: #e0e0e0;
+        }
+        
+        :not(pre) > code {
+            background: rgba(99, 102, 241, 0.2);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            color: var(--cyan);
+        }
+        
+        /* Syntax highlighting */
+        .key { color: #9cdcfe; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+        .comment { color: #6a9955; }
+        .keyword { color: #569cd6; }
+        .required { color: #f87171; font-weight: bold; }
+        .optional { color: #888; }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        th {
+            background: var(--bg-card);
+            color: var(--amber);
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background: rgba(255,255,255,0.02);
+        }
+        
+        /* Warning/Info boxes */
+        .box {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .box.warning {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 4px solid var(--amber);
+        }
+        
+        .box.danger {
+            background: rgba(248, 113, 113, 0.1);
+            border-left: 4px solid var(--red);
+        }
+        
+        .box.success {
+            background: rgba(74, 222, 128, 0.1);
+            border-left: 4px solid var(--green);
+        }
+        
+        .box.info {
+            background: rgba(34, 211, 238, 0.1);
+            border-left: 4px solid var(--cyan);
+        }
+        
+        .box-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Lists */
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Quick copy button */
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 4px;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .pre-wrapper {
+            position: relative;
+        }
+        
+        /* Module cards */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .module-item {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .module-item h5 {
+            color: var(--green);
+            margin-bottom: 0.5rem;
+        }
+        
+        .module-item p {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-dim);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.4rem; }
+            pre { padding: 1rem; font-size: 0.75rem; }
+            nav { position: static; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 KERN — Wiki Données</h1>
+            <p class="subtitle">Documentation complète des formats de données pour tous les modules</p>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="#overview">Vue d'ensemble</a></li>
+                <li><a href="#agent">Agent</a></li>
+                <li><a href="#dossiers">Dossiers</a></li>
+                <li><a href="#entities">Entités</a></li>
+                <li><a href="#contacts">Contacts</a></li>
+                <li><a href="#knowledge">Notes</a></li>
+                <li><a href="#missions">Missions</a></li>
+                <li><a href="#journal">Journal</a></li>
+                <li><a href="#partners">Partenaires</a></li>
+                <li><a href="#protocole">Protocole</a></li>
+                <li><a href="#import">Import/Export</a></li>
+                <li><a href="#troubleshoot">Dépannage</a></li>
+            </ul>
+        </nav>
+        
+        <!-- ============================================================ -->
+        <!-- OVERVIEW -->
+        <!-- ============================================================ -->
+        <section id="overview">
+            <h2>🗺️ Vue d'ensemble</h2>
+            
+            <p>KERN stocke toutes ses données dans le <strong>localStorage</strong> du navigateur. Chaque type de données a sa propre clé.</p>
+            
+            <div class="box warning">
+                <div class="box-title">⚠️ RÈGLE D'OR</div>
+                <p>Les clés <strong>doivent</strong> correspondre exactement. Une erreur de nom = données invisibles.</p>
+            </div>
+            
+            <h3>Clés localStorage</h3>
+            
+            <table>
+                <tr>
+                    <th>Clé localStorage</th>
+                    <th>Type</th>
+                    <th>Module(s)</th>
+                    <th>Requis</th>
+                </tr>
+                <tr>
+                    <td><code>kern_agent_profile</code></td>
+                    <td>Object</td>
+                    <td>Tous (profil agent)</td>
+                    <td>✅ Oui</td>
+                </tr>
+                <tr>
+                    <td><code>kern_dossiers</code></td>
+                    <td>Array</td>
+                    <td>DOSSIERS, NEXUS</td>
+                    <td>Non</td>
+                </tr>
+                <tr>
+                    <td><code>kern_entities</code></td>
+                    <td>Array</td>
+                    <td>PANOPTICON</td>
+                    <td>Non</td>
+                </tr>
+                <tr>
+                    <td><code>kern_network_contacts</code></td>
+                    <td>Array</td>
+                    <td>Contact Network</td>
+                    <td>Non</td>
+                </tr>
+                <tr>
+                    <td><code>kern_knowledge</code></td>
+                    <td>Array</td>
+                    <td>Knowledge Graph</td>
+                    <td>Non</td>
+                </tr>
+                <tr>
+                    <td><code>kern_missions</code></td>
+                    <td>Array</td>
+                    <td>Missions</td>
+                    <td>Non</td>
+                </tr>
+                <tr>
+                    <td><code>kern_journal</code></td>
+                    <td>Array</td>
+                    <td>Journal</td>
+                    <td>Non</td>
+                </tr>
+                <tr>
+                    <td><code>kern_partners</code></td>
+                    <td>Array</td>
+                    <td>Partners</td>
+                    <td>Non</td>
+                </tr>
+                <tr>
+                    <td><code>kern_protocole</code></td>
+                    <td>Object</td>
+                    <td>Protocole Insurrection</td>
+                    <td>Non</td>
+                </tr>
+            </table>
+            
+            <div class="box danger">
+                <div class="box-title">🚨 ATTENTION : Clé Agent</div>
+                <p>La clé est <code>kern_agent_profile</code> (pas <code>kern_agent</code>). C'est la cause #1 des plantages !</p>
+            </div>
+        </section>
+        
+        <!-- ============================================================ -->
+        <!-- AGENT -->
+        <!-- ============================================================ -->
+        <section id="agent">
+            <h2>👤 Agent Profile</h2>
+            
+            <p>Le profil agent est <strong>obligatoire</strong>. Sans lui, KERN plante.</p>
+            
+            <h3>Clé localStorage</h3>
+            <pre><code>kern_agent_profile</code></pre>
+            
+            <h3>Structure complète</h3>
+            <pre><code>{
+  <span class="key">"codename"</span>: <span class="string">"GANDALF-PRIME"</span>,        <span class="comment">// Requis - Nom de code</span>
+  <span class="key">"level"</span>: <span class="number">12</span>,                          <span class="comment">// Requis - Niveau actuel</span>
+  <span class="key">"xp"</span>: <span class="number">15420</span>,                          <span class="comment">// Requis - XP actuel</span>
+  <span class="key">"xpToNext"</span>: <span class="number">20000</span>,                    <span class="comment">// Requis - XP pour niveau suivant</span>
+  <span class="key">"clearance"</span>: <span class="number">4</span>,                        <span class="comment">// Niveau d'habilitation (0-7)</span>
+  <span class="key">"streak"</span>: <span class="number">42</span>,                          <span class="comment">// Jours consécutifs</span>
+  <span class="key">"lastLogin"</span>: <span class="string">"2026-01-06"</span>,            <span class="comment">// Date dernière connexion</span>
+  
+  <span class="comment">// ⚠️ OBLIGATOIRE - Skills</span>
+  <span class="key">"skills"</span>: {
+    <span class="key">"investigation"</span>: { <span class="key">"level"</span>: <span class="number">8</span>, <span class="key">"xp"</span>: <span class="number">720</span> },
+    <span class="key">"network"</span>:       { <span class="key">"level"</span>: <span class="number">10</span>, <span class="key">"xp"</span>: <span class="number">890</span> },
+    <span class="key">"analysis"</span>:      { <span class="key">"level"</span>: <span class="number">7</span>, <span class="key">"xp"</span>: <span class="number">650</span> },
+    <span class="key">"documentation"</span>: { <span class="key">"level"</span>: <span class="number">9</span>, <span class="key">"xp"</span>: <span class="number">810</span> },
+    <span class="key">"fieldwork"</span>:     { <span class="key">"level"</span>: <span class="number">6</span>, <span class="key">"xp"</span>: <span class="number">520</span> },
+    <span class="key">"opsec"</span>:         { <span class="key">"level"</span>: <span class="number">11</span>, <span class="key">"xp"</span>: <span class="number">980</span> }
+  },
+  
+  <span class="comment">// ⚠️ OBLIGATOIRE - Stats (cause des plantages si absent !)</span>
+  <span class="key">"stats"</span>: {
+    <span class="key">"dossiersCreated"</span>: <span class="number">6</span>,
+    <span class="key">"entitiesCreated"</span>: <span class="number">21</span>,
+    <span class="key">"contactsAdded"</span>: <span class="number">16</span>,
+    <span class="key">"notesWritten"</span>: <span class="number">10</span>,
+    <span class="key">"missionsCompleted"</span>: <span class="number">3</span>,
+    <span class="key">"linksDiscovered"</span>: <span class="number">45</span>,
+    <span class="key">"daysActive"</span>: <span class="number">42</span>,
+    <span class="key">"totalActions"</span>: <span class="number">150</span>
+  },
+  
+  <span class="comment">// ⚠️ OBLIGATOIRE - Achievements (peut être vide)</span>
+  <span class="key">"achievements"</span>: [],
+  
+  <span class="comment">// ⚠️ OBLIGATOIRE - Settings</span>
+  <span class="key">"settings"</span>: {
+    <span class="key">"theme"</span>: <span class="string">"dark"</span>,
+    <span class="key">"notifications"</span>: <span class="keyword">true</span>,
+    <span class="key">"soundEffects"</span>: <span class="keyword">true</span>
+  }
+}</code></pre>
+
+            <div class="box danger">
+                <div class="box-title">🚨 Propriétés OBLIGATOIRES</div>
+                <ul>
+                    <li><code>stats</code> — Sans ça : <code>Cannot read properties of undefined (reading 'dossiersCreated')</code></li>
+                    <li><code>skills</code> — Requis pour l'affichage du profil</li>
+                    <li><code>achievements</code> — Peut être <code>[]</code> mais doit exister</li>
+                    <li><code>settings</code> — Requis pour les préférences</li>
+                </ul>
+            </div>
+            
+            <h3>Agent minimal (pour démarrer)</h3>
+            <pre><code>{
+  "codename": "NOUVEAU-AGENT",
+  "level": 1,
+  "xp": 0,
+  "xpToNext": 1000,
+  "clearance": 0,
+  "lastLogin": "2026-01-06",
+  "skills": {
+    "investigation": { "level": 1, "xp": 0 },
+    "network": { "level": 1, "xp": 0 },
+    "analysis": { "level": 1, "xp": 0 },
+    "documentation": { "level": 1, "xp": 0 },
+    "fieldwork": { "level": 1, "xp": 0 },
+    "opsec": { "level": 1, "xp": 0 }
+  },
+  "stats": {
+    "dossiersCreated": 0,
+    "entitiesCreated": 0,
+    "contactsAdded": 0,
+    "notesWritten": 0,
+    "missionsCompleted": 0,
+    "linksDiscovered": 0,
+    "daysActive": 1,
+    "totalActions": 0
+  },
+  "achievements": [],
+  "settings": {
+    "theme": "dark",
+    "notifications": true,
+    "soundEffects": true
+  }
+}</code></pre>
+        </section>
+        
+        <!-- ============================================================ -->
+        <!-- DOSSIERS -->
+        <!-- ============================================================ -->
+        <section id="dossiers">
+            <h2>📁 Dossiers</h2>
+            
+            <h3>Clé localStorage</h3>
+            <pre><code>kern_dossiers</code></pre>
+            
+            <h3>Type</h3>
+            <p><code>Array</code> d'objets dossier</p>
+            
+            <h3>Structure d'un dossier</h3>
+            <pre><code>{
+  <span class="key">"id"</span>: <span class="string">"dossier_xxx_001"</span>,              <span class="comment">// Requis - ID unique</span>
+  <span class="key">"created"</span>: <span class="string">"2025-06-15T10:00:00.000Z"</span>, <span class="comment">// ISO date</span>
+  <span class="key">"updated"</span>: <span class="string">"2026-01-05T18:30:00.000Z"</span>, <span class="comment">// ISO date</span>
+  <span class="key">"title"</span>: <span class="string">"🔥 Titre du dossier"</span>,         <span class="comment">// Requis</span>
+  <span class="key">"description"</span>: <span class="string">"Description longue..."</span>,   <span class="comment">// Texte</span>
+  <span class="key">"status"</span>: <span class="string">"active"</span>,                      <span class="comment">// active|completed|archived</span>
+  <span class="key">"priority"</span>: <span class="string">"critical"</span>,                  <span class="comment">// critical|high|medium|low</span>
+  <span class="key">"tags"</span>: [<span class="string">"tag1"</span>, <span class="string">"tag2"</span>],                <span class="comment">// Array de strings</span>
+  
+  <span class="comment">// Timeline - événements chronologiques</span>
+  <span class="key">"timeline"</span>: [
+    { 
+      <span class="key">"date"</span>: <span class="string">"2025-06-15"</span>, 
+      <span class="key">"event"</span>: <span class="string">"Description de l'événement"</span>, 
+      <span class="key">"type"</span>: <span class="string">"discovery"</span>  <span class="comment">// discovery|breakthrough|intel|critical|meeting|incident</span>
+    }
+  ],
+  
+  <span class="comment">// Preuves</span>
+  <span class="key">"evidence"</span>: [
+    { 
+      <span class="key">"id"</span>: <span class="string">"ev_001"</span>, 
+      <span class="key">"type"</span>: <span class="string">"document"</span>,  <span class="comment">// document|artifact|testimony|data</span>
+      <span class="key">"title"</span>: <span class="string">"Titre preuve"</span>, 
+      <span class="key">"source"</span>: <span class="string">"Source"</span>, 
+      <span class="key">"reliability"</span>: <span class="number">4</span>  <span class="comment">// 1-5</span>
+    }
+  ],
+  
+  <span class="comment">// Liens vers autres éléments</span>
+  <span class="key">"linkedEntities"</span>: [<span class="string">"entity_xxx"</span>],   <span class="comment">// IDs d'entités</span>
+  <span class="key">"linkedContacts"</span>: [<span class="string">"contact_xxx"</span>]   <span class="comment">// IDs de contacts</span>
+}</code></pre>
+            
+            <h3>Statuts possibles</h3>
+            <table>
+                <tr><th>Valeur</th><th>Description</th></tr>
+                <tr><td><code>active</code></td><td>Dossier en cours</td></tr>
+                <tr><td><code>completed</code></td><td>Dossier terminé</td></tr>
+                <tr><td><code>archived</code></td><td>Dossier archivé</td></tr>
+            </table>
+            
+            <h3>Priorités possibles</h3>
+            <table>
+                <tr><th>Valeur</th><th>Couleur</th></tr>
+                <tr><td><code>critical</code></td><td>🔴 Rouge</td></tr>
+                <tr><td><code>high</code></td><td>🟠 Orange</td></tr>
+                <tr><td><code>medium</code></td><td>🟡 Jaune</td></tr>
+                <tr><td><code>low</code></td><td>🟢 Vert</td></tr>
+            </table>
+        </section>
+        
+        <!-- ============================================================ -->
+        <!-- ENTITIES -->
+        <!-- ============================================================ -->
+        <section id="entities">
+            <h2>🕸️ Entités (PANOPTICON)</h2>
+            
+            <h3>Clé localStorage</h3>
+            <pre><code>kern_entities</code></pre>
+            
+            <h3>Type</h3>
+            <p><code>Array</code> d'objets entité</p>
+            
+            <h3>Structure d'une entité</h3>
+            <pre><code>{
+  <span class="key">"id"</span>: <span class="string">"entity_xxx"</span>,                    <span class="comment">// Requis - ID unique</span>
+  <span class="key">"name"</span>: <span class="string">"Nom de l'entité"</span>,              <span class="comment">// Requis</span>
+  <span class="key">"type"</span>: <span class="string">"person"</span>,                        <span class="comment">// Requis - voir types</span>
+  <span class="key">"subtype"</span>: <span class="string">"Sous-catégorie"</span>,            <span class="comment">// Optionnel</span>
+  <span class="key">"emoji"</span>: <span class="string">"👤"</span>,                           <span class="comment">// Optionnel - icône</span>
+  <span class="key">"description"</span>: <span class="string">"Description..."</span>,        <span class="comment">// Texte</span>
+  <span class="key">"tags"</span>: [<span class="string">"tag1"</span>, <span class="string">"tag2"</span>],                <span class="comment">// Array</span>
+  <span class="key">"created"</span>: <span class="string">"2025-01-01T00:00:00.000Z"</span>, <span class="comment">// ISO date</span>
+  
+  <span class="comment">// Liens vers autres entités</span>
+  <span class="key">"links"</span>: [
+    { 
+      <span class="key">"targetId"</span>: <span class="string">"entity_yyy"</span>,  <span class="comment">// ID cible</span>
+      <span class="key">"type"</span>: <span class="string">"controls"</span>,        <span class="comment">// Type de relation</span>
+      <span class="key">"label"</span>: <span class="string">"Contrôle"</span>         <span class="comment">// Label affiché</span>
+    }
+  ]
+}</code></pre>
+            
+            <h3>Types d'entité</h3>
+            <table>
+                <tr><th>Type</th><th>Icône</th><th>Couleur</th></tr>
+                <tr><td><code>person</code></td><td>👤</td><td>#6366f1 (indigo)</td></tr>
+                <tr><td><code>organization</code></td><td>🏛️</td><td>#22d3ee (cyan)</td></tr>
+                <tr><td><code>company</code></td><td>🏢</td><td>#4ade80 (vert)</td></tr>
+                <tr><td><code>media</code></td><td>📰</td><td>#fbbf24 (ambre)</td></tr>
+                <tr><td><code>institution</code></td><td>🏦</td><td>#a78bfa (violet)</td></tr>
+                <tr><td><code>event</code></td><td>📅</td><td>#f87171 (rouge)</td></tr>
+                <tr><td><code>document</code></td><td>📄</td><td>#f472b6 (rose)</td></tr>
+                <tr><td><code>location</code></td><td>📍</td><td>#38bdf8 (bleu)</td></tr>
+                <tr><td><code>other</code></td><td>❓</td><td>#888 (gris)</td></tr>
+            </table>
+            
+            <h3>Types de liens</h3>
+            <p>Les types de liens sont libres. Exemples courants :</p>
+            <ul>
+                <li><code>controls</code> / <code>controlled_by</code></li>
+                <li><code>owns</code> / <code>owned_by</code></li>
+                <li><code>works_with</code> / <code>partner</code></li>
+                <li><code>opposes</code> / <code>enemy</code></li>
+                <li><code>serves</code> / <code>employs</code></li>
+                <li><code>created</code> / <code>created_by</code></li>
+            </ul>
+        </section>
+        
+        <!-- ============================================================ -->
+        <!-- CONTACTS -->
+        <!-- ============================================================ -->
+        <section id="contacts">
+            <h2>👥 Contacts (Network)</h2>
+            
+            <h3>Clé localStorage</h3>
+            <pre><code>kern_network_contacts</code></pre>
+            
+            <h3>Type</h3>
+            <p><code>Array</code> d'objets contact</p>
+            
+            <h3>Structure d'un contact</h3>
+            <pre><code>{
+  <span class="key">"id"</span>: <span class="string">"contact_xxx"</span>,                    <span class="comment">// Requis - ID unique</span>
+  <span class="key">"firstName"</span>: <span class="string">"Prénom"</span>,                   <span class="comment">// Requis</span>
+  <span class="key">"lastName"</span>: <span class="string">"Nom"</span>,                       <span class="comment">// Requis</span>
+  <span class="key">"emoji"</span>: <span class="string">"🧙‍♂️"</span>,                          <span class="comment">// Avatar emoji</span>
+  <span class="key">"organization"</span>: <span class="string">"Nom organisation"</span>,     <span class="comment">// Employeur</span>
+  <span class="key">"role"</span>: <span class="string">"Poste/Fonction"</span>,                <span class="comment">// Titre</span>
+  <span class="key">"category"</span>: <span class="string">"ally"</span>,                      <span class="comment">// Voir catégories</span>
+  <span class="key">"strength"</span>: <span class="number">5</span>,                           <span class="comment">// Force du lien 1-5</span>
+  
+  <span class="comment">// Coordonnées</span>
+  <span class="key">"email"</span>: <span class="string">"email@example.com"</span>,
+  <span class="key">"phone"</span>: <span class="string">"+32 XXX XX XX XX"</span>,
+  <span class="key">"location"</span>: <span class="string">"Ville, Pays"</span>,
+  
+  <span class="key">"notes"</span>: <span class="string">"Notes sur le contact..."</span>,
+  <span class="key">"tags"</span>: [<span class="string">"tag1"</span>, <span class="string">"tag2"</span>],
+  <span class="key">"lastContact"</span>: <span class="string">"2026-01-05"</span>,            <span class="comment">// Date YYYY-MM-DD</span>
+  
+  <span class="comment">// Connexions avec autres contacts</span>
+  <span class="key">"connections"</span>: [<span class="string">"contact_yyy"</span>, <span class="string">"contact_zzz"</span>]
+}</code></pre>
+            
+            <h3>Catégories de contact</h3>
+            <table>
+                <tr><th>Catégorie</th><th>Icône</th><th>Description</th></tr>
+                <tr><td><code>ally</code></td><td>🤝</td><td>Allié, soutien actif</td></tr>
+                <tr><td><code>source</code></td><td>🎭</td><td>Source d'information</td></tr>
+                <tr><td><code>professional</code></td><td>💼</td><td>Contact professionnel</td></tr>
+                <tr><td><code>official</code></td><td>🏛️</td><td>Officiel, institutionnel</td></tr>
+                <tr><td><code>media</code></td><td>📰</td><td>Journaliste, média</td></tr>
+                <tr><td><code>academic</code></td><td>🎓</td><td>Académique, chercheur</td></tr>
+                <tr><td><code>other</code></td><td>👤</td><td>Autre</td></tr>
+            </table>
+        </section>
+        
+        <!-- ============================================================ -->
+        <!-- KNOWLEDGE -->
+        <!-- ============================================================ -->
+        <section id="knowledge">
+            <h2>🧠 Notes (Knowledge Graph)</h2>
+            
+            <h3>Clé localStorage</h3>
+            <pre><code>kern_knowledge</code></pre>
+            
+            <h3>Type</h3>
+            <p><code>Array</code> d'objets note</p>
+            
+            <h3>Structure d'une note</h3>
+            <pre><code>{
+  <span class="key">"id"</span>: <span class="string">"note_xxx"</span>,                       <span class="comment">// Requis - ID unique</span>
+  <span class="key">"title"</span>: <span class="string">"Titre de la note"</span>,             <span class="comment">// Requis</span>
+  <span class="key">"content"</span>: <span class="string">"Contenu en **Markdown**..."</span>, <span class="comment">// Markdown supporté</span>
+  <span class="key">"tags"</span>: [<span class="string">"tag1"</span>, <span class="string">"tag2"</span>],
+  <span class="key">"created"</span>: <span class="string">"2025-06-20T10:00:00.000Z"</span>,
+  <span class="key">"updated"</span>: <span class="string">"2026-01-05T14:00:00.000Z"</span>,
+  
+  <span class="comment">// Liens vers autres notes (par titre)</span>
+  <span class="key">"linkedNotes"</span>: [<span class="string">"note_yyy"</span>, <span class="string">"note_zzz"</span>]
+}</code></pre>
+            
+            <h3>Liens Wiki-style</h3>
+            <p>Dans le contenu, utilisez <code>[[Titre de note]]</code> pour créer des liens :</p>
+            <pre><code>Voir aussi [[L'Anneau Unique]] et [[Sauron]].</code></pre>
+            
+            <div class="box info">
+                <div class="box-title">💡 Markdown supporté</div>
+                <ul>
+                    <li><code># Titre</code>, <code>## Sous-titre</code></li>
+                    <li><code>**gras**</code>, <code>*italique*</code></li>
+                    <li><code>- liste</code>, <code>1. liste numérotée</code></li>
+                    <li><code>[lien](url)</code></li>
+                    <li><code>`code`</code></li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- ============================================================ -->
+        <!-- MISSIONS -->
+        <!-- ============================================================ -->
+        <section id="missions">
+            <h2>🎯 Missions</h2>
+            
+            <h3>Clé localStorage</h3>
+            <pre><code>kern_missions</code></pre>
+            
+            <h3>Type</h3>
+            <p><code>Array</code> d'objets mission</p>
+            
+            <h3>Structure d'une mission</h3>
+            <pre><code>{
+  <span class="key">"id"</span>: <span class="string">"mission_001"</span>,                   <span class="comment">// Requis - ID unique</span>
+  <span class="key">"emoji"</span>: <span class="string">"🔥"</span>,                          <span class="comment">// Icône</span>
+  <span class="key">"name"</span>: <span class="string">"Nom de la mission"</span>,            <span class="comment">// Requis</span>
+  <span class="key">"description"</span>: <span class="string">"Description..."</span>,        <span class="comment">// Texte</span>
+  <span class="key">"difficulty"</span>: <span class="string">"hard"</span>,                   <span class="comment">// easy|medium|hard|expert</span>
+  <span class="key">"xpReward"</span>: <span class="number">2000</span>,                       <span class="comment">// XP gagnés</span>
+  <span class="key">"status"</span>: <span class="string">"active"</span>,                     <span class="comment">// active|completed</span>
+  <span class="key">"created"</span>: <span class="string">"2025-12-25T00:00:00.000Z"</span>,
+  
+  <span class="comment">// Liste des objectifs</span>
+  <span class="key">"requirements"</span>: [
+    <span class="string">"Objectif 1"</span>,
+    <span class="string">"Objectif 2"</span>,
+    <span class="string">"Objectif 3"</span>
+  ],
+  
+  <span class="comment">// Indices des objectifs complétés (0-based)</span>
+  <span class="key">"completedReqs"</span>: [<span class="number">0</span>, <span class="number">1</span>]  <span class="comment">// Objectifs 1 et 2 faits</span>
+}</code></pre>
+            
+            <h3>Niveaux de difficulté</h3>
+            <table>
+                <tr><th>Difficulté</th><th>XP typique</th></tr>
+                <tr><td><code>easy</code></td><td>100-500</td></tr>
+                <tr><td><code>medium</code></td><td>500-1500</td></tr>
+                <tr><td><code>hard</code></td><td>1500-3000</td></tr>
+                <tr><td><code>expert</code></td><td>3000-10000</td></tr>
+            </table>
+        </section>
+        
+        <!-- ============================================================ -->
+        <!-- JOURNAL -->
+        <!-- ============================================================ -->
+        <section id="journal">
+            <h2>📓 Journal</h2>
+            
+            <h3>Clé localStorage</h3>
+            <pre><code>kern_journal</code></pre>
+            
+            <h3>Type</h3>
+            <p><code>Array</code> d'objets entrée</p>
+            
+            <h3>Structure d'une entrée</h3>
+            <pre><code>{
+  <span class="key">"id"</span>: <span class="string">"journal_001"</span>,                   <span class="comment">// Requis - ID unique</span>
+  <span class="key">"content"</span>: <span class="string">"Contenu de l'entrée...\n\nSupporte le Markdown."</span>,
+  <span class="key">"tags"</span>: [<span class="string">"tag1"</span>, <span class="string">"tag2"</span>],
+  <span class="key">"createdAt"</span>: <span class="string">"2025-12-25T18:00:00.000Z"</span>,
+  <span class="key">"updatedAt"</span>: <span class="string">"2025-12-25T18:00:00.000Z"</span>
+}</code></pre>
+        </section>
+        
+        <!-- ============================================================ -->
+        <!-- PARTNERS -->
+        <!-- ============================================================ -->
+        <section id="partners">
+            <h2>🤝 Partenaires</h2>
+            
+            <h3>Clé localStorage</h3>
+            <pre><code>kern_partners</code></pre>
+            
+            <h3>Type</h3>
+            <p><code>Array</code> d'objets partenaire</p>
+            
+            <h3>Structure d'un partenaire</h3>
+            <pre><code>{
+  <span class="key">"id"</span>: <span class="string">"partner_xxx"</span>,
+  <span class="key">"emoji"</span>: <span class="string">"🏭"</span>,
+  <span class="key">"name"</span>: <span class="string">"Nom du partenaire"</span>,
+  <span class="key">"tagline"</span>: <span class="string">"Slogan ou accroche"</span>,
+  <span class="key">"sector"</span>: <span class="string">"Industrie"</span>,
+  <span class="key">"revenue"</span>: <span class="number">15000000</span>,                   <span class="comment">// CA en euros</span>
+  <span class="key">"tier"</span>: <span class="string">"platinum"</span>,                     <span class="comment">// free|silver|gold|platinum|diamond</span>
+  <span class="key">"status"</span>: <span class="string">"active"</span>,                     <span class="comment">// active|prospect|negotiation|premium</span>
+  <span class="key">"website"</span>: <span class="string">"https://example.com"</span>,
+  <span class="key">"description"</span>: <span class="string">"Description..."</span>,
+  <span class="key">"email"</span>: <span class="string">"contact@example.com"</span>,
+  <span class="key">"phone"</span>: <span class="string">"+32 XXX"</span>,
+  <span class="key">"address"</span>: <span class="string">"Adresse"</span>,
+  
+  <span class="comment">// Produits/Services</span>
+  <span class="key">"products"</span>: [
+    {
+      <span class="key">"name"</span>: <span class="string">"Nom produit"</span>,
+      <span class="key">"icon"</span>: <span class="string">"⚙️"</span>,
+      <span class="key">"price"</span>: <span class="string">"€2,499"</span>,
+      <span class="key">"description"</span>: <span class="string">"Description"</span>
+    }
+  ]
+}</code></pre>
+        </section>
+        
+        <!-- ============================================================ -->
+        <!-- PROTOCOLE -->
+        <!-- ============================================================ -->
+        <section id="protocole">
+            <h2>⚡ Protocole Insurrection</h2>
+            
+            <h3>Clé localStorage</h3>
+            <pre><code>kern_protocole</code></pre>
+            
+            <h3>Type</h3>
+            <p><code>Object</code> (pas un Array !)</p>
+            
+            <h3>Structure</h3>
+            <pre><code>{
+  <span class="comment">// Missions du protocole</span>
+  <span class="key">"missions"</span>: [
+    {
+      <span class="key">"id"</span>: <span class="string">"proto_mission_01"</span>,
+      <span class="key">"type"</span>: <span class="string">"tutorial"</span>,              <span class="comment">// tutorial|campaign</span>
+      <span class="key">"name"</span>: <span class="string">"LA MÉGA-CORPORATION"</span>,
+      <span class="key">"target"</span>: <span class="string">"Colruyt Group"</span>,
+      <span class="key">"objective"</span>: <span class="string">"Description..."</span>,
+      <span class="key">"difficulty"</span>: <span class="number">60</span>,             <span class="comment">// 0-100</span>
+      <span class="key">"xp"</span>: <span class="number">500</span>,
+      
+      <span class="comment">// Pour type "tutorial" - phases</span>
+      <span class="key">"phases"</span>: [
+        {
+          <span class="key">"name"</span>: <span class="string">"SCAN"</span>,
+          <span class="key">"status"</span>: <span class="string">"completed"</span>,  <span class="comment">// completed|active|pending</span>
+          <span class="key">"steps"</span>: [<span class="string">"Étape 1"</span>, <span class="string">"Étape 2"</span>]
+        }
+      ],
+      
+      <span class="comment">// Pour type "campaign" - niveaux</span>
+      <span class="key">"levels"</span>: [
+        {
+          <span class="key">"name"</span>: <span class="string">"OPÉRATEUR"</span>,
+          <span class="key">"status"</span>: <span class="string">"active"</span>,
+          <span class="key">"actions"</span>: [<span class="string">"Action 1"</span>]
+        }
+      ]
+    }
+  ],
+  
+  <span class="comment">// Flashcards</span>
+  <span class="key">"flashcards"</span>: [
+    {
+      <span class="key">"q"</span>: <span class="string">"Question ?"</span>,
+      <span class="key">"a"</span>: <span class="string">"Réponse"</span>,
+      <span class="key">"category"</span>: <span class="string">"partenariat"</span>
+    }
+  ],
+  
+  <span class="comment">// Données spécifiques (ex: Colruyt)</span>
+  <span class="key">"colruyt"</span>: {
+    <span class="key">"portes"</span>: [...],
+    <span class="key">"kpis"</span>: [...],
+    <span class="key">"winWinWin"</span>: {...}
+  }
+}</code></pre>
+        </section>
+        
+        <!-- ============================================================ -->
+        <!-- IMPORT/EXPORT -->
+        <!-- ============================================================ -->
+        <section id="import">
+            <h2>📥 Import / Export</h2>
+            
+            <h3>Format de fichier d'export complet</h3>
+            <p>Un export complet KERN est un fichier JSON avec toutes les clés :</p>
+            
+            <pre><code>{
+  <span class="key">"kern_agent_profile"</span>: { ... },    <span class="comment">// ⚠️ Pas "kern_agent" !</span>
+  <span class="key">"kern_dossiers"</span>: [ ... ],
+  <span class="key">"kern_entities"</span>: [ ... ],
+  <span class="key">"kern_network_contacts"</span>: [ ... ],
+  <span class="key">"kern_knowledge"</span>: [ ... ],
+  <span class="key">"kern_missions"</span>: [ ... ],
+  <span class="key">"kern_journal"</span>: [ ... ],
+  <span class="key">"kern_partners"</span>: [ ... ],
+  <span class="key">"kern_protocole"</span>: { ... }
+}</code></pre>
+            
+            <div class="box danger">
+                <div class="box-title">🚨 PIÈGES À ÉVITER</div>
+                <ol>
+                    <li><strong>Mauvaise clé agent</strong> : <code>kern_agent</code> → <code>kern_agent_profile</code></li>
+                    <li><strong>Agent sans stats</strong> : L'objet <code>stats</code> est obligatoire</li>
+                    <li><strong>JSON invalide</strong> : Virgules en trop, guillemets manquants</li>
+                    <li><strong>Fichier JS au lieu de JSON</strong> : Ne pas utiliser <code>(function(){...})()</code></li>
+                </ol>
+            </div>
+            
+            <h3>Import via import.html</h3>
+            <p>La page <code>import.html</code> corrige automatiquement :</p>
+            <ul>
+                <li>✅ <code>kern_agent</code> → <code>kern_agent_profile</code></li>
+                <li>✅ Ajoute <code>stats</code> si manquant</li>
+                <li>✅ Ajoute <code>achievements</code> si manquant</li>
+                <li>✅ Ajoute <code>settings</code> si manquant</li>
+            </ul>
+            
+            <h3>Export depuis la console</h3>
+            <pre><code><span class="comment">// Exporter toutes les données KERN</span>
+<span class="keyword">const</span> exportData = {
+  kern_agent_profile: JSON.parse(localStorage.getItem(<span class="string">'kern_agent_profile'</span>)),
+  kern_dossiers: JSON.parse(localStorage.getItem(<span class="string">'kern_dossiers'</span>) || <span class="string">'[]'</span>),
+  kern_entities: JSON.parse(localStorage.getItem(<span class="string">'kern_entities'</span>) || <span class="string">'[]'</span>),
+  kern_network_contacts: JSON.parse(localStorage.getItem(<span class="string">'kern_network_contacts'</span>) || <span class="string">'[]'</span>),
+  kern_knowledge: JSON.parse(localStorage.getItem(<span class="string">'kern_knowledge'</span>) || <span class="string">'[]'</span>),
+  kern_missions: JSON.parse(localStorage.getItem(<span class="string">'kern_missions'</span>) || <span class="string">'[]'</span>),
+  kern_journal: JSON.parse(localStorage.getItem(<span class="string">'kern_journal'</span>) || <span class="string">'[]'</span>),
+  kern_partners: JSON.parse(localStorage.getItem(<span class="string">'kern_partners'</span>) || <span class="string">'[]'</span>),
+  kern_protocole: JSON.parse(localStorage.getItem(<span class="string">'kern_protocole'</span>) || <span class="string">'null'</span>)
+};
+
+<span class="comment">// Télécharger</span>
+<span class="keyword">const</span> blob = <span class="keyword">new</span> Blob([JSON.stringify(exportData, <span class="keyword">null</span>, <span class="number">2</span>)], {type: <span class="string">'application/json'</span>});
+<span class="keyword">const</span> a = document.createElement(<span class="string">'a'</span>);
+a.href = URL.createObjectURL(blob);
+a.download = <span class="string">'kern-backup-'</span> + <span class="keyword">new</span> Date().toISOString().slice(<span class="number">0</span>,<span class="number">10</span>) + <span class="string">'.json'</span>;
+a.click();</code></pre>
+            
+            <h3>Import depuis la console</h3>
+            <pre><code><span class="comment">// Coller le JSON dans la variable 'data'</span>
+<span class="keyword">const</span> data = { <span class="comment">/* votre JSON ici */</span> };
+
+<span class="comment">// Importer</span>
+Object.keys(data).forEach(key => {
+  <span class="keyword">if</span> (data[key]) {
+    <span class="comment">// Corriger la clé agent si nécessaire</span>
+    <span class="keyword">const</span> targetKey = key === <span class="string">'kern_agent'</span> ? <span class="string">'kern_agent_profile'</span> : key;
+    localStorage.setItem(targetKey, JSON.stringify(data[key]));
+    console.log(<span class="string">'Imported:'</span>, targetKey);
+  }
+});
+
+<span class="comment">// Recharger</span>
+location.reload();</code></pre>
+        </section>
+        
+        <!-- ============================================================ -->
+        <!-- TROUBLESHOOT -->
+        <!-- ============================================================ -->
+        <section id="troubleshoot">
+            <h2>🔧 Dépannage</h2>
+            
+            <h3>Erreur : "Cannot read properties of undefined (reading 'dossiersCreated')"</h3>
+            <div class="box danger">
+                <p><strong>Cause :</strong> L'objet <code>stats</code> manque dans le profil agent.</p>
+                <p><strong>Solution :</strong></p>
+                <ol>
+                    <li>Ouvrir <code>import.html</code></li>
+                    <li>Cliquer "🗑️ Tout effacer"</li>
+                    <li>Importer un fichier JSON corrigé avec <code>stats</code></li>
+                </ol>
+            </div>
+            
+            <h3>Erreur : Données non visibles après import</h3>
+            <div class="box warning">
+                <p><strong>Cause :</strong> Mauvaise clé localStorage.</p>
+                <p><strong>Vérifier :</strong></p>
+                <ul>
+                    <li><code>kern_agent_profile</code> (pas <code>kern_agent</code>)</li>
+                    <li><code>kern_network_contacts</code> (pas <code>kern_contacts</code>)</li>
+                    <li><code>kern_knowledge</code> (pas <code>kern_notes</code>)</li>
+                </ul>
+            </div>
+            
+            <h3>Erreur : "Unexpected token" à l'import</h3>
+            <div class="box warning">
+                <p><strong>Cause :</strong> Le fichier n'est pas du JSON valide.</p>
+                <p><strong>Vérifier :</strong></p>
+                <ul>
+                    <li>Pas de commentaires <code>//</code> ou <code>/* */</code></li>
+                    <li>Pas de code JavaScript <code>(function(){...})()</code></li>
+                    <li>Pas de virgule après le dernier élément</li>
+                    <li>Guillemets doubles <code>"</code> partout (pas simples <code>'</code>)</li>
+                </ul>
+            </div>
+            
+            <h3>Comment voir le contenu du localStorage</h3>
+            <pre><code><span class="comment">// Dans la console du navigateur (F12)</span>
+
+<span class="comment">// Voir toutes les clés KERN</span>
+Object.keys(localStorage).filter(k => k.startsWith(<span class="string">'kern_'</span>));
+
+<span class="comment">// Voir le contenu d'une clé</span>
+JSON.parse(localStorage.getItem(<span class="string">'kern_agent_profile'</span>));
+
+<span class="comment">// Tout effacer</span>
+Object.keys(localStorage).filter(k => k.startsWith(<span class="string">'kern_'</span>))
+  .forEach(k => localStorage.removeItem(k));</code></pre>
+            
+            <h3>Reset complet</h3>
+            <pre><code><span class="comment">// Supprimer TOUTES les données KERN</span>
+Object.keys(localStorage)
+  .filter(k => k.startsWith(<span class="string">'kern_'</span>))
+  .forEach(k => localStorage.removeItem(k));
+  
+<span class="comment">// Recharger la page</span>
+location.reload();</code></pre>
+            
+            <h3>Valider un fichier JSON</h3>
+            <p>Avant d'importer, validez votre JSON :</p>
+            <ul>
+                <li><a href="https://jsonlint.com" target="_blank">jsonlint.com</a></li>
+                <li><a href="https://jsonformatter.curiousconcept.com" target="_blank">JSON Formatter</a></li>
+            </ul>
+        </section>
+        
+        <footer>
+            <p>📚 KERN Wiki Données — v1.0</p>
+            <p><a href="index.html">Retour à l'accueil</a> | <a href="import.html">Page d'import</a> | <a href="00-kern-nexus.html">NEXUS</a></p>
+        </footer>
+    </div>
+    
+    <script>
+        // Smooth scroll for nav links
+        document.querySelectorAll('nav a').forEach(a => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(a.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

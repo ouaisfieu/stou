@@ -1,0 +1,146 @@
+{
+  "kern_agent_profile": {
+    "codename": "NOUVEAU-AGENT",
+    "level": 1,
+    "xp": 0,
+    "xpToNext": 1000,
+    "clearance": 0,
+    "streak": 0,
+    "lastLogin": "2026-01-06",
+    "skills": {
+      "investigation": { "level": 1, "xp": 0 },
+      "network": { "level": 1, "xp": 0 },
+      "analysis": { "level": 1, "xp": 0 },
+      "documentation": { "level": 1, "xp": 0 },
+      "fieldwork": { "level": 1, "xp": 0 },
+      "opsec": { "level": 1, "xp": 0 }
+    },
+    "stats": {
+      "dossiersCreated": 0,
+      "entitiesCreated": 0,
+      "contactsAdded": 0,
+      "notesWritten": 0,
+      "missionsCompleted": 0,
+      "linksDiscovered": 0,
+      "daysActive": 1,
+      "totalActions": 0
+    },
+    "achievements": [],
+    "settings": {
+      "theme": "dark",
+      "notifications": true,
+      "soundEffects": true
+    }
+  },
+  "kern_dossiers": [
+    {
+      "id": "dossier_exemple_001",
+      "created": "2026-01-06T10:00:00.000Z",
+      "updated": "2026-01-06T10:00:00.000Z",
+      "title": "📁 Dossier Exemple",
+      "description": "Ceci est un dossier exemple. Modifiez-le ou supprimez-le.",
+      "status": "active",
+      "priority": "medium",
+      "tags": ["exemple", "template"],
+      "timeline": [
+        { "date": "2026-01-06", "event": "Création du dossier", "type": "start" }
+      ],
+      "evidence": [],
+      "linkedEntities": [],
+      "linkedContacts": []
+    }
+  ],
+  "kern_entities": [
+    {
+      "id": "entity_exemple_001",
+      "name": "Entité Exemple",
+      "type": "organization",
+      "subtype": "Exemple",
+      "emoji": "🏢",
+      "description": "Ceci est une entité exemple.",
+      "tags": ["exemple"],
+      "created": "2026-01-06T00:00:00.000Z",
+      "links": []
+    }
+  ],
+  "kern_network_contacts": [
+    {
+      "id": "contact_exemple_001",
+      "firstName": "Jean",
+      "lastName": "Exemple",
+      "emoji": "👤",
+      "organization": "Organisation Exemple",
+      "role": "Contact test",
+      "category": "professional",
+      "strength": 3,
+      "email": "jean@exemple.com",
+      "phone": "+32 000 00 00 00",
+      "location": "Bruxelles, Belgique",
+      "notes": "Ceci est un contact exemple.",
+      "tags": ["exemple"],
+      "lastContact": "2026-01-06",
+      "connections": []
+    }
+  ],
+  "kern_knowledge": [
+    {
+      "id": "note_exemple_001",
+      "title": "Note Exemple",
+      "content": "# Note Exemple\n\nCeci est une note exemple avec du **Markdown**.\n\n## Liens\n\nVous pouvez créer des liens vers d'autres notes avec [[Titre de la note]].\n\n#exemple #template",
+      "tags": ["exemple", "template"],
+      "created": "2026-01-06T10:00:00.000Z",
+      "updated": "2026-01-06T10:00:00.000Z",
+      "linkedNotes": []
+    }
+  ],
+  "kern_missions": [
+    {
+      "id": "mission_exemple_001",
+      "emoji": "🎯",
+      "name": "Mission Exemple",
+      "description": "Ceci est une mission exemple. Complétez les objectifs pour gagner de l'XP.",
+      "difficulty": "easy",
+      "xpReward": 100,
+      "status": "active",
+      "requirements": [
+        "Premier objectif",
+        "Deuxième objectif",
+        "Troisième objectif"
+      ],
+      "completedReqs": [],
+      "created": "2026-01-06T00:00:00.000Z"
+    }
+  ],
+  "kern_journal": [
+    {
+      "id": "journal_exemple_001",
+      "content": "Premier jour avec KERN.\n\nTout est en place. Les données sont prêtes à être modifiées.\n\n#debut #exemple",
+      "tags": ["debut", "exemple"],
+      "createdAt": "2026-01-06T10:00:00.000Z",
+      "updatedAt": "2026-01-06T10:00:00.000Z"
+    }
+  ],
+  "kern_partners": [
+    {
+      "id": "partner_exemple",
+      "emoji": "🤝",
+      "name": "Partenaire Exemple",
+      "tagline": "Un partenaire pour l'exemple",
+      "sector": "Services",
+      "revenue": 0,
+      "tier": "free",
+      "status": "prospect",
+      "website": "https://exemple.com",
+      "description": "Ceci est un partenaire exemple.",
+      "email": "contact@exemple.com",
+      "phone": "+32 000 00 00 00",
+      "address": "Bruxelles, Belgique",
+      "products": []
+    }
+  ],
+  "kern_protocole": {
+    "missions": [],
+    "flashcards": [],
+    "colruyt": null
+  }
+}

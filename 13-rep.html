@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Répertoire Entités Belges — Cartographie des Piliers</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --pilier-socialiste: #e53935;
+            --pilier-chretien: #ff9800;
+            --pilier-liberal: #2196f3;
+            --pilier-ecolo: #4caf50;
+            --pilier-communiste: #9c27b0;
+            --pilier-neutre: #607d8b;
+            --pilier-officiel: #1565c0;
+            --pilier-prive: #6d4c41;
+            --forme-asbl: #26a69a;
+            --forme-aisbl: #00897b;
+            --forme-fondation: #5c6bc0;
+            --forme-sa: #ef5350;
+            --forme-srl: #ab47bc;
+            --forme-sc: #7e57c2;
+            --forme-public: #1e88e5;
+            --forme-autre: #78909c;
+            --bg-dark: #0a0a0f;
+            --bg-panel: #0f0f18;
+            --bg-card: #14141f;
+            --border: #2a2a3a;
+            --text: #e0e0e0;
+            --text-muted: #888;
+        }
+        
+        html, body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .app {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            height: 100%;
+        }
+        
+        .sidebar {
+            background: var(--bg-panel);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #e53935, #ff9800, #4caf50, #2196f3, #9c27b0);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        
+        .title-section { flex: 1; }
+        .title { font-weight: 700; font-size: 0.9rem; }
+        .subtitle { font-size: 0.6rem; color: var(--text-muted); }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.4rem;
+            margin-top: 0.6rem;
+        }
+        
+        .stat-box {
+            background: var(--bg-card);
+            padding: 0.4rem;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .stat-value { font-size: 1rem; font-weight: 700; color: #6366f1; }
+        .stat-label { font-size: 0.55rem; color: var(--text-muted); }
+        
+        .action-row {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.5rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 0.45rem 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            color: var(--text);
+            font-size: 0.65rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.2rem;
+        }
+        
+        .btn:hover { background: var(--border); }
+        .btn.primary { background: #6366f1; border-color: #6366f1; }
+        .btn.danger { color: #f87171; }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 0.6rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab:hover { color: var(--text); }
+        .tab.active { color: #6366f1; border-bottom-color: #6366f1; }
+        
+        .filter-section {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .section-title {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.4rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        
+        .filter-item:hover { background: var(--bg-card); }
+        .filter-item.active { background: var(--bg-card); }
+        
+        .filter-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        
+        .filter-count {
+            margin-left: auto;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            background: var(--bg-dark);
+            padding: 1px 5px;
+            border-radius: 8px;
+        }
+        
+        .search-section {
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.45rem 0.6rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            color: var(--text);
+            font-size: 0.75rem;
+        }
+        
+        .search-input::placeholder { color: var(--text-muted); }
+        
+        .entity-section {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .entity-header {
+            padding: 0.5rem 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+        
+        .entity-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 0.5rem 0.5rem;
+        }
+        
+        .entity-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            padding: 0.5rem;
+            margin-bottom: 4px;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.7rem;
+            transition: all 0.15s;
+        }
+        
+        .entity-card:hover { border-color: #6366f1; }
+        .entity-card.dragging { opacity: 0.5; }
+        
+        .entity-card.pilier-socialiste { border-left: 3px solid var(--pilier-socialiste); }
+        .entity-card.pilier-chretien { border-left: 3px solid var(--pilier-chretien); }
+        .entity-card.pilier-liberal { border-left: 3px solid var(--pilier-liberal); }
+        .entity-card.pilier-ecolo { border-left: 3px solid var(--pilier-ecolo); }
+        .entity-card.pilier-communiste { border-left: 3px solid var(--pilier-communiste); }
+        .entity-card.pilier-neutre { border-left: 3px solid var(--pilier-neutre); }
+        .entity-card.pilier-officiel { border-left: 3px solid var(--pilier-officiel); }
+        .entity-card.pilier-prive { border-left: 3px solid var(--pilier-prive); }
+        
+        .entity-logo {
+            width: 32px;
+            height: 32px;
+            background: var(--border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .entity-logo img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .entity-info { flex: 1; min-width: 0; }
+        .entity-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .entity-meta { font-size: 0.6rem; color: var(--text-muted); display: flex; gap: 0.5rem; }
+        .entity-badge { font-size: 0.5rem; padding: 1px 4px; border-radius: 3px; background: var(--border); }
+        
+        .main-area {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .grid-header {
+            padding: 0.6rem 1rem;
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .grid-title { font-weight: 600; font-size: 0.85rem; }
+        .grid-subtitle { font-size: 0.65rem; color: var(--text-muted); }
+        
+        .grid-controls {
+            display: flex;
+            gap: 0.4rem;
+            margin-left: auto;
+        }
+        
+        .grid-controls select {
+            padding: 0.35rem 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            font-size: 0.7rem;
+        }
+        
+        .grid-container {
+            flex: 1;
+            overflow: auto;
+            padding: 1rem;
+            background: var(--bg-dark);
+        }
+        
+        .grid {
+            display: grid;
+            gap: 4px;
+            width: fit-content;
+            margin: 0 auto;
+        }
+        
+        .grid-cell {
+            width: 75px;
+            height: 75px;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.15s ease;
+            overflow: hidden;
+        }
+        
+        .grid-cell:hover { transform: scale(1.05); z-index: 10; }
+        .grid-cell.empty { opacity: 0.3; }
+        .grid-cell.empty:hover { opacity: 0.6; border-color: #6366f1; }
+        .grid-cell.drag-over { border-color: #6366f1; background: rgba(99, 102, 241, 0.2); }
+        
+        .grid-cell.pilier-socialiste { border-color: var(--pilier-socialiste); }
+        .grid-cell.pilier-chretien { border-color: var(--pilier-chretien); }
+        .grid-cell.pilier-liberal { border-color: var(--pilier-liberal); }
+        .grid-cell.pilier-ecolo { border-color: var(--pilier-ecolo); }
+        .grid-cell.pilier-communiste { border-color: var(--pilier-communiste); }
+        .grid-cell.pilier-neutre { border-color: var(--pilier-neutre); }
+        .grid-cell.pilier-officiel { border-color: var(--pilier-officiel); }
+        .grid-cell.pilier-prive { border-color: var(--pilier-prive); }
+        
+        .cell-logo {
+            width: 36px;
+            height: 36px;
+            background: var(--border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            margin-bottom: 2px;
+            overflow: hidden;
+        }
+        
+        .cell-logo img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .cell-name {
+            font-size: 0.5rem;
+            text-align: center;
+            line-height: 1.1;
+            max-height: 2.2em;
+            overflow: hidden;
+            padding: 0 2px;
+        }
+        
+        .cell-number {
+            position: absolute;
+            top: 2px;
+            right: 3px;
+            font-size: 0.45rem;
+            color: var(--text-muted);
+        }
+        
+        .cell-forme {
+            position: absolute;
+            bottom: 2px;
+            right: 3px;
+            font-size: 0.4rem;
+            padding: 1px 3px;
+            border-radius: 2px;
+            background: rgba(0,0,0,0.5);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1.5rem;
+        }
+        
+        .modal-overlay.open { display: flex; }
+        
+        .modal {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .modal-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .modal-logo {
+            width: 56px;
+            height: 56px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .modal-logo:hover::after {
+            content: '📷';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-logo img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .modal-title-section { flex: 1; }
+        .modal-name { font-size: 1rem; font-weight: 600; margin-bottom: 0.2rem; }
+        .modal-meta { font-size: 0.75rem; color: var(--text-muted); }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .modal-close:hover { color: var(--text); }
+        
+        .modal-body {
+            padding: 1rem 1.25rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .field-group { margin-bottom: 0.85rem; }
+        
+        .field-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+        
+        .field-input, .field-select, .field-textarea {
+            width: 100%;
+            padding: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            color: var(--text);
+            font-size: 0.8rem;
+        }
+        
+        .field-textarea { resize: vertical; min-height: 60px; }
+        
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+        }
+        
+        .field-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.6rem;
+        }
+        
+        .selector-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        
+        .selector-btn {
+            padding: 0.35rem 0.6rem;
+            border: 2px solid var(--border);
+            border-radius: 5px;
+            background: var(--bg-card);
+            color: var(--text);
+            font-size: 0.65rem;
+            cursor: pointer;
+        }
+        
+        .selector-btn:hover { border-color: var(--text-muted); }
+        .selector-btn.selected { border-width: 2px; font-weight: 600; }
+        
+        .selector-btn.socialiste.selected { border-color: var(--pilier-socialiste); background: rgba(229, 57, 53, 0.15); }
+        .selector-btn.chretien.selected { border-color: var(--pilier-chretien); background: rgba(255, 152, 0, 0.15); }
+        .selector-btn.liberal.selected { border-color: var(--pilier-liberal); background: rgba(33, 150, 243, 0.15); }
+        .selector-btn.ecolo.selected { border-color: var(--pilier-ecolo); background: rgba(76, 175, 80, 0.15); }
+        .selector-btn.communiste.selected { border-color: var(--pilier-communiste); background: rgba(156, 39, 176, 0.15); }
+        .selector-btn.neutre.selected { border-color: var(--pilier-neutre); background: rgba(96, 125, 139, 0.15); }
+        .selector-btn.officiel.selected { border-color: var(--pilier-officiel); background: rgba(21, 101, 192, 0.15); }
+        .selector-btn.prive.selected { border-color: var(--pilier-prive); background: rgba(109, 76, 65, 0.15); }
+        
+        .modal-footer {
+            padding: 0.85rem 1.25rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        
+        .modal-footer .btn { flex: none; padding: 0.5rem 1rem; font-size: 0.75rem; }
+        
+        .links-section {
+            background: var(--bg-card);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        
+        .links-section a {
+            color: #6366f1;
+            text-decoration: none;
+            font-size: 0.7rem;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+        
+        .links-section a:hover { text-decoration: underline; }
+        
+        input[type="file"] { display: none; }
+        
+        .toast {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: #4caf50;
+            color: white;
+            padding: 0.65rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            z-index: 2000;
+            display: none;
+        }
+        
+        .toast.show { display: block; animation: fadeInOut 3s ease; }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translateY(20px); }
+            10%, 90% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
+        }
+        
+        .empty-state a { color: #6366f1; }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-row">
+                    <div class="logo">🏛️</div>
+                    <div class="title-section">
+                        <div class="title">Répertoire Entités</div>
+                        <div class="subtitle">Belgique — Piliers & Formes juridiques</div>
+                    </div>
+                </div>
+                
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <div class="stat-value" id="statTotal">0</div>
+                        <div class="stat-label">TOTAL</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="statPlaced">0</div>
+                        <div class="stat-label">PLACÉES</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="statPending">0</div>
+                        <div class="stat-label">À CLASSER</div>
+                    </div>
+                </div>
+                
+                <div class="action-row">
+                    <button class="btn" onclick="document.getElementById('fileInput').click()">📥 Import</button>
+                    <button class="btn" onclick="exportJSON()">📤 Export</button>
+                    <button class="btn primary" onclick="openAddModal()">+ Ajouter</button>
+                </div>
+                <div class="action-row">
+                    <button class="btn" onclick="showSourcesModal()">📚 Sources</button>
+                    <button class="btn danger" onclick="clearAllData()">🗑️ Reset</button>
+                </div>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('piliers')">Piliers</button>
+                <button class="tab" onclick="switchTab('formes')">Formes juridiques</button>
+            </div>
+            
+            <div class="filter-section" id="piliersFilter">
+                <div class="section-title">Filtrer par pilier</div>
+                <div class="filter-item active" onclick="filterByPilier(null)">
+                    <div class="filter-color" style="background: linear-gradient(135deg, #e53935, #2196f3, #4caf50);"></div>
+                    <span>Tous</span>
+                    <span class="filter-count" id="countAll">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByPilier('socialiste')">
+                    <div class="filter-color" style="background: var(--pilier-socialiste);"></div>
+                    <span>Socialiste</span>
+                    <span class="filter-count" id="countSocialiste">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByPilier('chretien')">
+                    <div class="filter-color" style="background: var(--pilier-chretien);"></div>
+                    <span>Chrétien</span>
+                    <span class="filter-count" id="countChretien">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByPilier('liberal')">
+                    <div class="filter-color" style="background: var(--pilier-liberal);"></div>
+                    <span>Libéral</span>
+                    <span class="filter-count" id="countLiberal">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByPilier('ecolo')">
+                    <div class="filter-color" style="background: var(--pilier-ecolo);"></div>
+                    <span>Écologiste</span>
+                    <span class="filter-count" id="countEcolo">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByPilier('communiste')">
+                    <div class="filter-color" style="background: var(--pilier-communiste);"></div>
+                    <span>Communiste</span>
+                    <span class="filter-count" id="countCommuniste">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByPilier('officiel')">
+                    <div class="filter-color" style="background: var(--pilier-officiel);"></div>
+                    <span>Officiel/Public</span>
+                    <span class="filter-count" id="countOfficiel">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByPilier('prive')">
+                    <div class="filter-color" style="background: var(--pilier-prive);"></div>
+                    <span>Privé indépendant</span>
+                    <span class="filter-count" id="countPrive">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByPilier('neutre')">
+                    <div class="filter-color" style="background: var(--pilier-neutre);"></div>
+                    <span>Neutre/Pluraliste</span>
+                    <span class="filter-count" id="countNeutre">0</span>
+                </div>
+            </div>
+            
+            <div class="filter-section" id="formesFilter" style="display:none;">
+                <div class="section-title">Filtrer par forme</div>
+                <div class="filter-item active" onclick="filterByForme(null)">
+                    <div class="filter-color" style="background: linear-gradient(135deg, #26a69a, #5c6bc0);"></div>
+                    <span>Toutes</span>
+                    <span class="filter-count" id="countAllFormes">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByForme('ASBL')">
+                    <div class="filter-color" style="background: var(--forme-asbl);"></div>
+                    <span>ASBL</span>
+                    <span class="filter-count" id="countASBL">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByForme('AISBL')">
+                    <div class="filter-color" style="background: var(--forme-aisbl);"></div>
+                    <span>AISBL</span>
+                    <span class="filter-count" id="countAISBL">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByForme('Fondation')">
+                    <div class="filter-color" style="background: var(--forme-fondation);"></div>
+                    <span>Fondation</span>
+                    <span class="filter-count" id="countFondation">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByForme('SA')">
+                    <div class="filter-color" style="background: var(--forme-sa);"></div>
+                    <span>SA</span>
+                    <span class="filter-count" id="countSA">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByForme('SRL')">
+                    <div class="filter-color" style="background: var(--forme-srl);"></div>
+                    <span>SRL</span>
+                    <span class="filter-count" id="countSRL">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByForme('SC')">
+                    <div class="filter-color" style="background: var(--forme-sc);"></div>
+                    <span>SC (Coopérative)</span>
+                    <span class="filter-count" id="countSC">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByForme('Public')">
+                    <div class="filter-color" style="background: var(--forme-public);"></div>
+                    <span>Organisme public</span>
+                    <span class="filter-count" id="countPublic">0</span>
+                </div>
+                <div class="filter-item" onclick="filterByForme('Autre')">
+                    <div class="filter-color" style="background: var(--forme-autre);"></div>
+                    <span>Autre</span>
+                    <span class="filter-count" id="countAutreForme">0</span>
+                </div>
+            </div>
+            
+            <div class="search-section">
+                <input type="text" class="search-input" placeholder="🔍 Rechercher..." id="searchInput" oninput="handleSearch()">
+            </div>
+            
+            <div class="entity-section">
+                <div class="entity-header">
+                    <span id="listTitle">Non placées</span>
+                    <span id="listCount">0 entités</span>
+                </div>
+                <div class="entity-list" id="entityList"></div>
+            </div>
+        </aside>
+        
+        <main class="main-area">
+            <div class="grid-header">
+                <div>
+                    <div class="grid-title">Damier des entités</div>
+                    <div class="grid-subtitle">Glissez-déposez depuis la liste ou cliquez sur une case</div>
+                </div>
+                
+                <div class="grid-controls">
+                    <select id="gridCols" onchange="renderGrid()">
+                        <option value="10">10 col</option>
+                        <option value="15">15 col</option>
+                        <option value="20" selected>20 col</option>
+                        <option value="25">25 col</option>
+                    </select>
+                    <select id="gridSize" onchange="renderGrid()">
+                        <option value="500" selected>500 cases</option>
+                        <option value="250">250 cases</option>
+                        <option value="100">100 cases</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="grid-container" id="gridContainer">
+                <div class="grid" id="grid"></div>
+            </div>
+        </main>
+    </div>
+    
+    <div class="modal-overlay" id="entityModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-logo" id="modalLogo" onclick="document.getElementById('logoInput').click()">🏛️</div>
+                <div class="modal-title-section">
+                    <div class="modal-name" id="modalName">Entité</div>
+                    <div class="modal-meta" id="modalMeta"></div>
+                </div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="field-group">
+                    <label class="field-label">Pilier</label>
+                    <div class="selector-group" id="pilierSelector">
+                        <button type="button" class="selector-btn socialiste" onclick="selectPilier('socialiste')">🔴 Socialiste</button>
+                        <button type="button" class="selector-btn chretien" onclick="selectPilier('chretien')">🟠 Chrétien</button>
+                        <button type="button" class="selector-btn liberal" onclick="selectPilier('liberal')">🔵 Libéral</button>
+                        <button type="button" class="selector-btn ecolo" onclick="selectPilier('ecolo')">🟢 Écolo</button>
+                        <button type="button" class="selector-btn communiste" onclick="selectPilier('communiste')">🟣 Communiste</button>
+                        <button type="button" class="selector-btn officiel" onclick="selectPilier('officiel')">🏛️ Officiel</button>
+                        <button type="button" class="selector-btn prive" onclick="selectPilier('prive')">🏢 Privé</button>
+                        <button type="button" class="selector-btn neutre" onclick="selectPilier('neutre')">⚪ Neutre</button>
+                    </div>
+                </div>
+                
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label">Nom</label>
+                        <input type="text" class="field-input" id="fieldNom">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Sigle</label>
+                        <input type="text" class="field-input" id="fieldSigle">
+                    </div>
+                </div>
+                
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label">N° Entreprise (BCE)</label>
+                        <input type="text" class="field-input" id="fieldBCE" placeholder="0XXX.XXX.XXX">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Forme juridique</label>
+                        <select class="field-select" id="fieldForme">
+                            <option value="">— Non spécifiée —</option>
+                            <option value="ASBL">ASBL</option>
+                            <option value="AISBL">AISBL</option>
+                            <option value="Fondation">Fondation</option>
+                            <option value="SA">SA (Société Anonyme)</option>
+                            <option value="SRL">SRL (ex-SPRL)</option>
+                            <option value="SC">SC (Coopérative)</option>
+                            <option value="SNC">SNC</option>
+                            <option value="SComm">Sté en Commandite</option>
+                            <option value="Public">Organisme public</option>
+                            <option value="PP">Personne physique</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="field-group">
+                    <label class="field-label">Adresse</label>
+                    <input type="text" class="field-input" id="fieldAdresse">
+                </div>
+                
+                <div class="field-row-3">
+                    <div class="field-group">
+                        <label class="field-label">Code postal</label>
+                        <input type="text" class="field-input" id="fieldCP">
+                    </div>
+                    <div class="field-group" style="grid-column: span 2;">
+                        <label class="field-label">Localité</label>
+                        <input type="text" class="field-input" id="fieldLocalite">
+                    </div>
+                </div>
+                
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label">Téléphone</label>
+                        <input type="text" class="field-input" id="fieldTel">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Email</label>
+                        <input type="email" class="field-input" id="fieldEmail">
+                    </div>
+                </div>
+                
+                <div class="field-group">
+                    <label class="field-label">Site web</label>
+                    <input type="url" class="field-input" id="fieldWeb">
+                </div>
+                
+                <div class="field-row">
+                    <div class="field-group">
+                        <label class="field-label">Secteur / Activité</label>
+                        <input type="text" class="field-input" id="fieldSecteur">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Source données</label>
+                        <input type="text" class="field-input" id="fieldSource" placeholder="Ex: BCE, FWB EP, manuel...">
+                    </div>
+                </div>
+                
+                <div class="field-group">
+                    <label class="field-label">Notes</label>
+                    <textarea class="field-textarea" id="fieldNotes"></textarea>
+                </div>
+                
+                <div class="links-section" id="linksSection">
+                    <div class="field-label">Liens utiles</div>
+                    <a href="#" id="linkBCE" target="_blank" style="display:none;">🔗 Fiche BCE/KBO</a>
+                    <a href="#" id="linkMoniteur" target="_blank" style="display:none;">📜 Moniteur Belge</a>
+                    <a href="#" id="linkBNB" target="_blank" style="display:none;">📊 Comptes annuels (BNB)</a>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn danger" onclick="deleteEntity()" style="margin-right:auto;">🗑️ Supprimer</button>
+                <button class="btn" onclick="closeModal()">Annuler</button>
+                <button class="btn primary" onclick="saveEntity()">💾 Enregistrer</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="sourcesModal">
+        <div class="modal" style="max-width:550px;">
+            <div class="modal-header">
+                <div class="modal-title-section">
+                    <div class="modal-name">📚 Sources Open Data Belges</div>
+                    <div class="modal-meta">Données publiques disponibles</div>
+                </div>
+                <button class="modal-close" onclick="closeSourcesModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="field-group">
+                    <div class="field-label">🏛️ BCE / KBO Open Data</div>
+                    <p style="font-size:0.75rem;margin-bottom:0.5rem;">Toutes les entités belges (1.5M+) : ASBL, SA, SRL, SC, fondations, indépendants, organismes publics.</p>
+                    <a href="https://kbopub.economie.fgov.be/kbo-open-data/login?lang=fr" target="_blank" class="btn" style="display:inline-flex;width:auto;">Accéder (inscription gratuite)</a>
+                </div>
+                
+                <div class="field-group">
+                    <div class="field-label">📖 Éducation Permanente FWB</div>
+                    <p style="font-size:0.75rem;margin-bottom:0.5rem;">274 associations reconnues en éducation permanente.</p>
+                    <a href="https://educationpermanente.cfwb.be/fileadmin/sites/edu_perm/uploads/Document/Listing_associations/RepertoirecoordonneesAEP_SITE_21-10-25.xlsx" target="_blank" class="btn" style="display:inline-flex;width:auto;">Télécharger XLSX</a>
+                </div>
+                
+                <div class="field-group">
+                    <div class="field-label">🇧🇪 data.gov.be</div>
+                    <p style="font-size:0.75rem;margin-bottom:0.5rem;">Portail fédéral avec 15000+ datasets.</p>
+                    <a href="https://data.gov.be/fr" target="_blank" class="btn" style="display:inline-flex;width:auto;">Explorer</a>
+                </div>
+                
+                <div class="field-group">
+                    <div class="field-label">📊 Statbel</div>
+                    <p style="font-size:0.75rem;margin-bottom:0.5rem;">Statistiques officielles belges.</p>
+                    <a href="https://statbel.fgov.be/fr/open-data" target="_blank" class="btn" style="display:inline-flex;width:auto;">Explorer</a>
+                </div>
+                
+                <div class="field-group">
+                    <div class="field-label">🔍 Recherche BCE individuelle</div>
+                    <p style="font-size:0.75rem;margin-bottom:0.5rem;">Rechercher une entité par nom ou numéro.</p>
+                    <a href="https://kbopub.economie.fgov.be/kbopub/zoeknaamfonetischform.html?lang=fr" target="_blank" class="btn" style="display:inline-flex;width:auto;">Public Search</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+    
+    <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.json" onchange="importFile(event)">
+    <input type="file" id="logoInput" accept="image/*" onchange="handleLogoUpload(event)">
+
+<script>
+const STORAGE_KEY = 'repertoire_entites_be';
+let GRID_SIZE = 500;
+let data = { entities: [], gridPositions: {} };
+let currentEntityId = null;
+let currentPilier = null;
+let draggedEntityId = null;
+let searchQuery = '';
+let filterPilier = null;
+let filterForme = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        try {
+            data = JSON.parse(saved);
+            if (!data.gridPositions) data.gridPositions = {};
+            if (!data.entities) data.entities = [];
+        } catch (e) { console.error(e); }
+    }
+    renderAll();
+});
+
+function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function generateId() { return 'e_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6); }
+
+function renderAll() { renderGrid(); renderEntityList(); updateStats(); }
+
+function updateStats() {
+    const total = data.entities.length;
+    const placed = Object.keys(data.gridPositions).length;
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statPlaced').textContent = placed;
+    document.getElementById('statPending').textContent = total - placed;
+    
+    const pc = {}, fc = {};
+    data.entities.forEach(e => {
+        if (e.pilier) pc[e.pilier] = (pc[e.pilier] || 0) + 1;
+        if (e.forme) fc[e.forme] = (fc[e.forme] || 0) + 1;
+    });
+    
+    document.getElementById('countAll').textContent = total;
+    ['socialiste','chretien','liberal','ecolo','communiste','officiel','prive','neutre'].forEach(p => {
+        const el = document.getElementById('count' + p.charAt(0).toUpperCase() + p.slice(1));
+        if (el) el.textContent = pc[p] || 0;
+    });
+    
+    document.getElementById('countAllFormes').textContent = total;
+    ['ASBL','AISBL','Fondation','SA','SRL','SC','Public'].forEach(f => {
+        const el = document.getElementById('count' + f);
+        if (el) el.textContent = fc[f] || 0;
+    });
+    document.getElementById('countAutreForme').textContent = (fc.Autre||0)+(fc.PP||0)+(fc.SNC||0)+(fc.SComm||0);
+}
+
+function renderGrid() {
+    GRID_SIZE = parseInt(document.getElementById('gridSize').value);
+    const cols = parseInt(document.getElementById('gridCols').value);
+    const grid = document.getElementById('grid');
+    grid.style.gridTemplateColumns = `repeat(${cols}, 75px)`;
+    
+    const cellMap = {};
+    for (const [id, idx] of Object.entries(data.gridPositions)) {
+        if (idx < GRID_SIZE) cellMap[idx] = id;
+    }
+    
+    let html = '';
+    for (let i = 0; i < GRID_SIZE; i++) {
+        const eid = cellMap[i];
+        const e = eid ? data.entities.find(x => x.id === eid) : null;
+        
+        if (e && ((filterPilier && e.pilier !== filterPilier) || (filterForme && e.forme !== filterForme))) {
+            html += `<div class="grid-cell empty" data-index="${i}"><span class="cell-number">${i+1}</span></div>`;
+            continue;
+        }
+        
+        if (e) {
+            const pc = e.pilier ? `pilier-${e.pilier}` : '';
+            const logo = e.logo ? `<img src="${e.logo}">` : (e.sigle || e.nom.substring(0,2));
+            html += `<div class="grid-cell ${pc}" data-index="${i}" onclick="openModal('${e.id}')" ondragover="handleDragOver(event)" ondrop="handleDrop(event,${i})" ondragleave="handleDragLeave(event)">
+                <span class="cell-number">${i+1}</span>
+                <div class="cell-logo">${logo}</div>
+                <div class="cell-name">${e.sigle || e.nom.substring(0,12)}</div>
+                ${e.forme ? `<span class="cell-forme">${e.forme}</span>` : ''}
+            </div>`;
+        } else {
+            html += `<div class="grid-cell empty" data-index="${i}" ondragover="handleDragOver(event)" ondrop="handleDrop(event,${i})" ondragleave="handleDragLeave(event)"><span class="cell-number">${i+1}</span></div>`;
+        }
+    }
+    grid.innerHTML = html;
+}
+
+function renderEntityList() {
+    const container = document.getElementById('entityList');
+    const placedIds = new Set(Object.keys(data.gridPositions));
+    let list = data.entities.filter(e => !placedIds.has(e.id));
+    
+    if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        list = list.filter(e => e.nom.toLowerCase().includes(q) || (e.sigle && e.sigle.toLowerCase().includes(q)) || (e.bce && e.bce.includes(q)));
+    }
+    if (filterPilier) list = list.filter(e => e.pilier === filterPilier);
+    if (filterForme) list = list.filter(e => e.forme === filterForme);
+    
+    document.getElementById('listCount').textContent = `${list.length} entités`;
+    
+    if (list.length === 0 && data.entities.length === 0) {
+        container.innerHTML = `<div class="empty-state"><div style="font-size:2rem;margin-bottom:0.5rem;">📂</div><div style="font-size:0.75rem;margin-bottom:0.75rem;">Importez un fichier pour commencer</div><div style="font-size:0.65rem;line-height:1.5;"><a href="https://educationpermanente.cfwb.be/fileadmin/sites/edu_perm/uploads/Document/Listing_associations/RepertoirecoordonneesAEP_SITE_21-10-25.xlsx" target="_blank">📥 Fichier EP officiel (XLSX)</a><br><a href="https://kbopub.economie.fgov.be/kbo-open-data/login?lang=fr" target="_blank">🏛️ BCE Open Data</a></div></div>`;
+        return;
+    }
+    if (list.length === 0) {
+        container.innerHTML = `<div class="empty-state" style="font-size:0.75rem;">✅ Toutes placées ou filtrées</div>`;
+        return;
+    }
+    
+    container.innerHTML = list.slice(0,200).map(e => {
+        const pc = e.pilier ? `pilier-${e.pilier}` : '';
+        const logo = e.logo ? `<img src="${e.logo}">` : (e.sigle ? e.sigle.substring(0,2) : '🏛️');
+        return `<div class="entity-card ${pc}" draggable="true" ondragstart="handleDragStart(event,'${e.id}')" ondragend="handleDragEnd(event)" onclick="openModal('${e.id}')">
+            <div class="entity-logo">${logo}</div>
+            <div class="entity-info">
+                <div class="entity-name">${e.nom}</div>
+                <div class="entity-meta">${e.sigle?`<span>${e.sigle}</span>`:''}${e.forme?`<span class="entity-badge">${e.forme}</span>`:''}${e.localite?`<span>${e.localite}</span>`:''}</div>
+            </div>
+        </div>`;
+    }).join('') + (list.length > 200 ? `<div style="text-align:center;padding:0.5rem;font-size:0.65rem;color:var(--text-muted);">+ ${list.length-200} autres...</div>` : '');
+}
+
+function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (tab==='piliers'?i===0:i===1)));
+    document.getElementById('piliersFilter').style.display = tab==='piliers'?'block':'none';
+    document.getElementById('formesFilter').style.display = tab==='formes'?'block':'none';
+    filterPilier = null; filterForme = null;
+    renderAll();
+}
+
+function filterByPilier(p) {
+    filterPilier = p; filterForme = null;
+    document.querySelectorAll('#piliersFilter .filter-item').forEach((el,i) => el.classList.toggle('active', p ? el.textContent.toLowerCase().includes(p) : i===0));
+    renderAll();
+}
+
+function filterByForme(f) {
+    filterForme = f; filterPilier = null;
+    document.querySelectorAll('#formesFilter .filter-item').forEach((el,i) => el.classList.toggle('active', f ? el.textContent.includes(f) : i===0));
+    renderAll();
+}
+
+function handleSearch() { searchQuery = document.getElementById('searchInput').value; renderEntityList(); }
+
+function handleDragStart(e, id) { draggedEntityId = id; e.target.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; }
+function handleDragEnd(e) { e.target.classList.remove('dragging'); draggedEntityId = null; }
+function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
+function handleDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function handleDrop(e, idx) {
+    e.preventDefault(); e.currentTarget.classList.remove('drag-over');
+    if (!draggedEntityId) return;
+    for (const [id, i] of Object.entries(data.gridPositions)) { if (i === idx) { delete data.gridPositions[id]; break; } }
+    delete data.gridPositions[draggedEntityId];
+    data.gridPositions[draggedEntityId] = idx;
+    saveData(); renderAll(); showToast('Entité placée');
+}
+
+function openModal(id) {
+    currentEntityId = id;
+    const e = data.entities.find(x => x.id === id);
+    if (!e) return;
+    
+    document.getElementById('modalName').textContent = e.nom;
+    document.getElementById('modalMeta').textContent = [e.sigle, e.forme, e.localite].filter(Boolean).join(' • ');
+    const logoEl = document.getElementById('modalLogo');
+    logoEl.innerHTML = e.logo ? `<img src="${e.logo}">` : (e.sigle ? e.sigle.substring(0,2) : '🏛️');
+    
+    ['Nom','Sigle','BCE','Adresse','CP','Localite','Tel','Email','Web','Secteur','Source','Notes'].forEach(f => {
+        const el = document.getElementById('field'+f);
+        if (el) el.value = e[f.toLowerCase()] || '';
+    });
+    document.getElementById('fieldForme').value = e.forme || '';
+    
+    currentPilier = e.pilier || null;
+    updatePilierButtons();
+    updateLinks(e);
+    document.getElementById('entityModal').classList.add('open');
+}
+
+function openAddModal() {
+    currentEntityId = null; currentPilier = null;
+    document.getElementById('modalName').textContent = 'Nouvelle entité';
+    document.getElementById('modalMeta').textContent = '';
+    document.getElementById('modalLogo').textContent = '🏛️';
+    ['Nom','Sigle','BCE','Adresse','CP','Localite','Tel','Email','Web','Secteur','Notes'].forEach(f => {
+        const el = document.getElementById('field'+f);
+        if (el) el.value = '';
+    });
+    document.getElementById('fieldForme').value = '';
+    document.getElementById('fieldSource').value = 'manuel';
+    updatePilierButtons(); updateLinks(null);
+    document.getElementById('entityModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('entityModal').classList.remove('open'); currentEntityId = null; currentPilier = null; }
+
+function selectPilier(p) { currentPilier = currentPilier === p ? null : p; updatePilierButtons(); }
+
+function updatePilierButtons() {
+    document.querySelectorAll('#pilierSelector .selector-btn').forEach(btn => {
+        const cls = [...btn.classList].find(c => ['socialiste','chretien','liberal','ecolo','communiste','officiel','prive','neutre'].includes(c));
+        btn.classList.toggle('selected', cls === currentPilier);
+    });
+}
+
+function updateLinks(e) {
+    const lBCE = document.getElementById('linkBCE'), lMon = document.getElementById('linkMoniteur'), lBNB = document.getElementById('linkBNB');
+    if (e && e.bce) {
+        const n = e.bce.replace(/\D/g, '');
+        lBCE.href = `https://kbopub.economie.fgov.be/kbopub/toonondernemingps.html?ondernemingsnummer=${n}`; lBCE.style.display = 'block';
+        lMon.href = `https://www.ejustice.just.fgov.be/cgi_tsv/tsv_rech.pl?language=fr&btw=${n}`; lMon.style.display = 'block';
+        lBNB.href = `https://consult.cbso.nbb.be/consult-enterprise/${n}`; lBNB.style.display = 'block';
+    } else { lBCE.style.display = 'none'; lMon.style.display = 'none'; lBNB.style.display = 'none'; }
+}
+
+function saveEntity() {
+    const nom = document.getElementById('fieldNom').value.trim();
+    if (!nom) { alert('Nom requis'); return; }
+    
+    const ed = {
+        nom,
+        sigle: document.getElementById('fieldSigle').value.trim() || null,
+        bce: document.getElementById('fieldBCE').value.trim() || null,
+        forme: document.getElementById('fieldForme').value || null,
+        adresse: document.getElementById('fieldAdresse').value.trim() || null,
+        cp: document.getElementById('fieldCP').value.trim() || null,
+        localite: document.getElementById('fieldLocalite').value.trim() || null,
+        tel: document.getElementById('fieldTel').value.trim() || null,
+        email: document.getElementById('fieldEmail').value.trim() || null,
+        web: document.getElementById('fieldWeb').value.trim() || null,
+        secteur: document.getElementById('fieldSecteur').value.trim() || null,
+        source: document.getElementById('fieldSource').value.trim() || null,
+        notes: document.getElementById('fieldNotes').value.trim() || null,
+        pilier: currentPilier
+    };
+    
+    if (currentEntityId) {
+        const idx = data.entities.findIndex(x => x.id === currentEntityId);
+        if (idx !== -1) data.entities[idx] = { ...data.entities[idx], ...ed };
+    } else {
+        ed.id = generateId();
+        data.entities.push(ed);
+    }
+    
+    saveData(); closeModal(); renderAll(); showToast('Enregistré');
+}
+
+function deleteEntity() {
+    if (!currentEntityId || !confirm('Supprimer ?')) return;
+    data.entities = data.entities.filter(x => x.id !== currentEntityId);
+    delete data.gridPositions[currentEntityId];
+    saveData(); closeModal(); renderAll(); showToast('Supprimé');
+}
+
+function handleLogoUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+        document.getElementById('modalLogo').innerHTML = `<img src="${ev.target.result}">`;
+        if (currentEntityId) {
+            const ent = data.entities.find(x => x.id === currentEntityId);
+            if (ent) { ent.logo = ev.target.result; saveData(); }
+        }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+}
+
+function showSourcesModal() { document.getElementById('sourcesModal').classList.add('open'); }
+function closeSourcesModal() { document.getElementById('sourcesModal').classList.remove('open'); }
+
+function importFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const fn = file.name.toLowerCase();
+    if (fn.endsWith('.json')) importJSON(file);
+    else if (fn.endsWith('.xlsx') || fn.endsWith('.xls')) importXLSX(file);
+    else if (fn.endsWith('.csv')) importCSV(file);
+    else alert('Format non supporté');
+    e.target.value = '';
+}
+
+function importXLSX(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+            const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+            processImport(json, 'XLSX');
+        } catch (err) { alert('Erreur XLSX: ' + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+function importCSV(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            let txt = e.target.result.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
+            const lines = txt.split('\n').filter(l => l.trim());
+            if (lines.length < 2) { alert('CSV vide'); return; }
+            const sep = lines[0].includes(';') ? ';' : ',';
+            const headers = lines[0].split(sep).map(h => h.trim().replace(/^"|"$/g, ''));
+            const json = [];
+            for (let i = 1; i < lines.length; i++) {
+                const vals = lines[i].split(sep).map(v => v.trim().replace(/^"|"$/g, ''));
+                const row = {};
+                headers.forEach((h, idx) => row[h] = vals[idx] || '');
+                json.push(row);
+            }
+            processImport(json, 'CSV');
+        } catch (err) { alert('Erreur CSV: ' + err.message); }
+    };
+    reader.readAsText(file);
+}
+
+function importJSON(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const imp = JSON.parse(e.target.result);
+            if (imp.entities && Array.isArray(imp.entities)) {
+                data = imp;
+                if (!data.gridPositions) data.gridPositions = {};
+                saveData(); renderAll(); showToast(`${data.entities.length} entités chargées`);
+            } else alert('Format JSON invalide');
+        } catch (err) { alert('Erreur JSON: ' + err.message); }
+    };
+    reader.readAsText(file);
+}
+
+function processImport(json, src) {
+    if (!json || !json.length) { alert('Aucune donnée'); return; }
+    let added = 0, skipped = 0;
+    
+    for (const row of json) {
+        const nom = row['NOM_ASSOCIATION'] || row['Denomination'] || row['Dénomination'] || row['Nom'] || row['Name'] || '';
+        if (!nom.trim()) { skipped++; continue; }
+        if (data.entities.some(e => e.nom.toLowerCase().trim() === nom.toLowerCase().trim())) { skipped++; continue; }
+        
+        let forme = row['JuridicalForm'] || row['Forme juridique'] || '';
+        if (!forme) {
+            const nl = nom.toLowerCase();
+            if (nl.includes('asbl') || nl.includes('vzw')) forme = 'ASBL';
+            else if (nl.includes('aisbl')) forme = 'AISBL';
+            else if (nl.includes('fondation') || nl.includes('stichting')) forme = 'Fondation';
+            else if (nl.includes(' sa ') || nl.includes(' nv ')) forme = 'SA';
+            else if (nl.includes(' srl ') || nl.includes(' bv ')) forme = 'SRL';
+            else if (nl.includes('coopérative') || nl.includes(' sc ') || nl.includes(' cv ')) forme = 'SC';
+        }
+        
+        data.entities.push({
+            id: generateId(),
+            nom: nom.trim(),
+            sigle: (row['Sigle'] || row['Abbreviation'] || '').toString().trim() || null,
+            bce: (row['EnterpriseNumber'] || row['BCE'] || row['KBO'] || '').toString().trim() || null,
+            forme: forme || null,
+            adresse: (row['ADRESSE'] || row['Adresse'] || row['StreetAddress'] || '').toString().trim() || null,
+            cp: (row['C.P.'] || row['CP'] || row['Zipcode'] || '').toString().trim() || null,
+            localite: (row['LOCALITE'] || row['Localité'] || row['Municipality'] || '').toString().trim() || null,
+            tel: (row['TEL.'] || row['Tel'] || row['Phone'] || '').toString().trim() || null,
+            email: (row['E.MAIL'] || row['Email'] || '').toString().trim() || null,
+            web: (row['Site Web'] || row['Website'] || '').toString().trim() || null,
+            secteur: (row['AXES'] || row['Activity'] || row['RECONNAISSANCE'] || '').toString().trim() || null,
+            source: src,
+            pilier: null,
+            logo: null,
+            notes: null
+        });
+        added++;
+    }
+    
+    saveData(); renderAll();
+    showToast(`${added} importées` + (skipped ? ` (${skipped} ignorées)` : ''));
+}
+
+function exportJSON() {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'repertoire-entites-export.json';
+    a.click();
+    showToast('Export téléchargé');
+}
+
+function clearAllData() {
+    if (!confirm('Supprimer toutes les données ?')) return;
+    data = { entities: [], gridPositions: {} };
+    saveData(); renderAll(); showToast('Données effacées');
+}
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }));
+</script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 B!Mi — Configuration</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: #12121a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .card h2 {
+            color: #4ade80;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card p {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .status.connected {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid #4ade80;
+        }
+        .status.disconnected {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid #fbbf24;
+        }
+        .status-icon {
+            font-size: 2rem;
+        }
+        .status-text h3 {
+            color: #fff;
+            font-size: 1rem;
+        }
+        .status-text p {
+            margin: 0;
+            font-size: 0.85rem;
+        }
+        
+        .input-group {
+            margin-bottom: 1rem;
+        }
+        .input-group label {
+            display: block;
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+        .input-group input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: monospace;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .btn.primary {
+            background: #4ade80;
+            color: #000;
+        }
+        .btn.primary:hover {
+            background: #22c55e;
+        }
+        .btn.danger {
+            background: #ef4444;
+            color: #fff;
+        }
+        .btn.danger:hover {
+            background: #dc2626;
+        }
+        .btn.secondary {
+            background: #333;
+            color: #fff;
+            text-decoration: none;
+        }
+        .btn.secondary:hover {
+            background: #444;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .security-list {
+            list-style: none;
+        }
+        .security-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        .security-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4ade80;
+        }
+        
+        .warning-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .warning-box h4 {
+            color: #fbbf24;
+            margin-bottom: 0.5rem;
+        }
+        .warning-box p {
+            margin: 0;
+            font-size: 0.85rem;
+        }
+        
+        .cost-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+        }
+        .cost-table th, .cost-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .cost-table th {
+            color: #888;
+        }
+        .cost-table td:last-child {
+            color: #4ade80;
+            font-weight: bold;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: none;
+        }
+        .message.success {
+            display: block;
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid #4ade80;
+            color: #4ade80;
+        }
+        .message.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        footer a {
+            color: #6366f1;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 B!Mi</h1>
+        <p class="subtitle">Assistant KERN — Configuration</p>
+        
+        <!-- Status -->
+        <div id="statusCard" class="card">
+            <div id="status" class="status disconnected">
+                <div class="status-icon">🔌</div>
+                <div class="status-text">
+                    <h3>Non connecté</h3>
+                    <p>Entre ta clé API OpenAI pour activer B!Mi</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- API Key Input -->
+        <div class="card" id="keyInputCard">
+            <h2>🔑 Clé API OpenAI</h2>
+            <p>B!Mi utilise GPT-4o-mini pour répondre à tes questions sur KERN.</p>
+            
+            <div class="input-group">
+                <label>Clé API (commence par sk-...)</label>
+                <input type="password" id="apiKeyInput" placeholder="sk-proj-...">
+            </div>
+            
+            <div class="actions">
+                <button class="btn primary" onclick="saveKey()">💾 Enregistrer</button>
+                <button class="btn danger" onclick="removeKey()" id="removeBtn" style="display:none">🗑️ Supprimer</button>
+                <button class="btn secondary" onclick="testKey()" id="testBtn" style="display:none">🧪 Tester</button>
+            </div>
+            
+            <div id="message" class="message"></div>
+            
+            <p style="margin-top:1rem">
+                <a href="https://platform.openai.com/api-keys" target="_blank" style="color:#6366f1">
+                    → Créer une clé sur OpenAI
+                </a>
+            </p>
+        </div>
+        
+        <!-- Security -->
+        <div class="card">
+            <h2>🔐 Sécurité</h2>
+            <ul class="security-list">
+                <li>Ta clé reste dans <strong>ton navigateur</strong> (localStorage)</li>
+                <li>Appels directs à OpenAI, <strong>pas de serveur intermédiaire</strong></li>
+                <li>Code open source, vérifiable</li>
+                <li>Tu peux supprimer ta clé à tout moment</li>
+            </ul>
+            
+            <div class="warning-box">
+                <h4>⚠️ IMPORTANT : Limite tes dépenses !</h4>
+                <p>
+                    Configure un budget mensuel sur OpenAI pour éviter les surprises :<br>
+                    <a href="https://platform.openai.com/settings/organization/limits" target="_blank" style="color:#fbbf24">
+                        → OpenAI Settings → Limits → Monthly budget
+                    </a>
+                </p>
+            </div>
+        </div>
+        
+        <!-- Costs -->
+        <div class="card">
+            <h2>💰 Coûts estimés</h2>
+            <p>GPT-4o-mini est très économique :</p>
+            
+            <table class="cost-table">
+                <tr>
+                    <th>Usage</th>
+                    <th>Questions/jour</th>
+                    <th>Coût/mois</th>
+                </tr>
+                <tr>
+                    <td>Léger</td>
+                    <td>10</td>
+                    <td>~$0.30</td>
+                </tr>
+                <tr>
+                    <td>Normal</td>
+                    <td>50</td>
+                    <td>~$1.50</td>
+                </tr>
+                <tr>
+                    <td>Intensif</td>
+                    <td>200</td>
+                    <td>~$6.00</td>
+                </tr>
+            </table>
+            
+            <p style="color:#4ade80;font-weight:bold;margin-top:1rem">
+                Avec $50, tu peux poser ~50,000 questions ! 🎉
+            </p>
+        </div>
+        
+        <!-- How it works -->
+        <div class="card">
+            <h2>❓ Comment ça marche</h2>
+            <ol style="color:#aaa;font-size:0.9rem;padding-left:1.5rem">
+                <li>Tu poses une question à B!Mi</li>
+                <li>B!Mi envoie ta question + la doc KERN à GPT-4o-mini</li>
+                <li>GPT répond en se basant sur la documentation</li>
+                <li>B!Mi n'a PAS accès à tes données personnelles</li>
+            </ol>
+        </div>
+        
+        <footer>
+            <a href="00-kern-nexus.html">← Retour à NEXUS</a>
+        </footer>
+    </div>
+    
+    <script>
+        const STORAGE_KEY = 'bimi_api_key';
+        
+        function getKey() {
+            return localStorage.getItem(STORAGE_KEY);
+        }
+        
+        function updateUI() {
+            const key = getKey();
+            const status = document.getElementById('status');
+            const input = document.getElementById('apiKeyInput');
+            const removeBtn = document.getElementById('removeBtn');
+            const testBtn = document.getElementById('testBtn');
+            
+            if (key) {
+                status.className = 'status connected';
+                status.innerHTML = `
+                    <div class="status-icon">✅</div>
+                    <div class="status-text">
+                        <h3>Connecté</h3>
+                        <p>Clé : sk-...${key.slice(-4)}</p>
+                    </div>
+                `;
+                input.value = key;
+                input.type = 'password';
+                removeBtn.style.display = 'inline-block';
+                testBtn.style.display = 'inline-block';
+            } else {
+                status.className = 'status disconnected';
+                status.innerHTML = `
+                    <div class="status-icon">🔌</div>
+                    <div class="status-text">
+                        <h3>Non connecté</h3>
+                        <p>Entre ta clé API OpenAI pour activer B!Mi</p>
+                    </div>
+                `;
+                input.value = '';
+                removeBtn.style.display = 'none';
+                testBtn.style.display = 'none';
+            }
+        }
+        
+        function showMessage(text, type) {
+            const msg = document.getElementById('message');
+            msg.textContent = text;
+            msg.className = 'message ' + type;
+            setTimeout(() => msg.className = 'message', 5000);
+        }
+        
+        function saveKey() {
+            const input = document.getElementById('apiKeyInput');
+            const key = input.value.trim();
+            
+            if (!key) {
+                showMessage('Entre une clé API', 'error');
+                return;
+            }
+            
+            if (!key.startsWith('sk-')) {
+                showMessage('La clé doit commencer par "sk-"', 'error');
+                return;
+            }
+            
+            localStorage.setItem(STORAGE_KEY, key);
+            showMessage('✅ Clé enregistrée ! B!Mi est prêt.', 'success');
+            updateUI();
+        }
+        
+        function removeKey() {
+            if (confirm('Supprimer la clé API ?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                showMessage('Clé supprimée', 'success');
+                updateUI();
+            }
+        }
+        
+        async function testKey() {
+            const key = getKey();
+            if (!key) return;
+            
+            showMessage('Test en cours...', 'success');
+            
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${key}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: [{ role: 'user', content: 'Réponds juste "OK"' }],
+                        max_tokens: 5
+                    })
+                });
+                
+                if (response.ok) {
+                    showMessage('✅ Clé valide ! Connexion OK.', 'success');
+                } else if (response.status === 401) {
+                    showMessage('❌ Clé invalide ou expirée', 'error');
+                } else if (response.status === 429) {
+                    showMessage('⚠️ Rate limit atteint, mais clé valide', 'success');
+                } else {
+                    showMessage('❌ Erreur : ' + response.status, 'error');
+                }
+            } catch (e) {
+                showMessage('❌ Erreur réseau : ' + e.message, 'error');
+            }
+        }
+        
+        // Init
+        updateUI();
+    </script>
+</body>
+</html>

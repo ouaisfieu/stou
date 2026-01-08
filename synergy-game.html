@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚔️ SYNERGY GAME — Compétition Intersectorielle 2025</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono&display=swap');
+        
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-surface: #1a1a28;
+            --text: #e0e0e0;
+            --text-dim: #888;
+            --accent: #6366f1;
+            --gold: #fbbf24;
+            --green: #4ade80;
+            --red: #f87171;
+            --purple: #a855f7;
+            --cyan: #22d3ee;
+            --orange: #fb923c;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* Background effect */
+        .bg-effect {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(251, 191, 36, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 4rem 0 3rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 3rem;
+        }
+        
+        .logo {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--gold), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+        }
+        
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge.marchand { background: rgba(74, 222, 128, 0.2); color: var(--green); border: 1px solid var(--green); }
+        .badge.nonmarchand { background: rgba(168, 85, 247, 0.2); color: var(--purple); border: 1px solid var(--purple); }
+        .badge.hybride { background: rgba(251, 191, 36, 0.2); color: var(--gold); border: 1px solid var(--gold); }
+        
+        /* Sections */
+        section {
+            margin-bottom: 3rem;
+        }
+        
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        h3 {
+            color: var(--cyan);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        p { margin-bottom: 1rem; }
+        
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            border-color: var(--gold);
+            transform: translateY(-3px);
+        }
+        
+        .card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card h4 {
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .card p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--gold), var(--purple), var(--red));
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            background: var(--gold);
+            border-radius: 50%;
+            border: 2px solid var(--bg);
+        }
+        
+        .timeline-item.secret::before {
+            background: var(--red);
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .timeline-date {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--gold);
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .timeline-desc {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+        
+        /* Targets */
+        .target-card {
+            display: flex;
+            gap: 1.5rem;
+            background: var(--bg-card);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .target-card:hover {
+            border-color: var(--cyan);
+        }
+        
+        .target-card.marchand { border-left: 4px solid var(--green); }
+        .target-card.nonmarchand { border-left: 4px solid var(--purple); }
+        
+        .target-logo {
+            font-size: 3rem;
+            min-width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .target-info h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .target-info p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+        
+        .target-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .target-tag {
+            padding: 0.25rem 0.75rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+        
+        /* Rules */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .rule-item {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+        
+        .rule-item .number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+        }
+        
+        .rule-item .label {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+        
+        /* Price box */
+        .price-box {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(168, 85, 247, 0.1));
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .price-amount {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            color: var(--gold);
+        }
+        
+        .price-label {
+            color: var(--text-dim);
+            margin-top: 0.5rem;
+        }
+        
+        .price-total {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-dim);
+        }
+        
+        /* Mystery box */
+        .mystery-box {
+            background: var(--bg-card);
+            border: 2px dashed var(--red);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .mystery-box .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: shake 0.5s ease-in-out infinite;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        
+        .mystery-box h3 {
+            color: var(--red);
+        }
+        
+        /* Inscription section */
+        .inscription-section {
+            background: var(--bg-surface);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .step-list {
+            counter-reset: step;
+        }
+        
+        .step-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+        }
+        
+        .step-item::before {
+            counter-increment: step;
+            content: counter(step);
+            min-width: 40px;
+            height: 40px;
+            background: var(--gold);
+            color: var(--bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .step-content h4 {
+            margin-bottom: 0.25rem;
+        }
+        
+        .step-content p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        /* Code block (hidden IBAN) */
+        .code-block {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            position: relative;
+            margin: 1rem 0;
+        }
+        
+        .code-block::before {
+            content: '// synergy-game.config.js';
+            display: block;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .code-comment { color: #6a9955; }
+        .code-key { color: #9cdcfe; }
+        .code-string { color: #ce9178; }
+        .code-number { color: #b5cea8; }
+        .code-hidden { color: #1a1a2e; user-select: all; }
+        .code-hidden:hover { color: #4ade80; }
+        
+        /* CTA Button */
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--gold), var(--orange));
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(251, 191, 36, 0.3);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 3rem 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 3rem;
+            color: var(--text-dim);
+        }
+        
+        .footer a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .target-card { flex-direction: column; text-align: center; }
+            .target-logo { min-width: auto; }
+        }
+        
+        /* Easter egg hint */
+        .hint {
+            font-size: 0.75rem;
+            color: #333;
+            text-align: center;
+            margin-top: 2rem;
+            cursor: help;
+        }
+        
+        .hint:hover {
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effect"></div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="logo">⚔️</div>
+            <h1>SYNERGY GAME</h1>
+            <p class="tagline">Compétition Intersectorielle Marchand × Non-Marchand</p>
+            
+            <div class="badge-row">
+                <span class="badge marchand">🏢 Secteur Marchand</span>
+                <span class="badge hybride">⚡ Hybridation</span>
+                <span class="badge nonmarchand">🤝 Secteur Non-Marchand</span>
+            </div>
+        </header>
+        
+        <!-- CONCEPT -->
+        <section>
+            <h2>🎯 Le Concept</h2>
+            <p>
+                <strong>SYNERGY GAME</strong> est une compétition intersectorielle qui met en synergie 
+                deux mondes qui s'ignorent trop souvent : le <strong>secteur marchand</strong> et le 
+                <strong>secteur non-marchand</strong>.
+            </p>
+            <p>
+                L'objectif ? Former des <strong>équipes hybrides de 9 personnes</strong> (réelles ou fictives), 
+                concevoir un <strong>projet commun</strong> qui crée de la valeur pour les deux secteurs, 
+                et prouver que la collaboration intersectorielle peut changer la donne.
+            </p>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <div class="icon">🧩</div>
+                    <h4>Équipes Hybrides</h4>
+                    <p>9 membres par équipe, mixant profils marchands et non-marchands. La diversité est votre force.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">💡</div>
+                    <h4>Projets Concrets</h4>
+                    <p>Un an pour concevoir et présenter un projet qui crée de la valeur partagée.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">💰</div>
+                    <h4>Budget Minimal</h4>
+                    <p>Le défi : obtenir le meilleur résultat avec le moins de moyens financiers.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CIBLES -->
+        <section>
+            <h2>🎯 Les Cibles Principales</h2>
+            <p>Cette édition vise particulièrement deux acteurs stratégiques :</p>
+            
+            <div class="target-card nonmarchand">
+                <div class="target-logo">🎓</div>
+                <div class="target-info">
+                    <h4>FESEFA</h4>
+                    <p>
+                        Fédération des Employeurs des Secteurs de l'Éducation permanente et de la Formation des Adultes.
+                        Porte d'entrée vers le monde associatif, l'éducation populaire et la formation.
+                    </p>
+                    <div class="target-tags">
+                        <span class="target-tag">Éducation permanente</span>
+                        <span class="target-tag">Formation adultes</span>
+                        <span class="target-tag">Secteur associatif</span>
+                        <span class="target-tag">Fédération employeurs</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="target-card marchand">
+                <div class="target-logo">🛒</div>
+                <div class="target-info">
+                    <h4>Colruyt Academy</h4>
+                    <p>
+                        Le pôle formation et développement du Groupe Colruyt. Interface entre le retail 
+                        et l'apprentissage continu. Programmes ouverts au-delà de l'interne.
+                    </p>
+                    <div class="target-tags">
+                        <span class="target-tag">Formation continue</span>
+                        <span class="target-tag">Retail</span>
+                        <span class="target-tag">RSE</span>
+                        <span class="target-tag">Partenariats</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- REGLES -->
+        <section>
+            <h2>📋 Les Règles du Jeu</h2>
+            
+            <div class="rules-grid">
+                <div class="rule-item">
+                    <div class="number">9</div>
+                    <div class="label">Membres par équipe</div>
+                </div>
+                <div class="rule-item">
+                    <div class="number">12,50€</div>
+                    <div class="label">Par participant</div>
+                </div>
+                <div class="rule-item">
+                    <div class="number">1</div>
+                    <div class="label">Année pour réussir</div>
+                </div>
+                <div class="rule-item">
+                    <div class="number">∞</div>
+                    <div class="label">Créativité requise</div>
+                </div>
+            </div>
+            
+            <div class="price-box">
+                <div class="price-amount">12,50 €</div>
+                <div class="price-label">par participant</div>
+                <div class="price-total">
+                    Soit <strong>112,50 €</strong> pour une équipe complète de 9
+                </div>
+            </div>
+            
+            <h3>Contraintes & Critères</h3>
+            <ul style="margin-left: 1.5rem; color: var(--text-dim);">
+                <li>Équipes <strong>hybrides obligatoires</strong> : mix marchand / non-marchand</li>
+                <li>Membres réels ou fictifs (justification requise pour les fictifs)</li>
+                <li>Budget minimal = Bonus de points</li>
+                <li>Projet soumis au <strong>CCPLC.eu</strong> avant deadline</li>
+                <li>Présentation devant jury intersectoriel</li>
+            </ul>
+        </section>
+        
+        <!-- TIMELINE -->
+        <section>
+            <h2>📅 Calendrier</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">Janvier 2025 — Maintenant</div>
+                    <div class="timeline-title">🚀 Lancement & Formation des Équipes</div>
+                    <div class="timeline-desc">Recrutez vos 8 coéquipiers, mixez les profils, trouvez votre projet.</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">1er Avril 2025</div>
+                    <div class="timeline-title">📝 Date Limite de Soumission</div>
+                    <div class="timeline-desc">Projets à soumettre sur CCPLC.eu. Pas de poisson d'avril : c'est sérieux.</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Avril — Octobre 2025</div>
+                    <div class="timeline-title">⚙️ Phase de Réalisation</div>
+                    <div class="timeline-desc">Développez votre projet, documentez, mesurez l'impact.</div>
+                </div>
+                
+                <div class="timeline-item secret">
+                    <div class="timeline-date">31 Octobre 2025 — Halloween 🎃</div>
+                    <div class="timeline-title">🏆 Point d'Orgue [SECRET]</div>
+                    <div class="timeline-desc">L'événement final. Lieu et format tenus secrets. Soyez prêts à tout.</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- BONUS -->
+        <section>
+            <h2>🎁 Bonus & Easter Eggs</h2>
+            
+            <div class="mystery-box">
+                <div class="icon">🔍</div>
+                <h3>Qui est derrière tout ça ?</h3>
+                <p style="color: var(--text-dim); margin-top: 1rem;">
+                    Le premier participant ou équipe qui découvre <strong>l'identité du créateur</strong> 
+                    de ce jeu remporte un <strong>bonus mystère</strong>. Les indices sont partout...
+                </p>
+            </div>
+            
+            <div class="card-grid">
+                <div class="card">
+                    <div class="icon">💸</div>
+                    <h4>Bonus Frugalité</h4>
+                    <p>Moins vous dépensez, plus vous gagnez de points. L'efficience est reine.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🔗</div>
+                    <h4>Bonus Synergie</h4>
+                    <p>Points supplémentaires pour les partenariats intersectoriels documentés.</p>
+                </div>
+                <div class="card">
+                    <div class="icon">🎭</div>
+                    <h4>Bonus Créativité</h4>
+                    <p>Les approches les plus originales seront récompensées par le jury.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- INSCRIPTION -->
+        <section class="inscription-section">
+            <h2>📝 Comment S'inscrire</h2>
+            
+            <div class="step-list">
+                <div class="step-item">
+                    <div class="step-content">
+                        <h4>Former votre équipe de 9</h4>
+                        <p>Recrutez 8 coéquipiers. Mixez obligatoirement marchand et non-marchand.</p>
+                    </div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-content">
+                        <h4>Définir votre projet</h4>
+                        <p>Quel problème résolvez-vous ? Quelle valeur créez-vous pour les deux secteurs ?</p>
+                    </div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-content">
+                        <h4>Trouver le code secret 🔐</h4>
+                        <p>Le numéro de compte pour le virement d'inscription est caché... quelque part dans le code source.</p>
+                    </div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-content">
+                        <h4>Effectuer le virement</h4>
+                        <p>112,50 € (9 × 12,50 €) avec en communication : "SYNERGY-[NOM_EQUIPE]-2025"</p>
+                    </div>
+                </div>
+                
+                <div class="step-item">
+                    <div class="step-content">
+                        <h4>Soumettre sur CCPLC.eu</h4>
+                        <p>Avant le 1er avril, uploadez votre dossier de candidature complet.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Hidden IBAN in code -->
+            <div class="code-block">
+<span class="code-comment">// Configuration du Synergy Game</span>
+<span class="code-key">const</span> gameConfig = {
+    <span class="code-key">name</span>: <span class="code-string">"SYNERGY GAME 2025"</span>,
+    <span class="code-key">teamSize</span>: <span class="code-number">9</span>,
+    <span class="code-key">pricePerPlayer</span>: <span class="code-number">12.50</span>,
+    <span class="code-key">deadline</span>: <span class="code-string">"2025-04-01"</span>,
+    <span class="code-key">finale</span>: <span class="code-string">"2025-10-31"</span>,
+    <span class="code-comment">// Payment configuration</span>
+    <span class="code-key">payment</span>: {
+        <span class="code-key">method</span>: <span class="code-string">"bank_transfer"</span>,
+        <span class="code-key">beneficiary</span>: <span class="code-string">"CCPLC ASBL"</span>,
+        <span class="code-comment">// IBAN: <span class="code-hidden">BE68 5390 0754 7034</span></span>
+        <span class="code-key">communication</span>: <span class="code-string">"SYNERGY-[TEAM_NAME]-2025"</span>
+    },
+    <span class="code-key">targets</span>: [<span class="code-string">"FESEFA"</span>, <span class="code-string">"Colruyt Academy"</span>],
+    <span class="code-key">secret</span>: <span class="code-string">"Who created this game?"</span>
+};
+            </div>
+            
+            <p class="hint" title="Regarde bien le code...">
+                Les vrais hackers lisent toujours le code source...
+            </p>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="https://ccplc.eu" target="_blank" class="cta-btn">
+                    🚀 Soumettre sur CCPLC.eu
+                </a>
+            </div>
+        </section>
+        
+        <!-- FAQ -->
+        <section>
+            <h2>❓ Questions Fréquentes</h2>
+            
+            <details style="margin-bottom: 1rem;">
+                <summary style="cursor: pointer; padding: 1rem; background: var(--bg-card); border-radius: 8px;">
+                    Peut-on avoir des membres fictifs dans l'équipe ?
+                </summary>
+                <p style="padding: 1rem; color: var(--text-dim);">
+                    Oui, mais vous devez justifier leur présence et leur apport au projet. 
+                    Les personnages fictifs doivent représenter des archétypes ou compétences spécifiques.
+                </p>
+            </details>
+            
+            <details style="margin-bottom: 1rem;">
+                <summary style="cursor: pointer; padding: 1rem; background: var(--bg-card); border-radius: 8px;">
+                    C'est quoi le point d'orgue secret d'Halloween ?
+                </summary>
+                <p style="padding: 1rem; color: var(--text-dim);">
+                    Mystère total. Tout ce qu'on peut dire : soyez disponibles le 31 octobre 2025, 
+                    et préparez-vous à l'inattendu. 🎃
+                </p>
+            </details>
+            
+            <details style="margin-bottom: 1rem;">
+                <summary style="cursor: pointer; padding: 1rem; background: var(--bg-card); border-radius: 8px;">
+                    Comment trouve-t-on l'identité du créateur ?
+                </summary>
+                <p style="padding: 1rem; color: var(--text-dim);">
+                    Les indices sont disséminés un peu partout. Dans les codes, les textes, 
+                    les connexions... Bonne chasse !
+                </p>
+            </details>
+            
+            <details style="margin-bottom: 1rem;">
+                <summary style="cursor: pointer; padding: 1rem; background: var(--bg-card); border-radius: 8px;">
+                    Comment le "budget minimal" est-il évalué ?
+                </summary>
+                <p style="padding: 1rem; color: var(--text-dim);">
+                    Vous devez documenter toutes vos dépenses. Le ratio Impact/Coût sera calculé. 
+                    Les équipes les plus frugales avec le plus d'impact gagnent des bonus.
+                </p>
+            </details>
+        </section>
+        
+        <footer class="footer">
+            <p>
+                <strong>SYNERGY GAME 2025</strong><br>
+                Une initiative <a href="https://ccplc.eu">CCPLC.eu</a>
+            </p>
+            <p style="margin-top: 1rem; font-size: 0.8rem;">
+                Marchand × Non-Marchand = Synergie<sup>2</sup>
+            </p>
+            
+            <!-- Hidden metadata -->
+            <div style="display: none;" data-game="synergy" data-version="1.0" data-creator="???">
+                <!-- 
+                    Si tu lis ceci, tu es sur la bonne piste.
+                    Cherche dans KERN... 
+                    L'agent GANDALF-PRIME sait peut-être quelque chose.
+                -->
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Hidden script for hunters -->
+    <script>
+        // For those who dig deep...
+        console.log('%c⚔️ SYNERGY GAME', 'font-size: 24px; color: #fbbf24;');
+        console.log('%cBravo, tu fouilles le code !', 'color: #4ade80;');
+        console.log('%cIndice : Le créateur a laissé des traces dans KERN::NEXUS...', 'color: #888;');
+        console.log('%cCherche "PROTOCOLE_INSURRECTION"...', 'color: #a855f7;');
+        
+        // Easter egg: Konami code reveals hint
+        let konamiCode = [];
+        const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+        
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.keyCode);
+            konamiCode = konamiCode.slice(-10);
+            
+            if (konamiCode.join(',') === konamiSequence.join(',')) {
+                alert('🎮 KONAMI CODE ACTIVÉ !\n\nIndice bonus : Le créateur aime les hexagones...');
+            }
+        });
+    </script>
+</body>
+</html>

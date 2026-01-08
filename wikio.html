@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 WIKI — Protocole Insurrection</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap');
+        
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --text: #e0e0e0;
+            --text-dim: #6b7280;
+            --green: #00ff41;
+            --green-dim: #00aa2a;
+            --purple: #a855f7;
+            --cyan: #22d3ee;
+            --amber: #fbbf24;
+            --red: #f87171;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--green-dim);
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: var(--green);
+            text-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+            margin-bottom: 0.5rem;
+        }
+        
+        .header .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+        
+        .nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav a {
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 65, 0.1);
+            border: 1px solid var(--green-dim);
+            color: var(--green);
+            text-decoration: none;
+            font-family: 'VT323', monospace;
+        }
+        
+        .nav a:hover {
+            background: var(--green);
+            color: var(--bg);
+        }
+        
+        .toc {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-left: 3px solid var(--purple);
+            margin-bottom: 3rem;
+        }
+        
+        .toc h3 {
+            color: var(--purple);
+            margin-bottom: 1rem;
+            font-family: 'VT323', monospace;
+            font-size: 1.3rem;
+        }
+        
+        .toc ul { list-style: none; }
+        .toc li { padding: 0.25rem 0; }
+        .toc a { color: var(--cyan); text-decoration: none; }
+        .toc a:hover { color: var(--green); }
+        
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--green);
+            font-size: 1.5rem;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--green-dim);
+        }
+        
+        h3 {
+            color: var(--cyan);
+            font-size: 1.2rem;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        p { margin-bottom: 1rem; }
+        
+        .highlight {
+            background: rgba(0, 255, 65, 0.1);
+            border-left: 3px solid var(--green);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .warning {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 3px solid var(--amber);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .danger {
+            background: rgba(248, 113, 113, 0.1);
+            border-left: 3px solid var(--red);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        ul, ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+        li { margin-bottom: 0.5rem; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: left;
+        }
+        
+        th {
+            background: rgba(0, 255, 65, 0.1);
+            color: var(--green);
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .card h4 {
+            color: var(--purple);
+            margin-bottom: 0.5rem;
+        }
+        
+        .card p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--green);
+            color: var(--bg);
+            text-decoration: none;
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+        
+        .download-btn:hover {
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+        
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: var(--text-dim);
+        }
+        
+        .footer a { color: var(--green); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="00-kern-nexus.html">← NEXUS</a>
+            <a href="20-protocole-insurrection.html">⚡ PROTOCOLE</a>
+            <a href="02-mission-creator.html">🎯 MISSIONS</a>
+            <a href="15-knowledge-graph.html">🧠 KNOWLEDGE</a>
+        </div>
+        
+        <header class="header">
+            <h1>📚 WIKI — PROTOCOLE_INSURRECTION</h1>
+            <p class="subtitle">Manuel complet de piratage des systèmes de pouvoir</p>
+        </header>
+        
+        <div class="toc">
+            <h3>📋 Table des Matières</h3>
+            <ul>
+                <li><a href="#intro">1. Introduction — La Matrice est le Système</a></li>
+                <li><a href="#missions">2. Missions — Tutoriel & Campagne</a></li>
+                <li><a href="#phases">3. Les 4 Phases d'Infiltration</a></li>
+                <li><a href="#niveaux">4. Les 3 Niveaux de Jeu</a></li>
+                <li><a href="#arsenal">5. L'Arsenal Stratégique</a></li>
+                <li><a href="#menaces">6. Contre-Mesures du Système</a></li>
+                <li><a href="#colruyt">7. Étude de Cas : Colruyt</a></li>
+                <li><a href="#ressources">8. Ressources & Templates</a></li>
+            </ul>
+        </div>
+        
+        <section id="intro">
+            <h2>1. Introduction — La Matrice est le Système</h2>
+            
+            <div class="highlight">
+                <strong>Les systèmes de pouvoir — CORPO ou POLITIQUES — sont conçus pour être OPAQUES.</strong><br>
+                Ils génèrent un sentiment d'impuissance, une déconnexion programmée.<br><br>
+                Mais chaque système a ses FAILLES. Ce guide est une CLÉ D'ACCÈS.
+            </div>
+            
+            <p>Votre mission : apprendre à lire le CODE, identifier les vulnérabilités et exécuter des PROTOCOLES D'INFLUENCE.</p>
+            
+            <h3>Les 4 Ennemis du Système</h3>
+            <div class="card-grid">
+                <div class="card"><h4>🏛️ Bureaucratie</h4><p>Complexité administrative qui décourage l'action.</p></div>
+                <div class="card"><h4>💰 Lobbies</h4><p>Intérêts privés qui orientent les décisions publiques.</p></div>
+                <div class="card"><h4>⚙️ Inertie</h4><p>Résistance systémique au changement.</p></div>
+                <div class="card"><h4>👁️ Surveillance</h4><p>Mécanismes de contrôle et de normalisation.</p></div>
+            </div>
+        </section>
+        
+        <section id="missions">
+            <h2>2. Missions — Choisir sa Quête</h2>
+            
+            <h3>MISSION 01 : LA MÉGA-CORPORATION [Tutoriel]</h3>
+            <table>
+                <tr><th>Attribut</th><th>Valeur</th></tr>
+                <tr><td>Cible</td><td>Structure privée (ex: Colruyt Group)</td></tr>
+                <tr><td>Objectif</td><td>Infiltrer via un projet-pilote</td></tr>
+                <tr><td>Difficulté</td><td>60% — Règles prévisibles</td></tr>
+            </table>
+            
+            <h3>MISSION 02 : LA MATRICE POLITIQUE [Campagne]</h3>
+            <table>
+                <tr><th>Attribut</th><th>Valeur</th></tr>
+                <tr><td>Cible</td><td>Le système démocratique</td></tr>
+                <tr><td>Objectif</td><td>Influencer la décision publique du micro au macro</td></tr>
+                <tr><td>Difficulté</td><td>90% — Règles complexes et dynamiques</td></tr>
+            </table>
+        </section>
+        
+        <section id="phases">
+            <h2>3. Les 4 Phases d'Infiltration</h2>
+            
+            <h3>PHASE 1 : SCAN</h3>
+            <ol>
+                <li><strong>Identifier l'Architecture</strong> — Analyse "qui décide quoi"</li>
+                <li><strong>Trouver la Porte Dérobée</strong> — Viser un service périphérique</li>
+                <li><strong>Parler leur Langage</strong> — Adopter leurs formats et valeurs</li>
+            </ol>
+            
+            <h3>PHASE 2 : DEPLOY</h3>
+            <p>Votre payload : <strong>1 page + 1 lien démo + 3 chiffres d'impact</strong></p>
+            
+            <h3>PHASE 3 : EXÉCUTER</h3>
+            <table>
+                <tr><th>Étape</th><th>Action</th></tr>
+                <tr><td>01</td><td>MIMÉTISME — S'aligner sur leurs formats</td></tr>
+                <tr><td>02</td><td>QUARANTAINE — Pilote petit, propre, mesurable</td></tr>
+                <tr><td>03</td><td>REQUÊTE MINIMALE — Sponsoring pilote, pas financement total</td></tr>
+                <tr><td>04</td><td>RÉPLICATION — Planifier le scaling dès le départ</td></tr>
+            </table>
+            
+            <h3>PHASE 4 : ANTIVIRUS</h3>
+            <div class="danger">
+                <strong>ALERTE_01:</strong> Trop gros, trop tôt → Pilotes maîtrisés<br>
+                <strong>ALERTE_02:</strong> Trop politique → Langage neutre<br>
+                <strong>ALERTE_03:</strong> Pas de métriques → Toujours des KPIs<br>
+                <strong>ALERTE_04:</strong> Rôle flou → "Vous apportez X, nous Y"
+            </div>
+        </section>
+        
+        <section id="niveaux">
+            <h2>4. Les 3 Niveaux de Jeu</h2>
+            
+            <h3>NIVEAU 1 : L'OPÉRATEUR (Solo)</h3>
+            <ul>
+                <li><strong>INFOSEC</strong> — S'informer de façon critique</li>
+                <li><strong>EXECUTE</strong> — Voter</li>
+                <li><strong>P2P</strong> — Créer un micro-réseau informé</li>
+                <li><strong>DEBUG</strong> — Identifier les promesses vaporware</li>
+            </ul>
+            
+            <h3>NIVEAU 2 : LA GUILDE (Multiplayer)</h3>
+            <ul>
+                <li>Rejoindre ou créer un collectif</li>
+                <li>Lancer des raids locaux (élus municipaux)</li>
+                <li>Maintenir la cohésion</li>
+            </ul>
+            
+            <h3>NIVEAU 3 : LE RAID MONDIAL (Endgame)</h3>
+            <ul>
+                <li>Coordonner via #hashtags (DDoS citoyens)</li>
+                <li>Pétitions "Million-Hit" (ICE, fédéral)</li>
+                <li>Lobbying citoyen</li>
+                <li>Hacker l'opinion publique via médias</li>
+            </ul>
+        </section>
+        
+        <section id="arsenal">
+            <h2>5. L'Arsenal Stratégique</h2>
+            
+            <p>Framework <strong>"Voir-Juger-Agir"</strong></p>
+            
+            <div class="card-grid">
+                <div class="card"><h4>🔍 SWOT</h4><p>Forces, Faiblesses, Opportunités, Menaces</p></div>
+                <div class="card"><h4>🌐 PESTEL</h4><p>Politique, Économique, Social, Tech, Écolo, Légal</p></div>
+                <div class="card"><h4>🕸️ Power Mapping</h4><p>Cartographier alliés, adversaires, cibles</p></div>
+                <div class="card"><h4>✅ SMART</h4><p>Objectifs Spécifiques, Mesurables, Atteignables...</p></div>
+            </div>
+        </section>
+        
+        <section id="menaces">
+            <h2>6. Contre-Mesures du Système</h2>
+            
+            <table>
+                <tr><th>Menace</th><th>Effet</th><th>Parade</th></tr>
+                <tr><td>☠️ Désinformation</td><td>Corrompt les données</td><td>Vérification des faits</td></tr>
+                <tr><td>⚔️ Polarisation</td><td>Divise les collectifs</td><td>Dialogue, objectifs communs</td></tr>
+                <tr><td>🔋 Burn-out</td><td>Draine l'énergie</td><td>Marathon pas sprint</td></tr>
+                <tr><td>🎭 Illusion Participative</td><td>Démobilise</td><td>Exiger impact réel</td></tr>
+            </table>
+        </section>
+        
+        <section id="colruyt">
+            <h2>7. Étude de Cas : Colruyt</h2>
+            
+            <div class="highlight">
+                <strong>Projet Pilote "Ateliers Budget & Droits"</strong><br>
+                Cible : Colruyt Group Academy<br>
+                Logique Win-Win-Win
+            </div>
+            
+            <h3>Portes d'Entrée</h3>
+            <table>
+                <tr><th>Route</th><th>Cible</th><th>Stratégie</th></tr>
+                <tr><td style="color: var(--green);">A [Optimal]</td><td>Academy</td><td>Interface publique</td></tr>
+                <tr><td style="color: var(--purple);">B [Sécurisé]</td><td>Fondation RSE</td><td>KPIs requis</td></tr>
+                <tr><td style="color: var(--amber);">C [Haut Niveau]</td><td>B2B / RH</td><td>Image employeur</td></tr>
+            </table>
+            
+            <h3>KPIs</h3>
+            <ul>
+                <li>📊 Portée : 120 participants / 3 communes</li>
+                <li>💰 Efficience : Coût par participant</li>
+                <li>🎯 Impact : % ayant activé un nouveau droit</li>
+            </ul>
+        </section>
+        
+        <section id="ressources">
+            <h2>8. Ressources & Templates</h2>
+            
+            <p><a href="templates/proposition-colruyt.md" class="download-btn" download>📄 Template Proposition Colruyt</a></p>
+            
+            <h3>🔗 Liens KERN</h3>
+            <ul>
+                <li><a href="20-protocole-insurrection.html">⚡ Module Interactif</a></li>
+                <li><a href="02-mission-creator.html">🎯 Créateur de Missions</a></li>
+                <li><a href="15-knowledge-graph.html">🧠 Knowledge Graph</a></li>
+            </ul>
+        </section>
+        
+        <footer class="footer">
+            <p><em>"Le protocole est chargé. L'insurrection ne fait que commencer."</em></p>
+            <p><a href="00-kern-nexus.html">← Retour à KERN::NEXUS</a></p>
+        </footer>
+    </div>
+</body>
+</html>

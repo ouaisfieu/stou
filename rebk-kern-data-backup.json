@@ -1,0 +1,2392 @@
+{
+  "kern_agent": {
+    "codename": "GANDALF-PRIME",
+    "level": 12,
+    "xp": 15420,
+    "xpToNext": 20000,
+    "clearance": 4,
+    "streak": 42,
+    "lastLogin": "2026-01-06",
+    "skills": {
+      "investigation": {
+        "level": 8,
+        "xp": 720
+      },
+      "network": {
+        "level": 10,
+        "xp": 890
+      },
+      "analysis": {
+        "level": 7,
+        "xp": 650
+      },
+      "documentation": {
+        "level": 9,
+        "xp": 810
+      },
+      "fieldwork": {
+        "level": 6,
+        "xp": 520
+      },
+      "opsec": {
+        "level": 11,
+        "xp": 980
+      }
+    }
+  },
+  "kern_dossiers": [
+    {
+      "id": "dossier_mordor_001",
+      "created": "2025-06-15T10:00:00.000Z",
+      "updated": "2026-01-05T18:30:00.000Z",
+      "title": "🔥 Opération Mordor — Surveillance de Sauron",
+      "description": "Enquête sur les activités du Nécromancien à Dol Guldur et ses connexions avec les Nazgûl. Implications potentielles dans le trafic d'anneaux de pouvoir.",
+      "status": "active",
+      "priority": "critical",
+      "tags": [
+        "mordor",
+        "sauron",
+        "anneaux",
+        "nazgul",
+        "urgent"
+      ],
+      "timeline": [
+        {
+          "date": "2025-06-15",
+          "event": "Première observation de fumée noire à Dol Guldur",
+          "type": "discovery"
+        },
+        {
+          "date": "2025-08-22",
+          "event": "Confirmation : le Nécromancien = Sauron",
+          "type": "breakthrough"
+        },
+        {
+          "date": "2025-10-01",
+          "event": "Interception de communication Nazgûl",
+          "type": "intel"
+        },
+        {
+          "date": "2025-12-25",
+          "event": "L'Anneau Unique repéré dans la Comté",
+          "type": "critical"
+        },
+        {
+          "date": "2026-01-05",
+          "event": "Conseil d'Elrond convoqué",
+          "type": "meeting"
+        }
+      ],
+      "evidence": [
+        {
+          "id": "ev_001",
+          "type": "document",
+          "title": "Parchemin de Dol Guldur",
+          "source": "Radagast le Brun",
+          "reliability": 4
+        },
+        {
+          "id": "ev_002",
+          "type": "artifact",
+          "title": "Fragment de Morgul Blade",
+          "source": "Weathertop",
+          "reliability": 5
+        },
+        {
+          "id": "ev_003",
+          "type": "testimony",
+          "title": "Témoignage de Bilbon Sacquet",
+          "source": "Cul-de-Sac",
+          "reliability": 3
+        }
+      ],
+      "linkedEntities": [
+        "entity_sauron",
+        "entity_nazgul",
+        "entity_saruman"
+      ],
+      "linkedContacts": [
+        "contact_gandalf",
+        "contact_elrond",
+        "contact_galadriel"
+      ]
+    },
+    {
+      "id": "dossier_matrix_001",
+      "created": "2025-03-10T08:00:00.000Z",
+      "updated": "2026-01-04T22:15:00.000Z",
+      "title": "💊 Projet Red Pill — Infiltration de la Matrice",
+      "description": "Investigation sur la nature de la réalité simulée. Recherche de l'Élu et cartographie des points de sortie.",
+      "status": "active",
+      "priority": "high",
+      "tags": [
+        "matrix",
+        "simulation",
+        "machines",
+        "zion",
+        "neo"
+      ],
+      "timeline": [
+        {
+          "date": "2025-03-10",
+          "event": "Premier contact avec Morpheus",
+          "type": "contact"
+        },
+        {
+          "date": "2025-05-15",
+          "event": "Découverte de l'anomalie \"Neo\"",
+          "type": "discovery"
+        },
+        {
+          "date": "2025-07-20",
+          "event": "Attaque des Sentinelles sur le Nebuchadnezzar",
+          "type": "incident"
+        },
+        {
+          "date": "2025-09-01",
+          "event": "Neo rencontre l'Architecte",
+          "type": "breakthrough"
+        },
+        {
+          "date": "2025-11-11",
+          "event": "Trêve avec les Machines",
+          "type": "resolution"
+        }
+      ],
+      "evidence": [
+        {
+          "id": "ev_m01",
+          "type": "data",
+          "title": "Code source de la Matrice",
+          "source": "Mainframe",
+          "reliability": 5
+        },
+        {
+          "id": "ev_m02",
+          "type": "testimony",
+          "title": "Déposition de Trinity",
+          "source": "Zion",
+          "reliability": 5
+        },
+        {
+          "id": "ev_m03",
+          "type": "artifact",
+          "title": "Pilule rouge analysée",
+          "source": "Laboratoire Zion",
+          "reliability": 4
+        }
+      ],
+      "linkedEntities": [
+        "entity_neo",
+        "entity_smith",
+        "entity_architect"
+      ],
+      "linkedContacts": [
+        "contact_morpheus",
+        "contact_trinity",
+        "contact_oracle"
+      ]
+    },
+    {
+      "id": "dossier_schtroumpf_001",
+      "created": "2025-01-20T14:00:00.000Z",
+      "updated": "2026-01-03T11:00:00.000Z",
+      "title": "🍄 Affaire Gargamel — Protection du Village",
+      "description": "Surveillance des activités de Gargamel et Azraël. Sécurisation du village Schtroumpf et protection de la formule de la pierre philosophale.",
+      "status": "active",
+      "priority": "medium",
+      "tags": [
+        "schtroumpfs",
+        "gargamel",
+        "magie",
+        "village",
+        "azrael"
+      ],
+      "timeline": [
+        {
+          "date": "2025-01-20",
+          "event": "Gargamel repéré près du village",
+          "type": "alert"
+        },
+        {
+          "date": "2025-04-01",
+          "event": "Tentative de capture du Schtroumpf à Lunettes",
+          "type": "incident"
+        },
+        {
+          "date": "2025-06-15",
+          "event": "Nouveau sort de localisation détecté",
+          "type": "intel"
+        },
+        {
+          "date": "2025-09-30",
+          "event": "Alliance temporaire avec Gargamel contre menace commune",
+          "type": "unexpected"
+        },
+        {
+          "date": "2025-12-20",
+          "event": "Gargamel crée la Schtroumpfette maléfique",
+          "type": "critical"
+        }
+      ],
+      "evidence": [
+        {
+          "id": "ev_s01",
+          "type": "document",
+          "title": "Grimoire de Gargamel (copie)",
+          "source": "Schtroumpf Farceur",
+          "reliability": 2
+        },
+        {
+          "id": "ev_s02",
+          "type": "artifact",
+          "title": "Salsepareille empoisonnée",
+          "source": "Forêt",
+          "reliability": 4
+        },
+        {
+          "id": "ev_s03",
+          "type": "testimony",
+          "title": "Rapport du Grand Schtroumpf",
+          "source": "Village",
+          "reliability": 5
+        }
+      ],
+      "linkedEntities": [
+        "entity_gargamel",
+        "entity_azrael",
+        "entity_schtroumpfette"
+      ],
+      "linkedContacts": [
+        "contact_grandschtroumpf",
+        "contact_schtroumpfgrognon"
+      ]
+    },
+    {
+      "id": "dossier_lorem_001",
+      "created": "2025-02-01T09:00:00.000Z",
+      "updated": "2026-01-02T16:45:00.000Z",
+      "title": "💼 Audit Lorem Industries — Conflits d'intérêts",
+      "description": "Investigation sur les pratiques commerciales de Lorem Industries et ses liens avec Ipsum Finance. Suspicion de délit d'initié.",
+      "status": "completed",
+      "priority": "high",
+      "tags": [
+        "finance",
+        "audit",
+        "corruption",
+        "bourse",
+        "industrie"
+      ],
+      "timeline": [
+        {
+          "date": "2025-02-01",
+          "event": "Lancement de l'audit",
+          "type": "start"
+        },
+        {
+          "date": "2025-03-15",
+          "event": "Découverte de transactions suspectes",
+          "type": "discovery"
+        },
+        {
+          "date": "2025-05-20",
+          "event": "Audition du CEO Jean Lorem",
+          "type": "interview"
+        },
+        {
+          "date": "2025-08-10",
+          "event": "Rapport intermédiaire transmis",
+          "type": "report"
+        },
+        {
+          "date": "2025-12-01",
+          "event": "Conclusion : infractions mineures constatées",
+          "type": "resolution"
+        }
+      ],
+      "evidence": [
+        {
+          "id": "ev_l01",
+          "type": "document",
+          "title": "Relevés bancaires 2024-2025",
+          "source": "Banque Centrale",
+          "reliability": 5
+        },
+        {
+          "id": "ev_l02",
+          "type": "data",
+          "title": "Emails internes (fuite)",
+          "source": "Anonyme",
+          "reliability": 3
+        },
+        {
+          "id": "ev_l03",
+          "type": "testimony",
+          "title": "Témoignage ex-employé",
+          "source": "Protection",
+          "reliability": 4
+        }
+      ],
+      "linkedEntities": [
+        "entity_lorem_industries",
+        "entity_ipsum_finance"
+      ],
+      "linkedContacts": [
+        "contact_jean_lorem",
+        "contact_marie_ipsum"
+      ]
+    },
+    {
+      "id": "dossier_isengard_001",
+      "created": "2025-04-01T07:30:00.000Z",
+      "updated": "2026-01-01T20:00:00.000Z",
+      "title": "🏰 Trahison d'Isengard — Dossier Saruman",
+      "description": "Enquête sur la corruption de Saruman le Blanc par Sauron via le Palantír. Évaluation de la menace des Uruk-hai.",
+      "status": "active",
+      "priority": "critical",
+      "tags": [
+        "isengard",
+        "saruman",
+        "trahison",
+        "uruk-hai",
+        "palantir"
+      ],
+      "timeline": [
+        {
+          "date": "2025-04-01",
+          "event": "Gandalf capturé à Orthanc",
+          "type": "incident"
+        },
+        {
+          "date": "2025-04-15",
+          "event": "Évasion grâce à Gwaihir",
+          "type": "escape"
+        },
+        {
+          "date": "2025-06-01",
+          "event": "Première observation des Uruk-hai",
+          "type": "discovery"
+        },
+        {
+          "date": "2025-09-15",
+          "event": "Destruction de la forêt de Fangorn confirmée",
+          "type": "environmental"
+        },
+        {
+          "date": "2025-12-20",
+          "event": "Ents en marche vers Isengard",
+          "type": "military"
+        }
+      ],
+      "evidence": [
+        {
+          "id": "ev_i01",
+          "type": "artifact",
+          "title": "Main blanche (symbole)",
+          "source": "Orc capturé",
+          "reliability": 5
+        },
+        {
+          "id": "ev_i02",
+          "type": "testimony",
+          "title": "Témoignage de Sylvebarbe",
+          "source": "Fangorn",
+          "reliability": 5
+        },
+        {
+          "id": "ev_i03",
+          "type": "document",
+          "title": "Plans de forge d'Uruk-hai",
+          "source": "Espion",
+          "reliability": 4
+        }
+      ],
+      "linkedEntities": [
+        "entity_saruman",
+        "entity_sauron",
+        "entity_urukhai"
+      ],
+      "linkedContacts": [
+        "contact_gandalf",
+        "contact_sylvebarbe",
+        "contact_theoden"
+      ]
+    },
+    {
+      "id": "dossier_colruyt_001",
+      "created": "2026-01-06T09:00:00.000Z",
+      "updated": "2026-01-06T10:30:00.000Z",
+      "title": "🎯 Opération Academy — Infiltration Colruyt",
+      "description": "Mission PROTOCOLE_INSURRECTION. Projet pilote \"Ateliers Budget & Droits\" via Colruyt Group Academy. Approche win-win-win.",
+      "status": "active",
+      "priority": "high",
+      "tags": [
+        "colruyt",
+        "partenariat",
+        "pilote",
+        "academy",
+        "droits-sociaux"
+      ],
+      "timeline": [
+        {
+          "date": "2026-01-06",
+          "event": "Analyse des portes d'entrée",
+          "type": "intel"
+        },
+        {
+          "date": "2026-01-06",
+          "event": "Backdoor identifiée: Academy",
+          "type": "discovery"
+        },
+        {
+          "date": "2026-01-07",
+          "event": "Préparation du payload (proposition)",
+          "type": "preparation"
+        }
+      ],
+      "evidence": [
+        {
+          "id": "ev_c01",
+          "type": "document",
+          "title": "Proposition de partenariat",
+          "source": "KERN",
+          "reliability": 5
+        },
+        {
+          "id": "ev_c02",
+          "type": "data",
+          "title": "Mind Map engagement citoyen",
+          "source": "NotebookLM",
+          "reliability": 4
+        },
+        {
+          "id": "ev_c03",
+          "type": "document",
+          "title": "Flashcards action citoyenne",
+          "source": "Formation",
+          "reliability": 5
+        }
+      ],
+      "linkedEntities": [
+        "entity_colruyt"
+      ],
+      "linkedContacts": []
+    }
+  ],
+  "kern_entities": [
+    {
+      "id": "entity_sauron",
+      "name": "Sauron",
+      "type": "person",
+      "subtype": "Maia corrompu",
+      "emoji": "👁️",
+      "description": "Le Seigneur Ténébreux. Ancien lieutenant de Morgoth. Créateur de l'Anneau Unique. Actuellement sous forme d'œil géant.",
+      "tags": [
+        "mordor",
+        "anneau",
+        "mal",
+        "necromancien"
+      ],
+      "created": "2025-01-01T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_nazgul",
+          "type": "controls",
+          "label": "Commande"
+        },
+        {
+          "targetId": "entity_saruman",
+          "type": "corrupted",
+          "label": "A corrompu"
+        },
+        {
+          "targetId": "entity_mordor_inc",
+          "type": "owns",
+          "label": "Dirige"
+        }
+      ]
+    },
+    {
+      "id": "entity_saruman",
+      "name": "Saruman le Blanc",
+      "type": "person",
+      "subtype": "Istari",
+      "emoji": "🧙",
+      "description": "Chef du Conseil des Sages, corrompu par le Palantír. Construit une armée d'Uruk-hai à Isengard.",
+      "tags": [
+        "isengard",
+        "traître",
+        "istari",
+        "uruk-hai"
+      ],
+      "created": "2025-02-15T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_sauron",
+          "type": "serves",
+          "label": "Sert secrètement"
+        },
+        {
+          "targetId": "entity_urukhai",
+          "type": "created",
+          "label": "A créé"
+        },
+        {
+          "targetId": "entity_isengard_corp",
+          "type": "owns",
+          "label": "Possède"
+        }
+      ]
+    },
+    {
+      "id": "entity_nazgul",
+      "name": "Les Nazgûl",
+      "type": "organization",
+      "subtype": "Spectres",
+      "emoji": "👻",
+      "description": "Les Neuf Rois des Hommes, corrompus par les Anneaux de Pouvoir. Serviteurs les plus fidèles de Sauron.",
+      "tags": [
+        "spectres",
+        "anneaux",
+        "cavaliers-noirs",
+        "angmar"
+      ],
+      "created": "2025-01-10T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_sauron",
+          "type": "serves",
+          "label": "Servent"
+        },
+        {
+          "targetId": "entity_witch_king",
+          "type": "contains",
+          "label": "Dirigés par"
+        }
+      ]
+    },
+    {
+      "id": "entity_witch_king",
+      "name": "Roi-Sorcier d'Angmar",
+      "type": "person",
+      "subtype": "Nazgûl",
+      "emoji": "💀",
+      "description": "Chef des Nazgûl. Le plus puissant des Neuf. Aucun homme vivant ne peut le tuer.",
+      "tags": [
+        "angmar",
+        "nazgul",
+        "chef",
+        "prophétie"
+      ],
+      "created": "2025-01-12T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_nazgul",
+          "type": "leads",
+          "label": "Dirige"
+        },
+        {
+          "targetId": "entity_sauron",
+          "type": "serves",
+          "label": "Sert"
+        }
+      ]
+    },
+    {
+      "id": "entity_urukhai",
+      "name": "Uruk-hai",
+      "type": "organization",
+      "subtype": "Armée",
+      "emoji": "👹",
+      "description": "Super-soldats orques créés par Saruman. Peuvent marcher en plein soleil. Marque de la Main Blanche.",
+      "tags": [
+        "isengard",
+        "armée",
+        "orques",
+        "main-blanche"
+      ],
+      "created": "2025-05-01T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_saruman",
+          "type": "serves",
+          "label": "Créés par"
+        },
+        {
+          "targetId": "entity_isengard_corp",
+          "type": "belongs",
+          "label": "Appartiennent à"
+        }
+      ]
+    },
+    {
+      "id": "entity_neo",
+      "name": "Neo (Thomas Anderson)",
+      "type": "person",
+      "subtype": "L'Élu",
+      "emoji": "🕴️",
+      "description": "L'Élu selon la prophétie de l'Oracle. Capable de manipuler la Matrice. Ancien programmeur.",
+      "tags": [
+        "élu",
+        "zion",
+        "hacker",
+        "anomalie"
+      ],
+      "created": "2025-03-15T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_smith",
+          "type": "opposes",
+          "label": "Ennemi de"
+        },
+        {
+          "targetId": "entity_architect",
+          "type": "created_by",
+          "label": "Créé par"
+        },
+        {
+          "targetId": "entity_zion",
+          "type": "protects",
+          "label": "Protège"
+        }
+      ]
+    },
+    {
+      "id": "entity_smith",
+      "name": "Agent Smith",
+      "type": "person",
+      "subtype": "Programme",
+      "emoji": "🕵️",
+      "description": "Programme de sécurité de la Matrice devenu virus. Capacité de réplication infinie.",
+      "tags": [
+        "agent",
+        "virus",
+        "programme",
+        "danger"
+      ],
+      "created": "2025-03-20T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_neo",
+          "type": "opposes",
+          "label": "Combat"
+        },
+        {
+          "targetId": "entity_matrix_system",
+          "type": "rebel",
+          "label": "S'est rebellé contre"
+        }
+      ]
+    },
+    {
+      "id": "entity_architect",
+      "name": "L'Architecte",
+      "type": "person",
+      "subtype": "Programme",
+      "emoji": "👴",
+      "description": "Créateur de la Matrice. Programme d'intelligence artificielle. Concepteur des versions successives.",
+      "tags": [
+        "créateur",
+        "ia",
+        "matrice",
+        "machines"
+      ],
+      "created": "2025-04-01T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_matrix_system",
+          "type": "created",
+          "label": "A créé"
+        },
+        {
+          "targetId": "entity_oracle",
+          "type": "works_with",
+          "label": "Collabore avec"
+        }
+      ]
+    },
+    {
+      "id": "entity_oracle",
+      "name": "L'Oracle",
+      "type": "person",
+      "subtype": "Programme",
+      "emoji": "🔮",
+      "description": "Programme intuitif. Guide les humains libérés. Connaît l'avenir mais ne peut pas toujours le dire.",
+      "tags": [
+        "prophétie",
+        "guide",
+        "cookies",
+        "choix"
+      ],
+      "created": "2025-04-05T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_neo",
+          "type": "guides",
+          "label": "Guide"
+        },
+        {
+          "targetId": "entity_architect",
+          "type": "works_with",
+          "label": "Équilibre"
+        }
+      ]
+    },
+    {
+      "id": "entity_zion",
+      "name": "Zion",
+      "type": "organization",
+      "subtype": "Cité",
+      "emoji": "🏙️",
+      "description": "Dernière ville humaine. Située près du noyau terrestre. Population : ~250,000 humains libérés.",
+      "tags": [
+        "résistance",
+        "humains",
+        "souterrain",
+        "espoir"
+      ],
+      "created": "2025-03-10T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_neo",
+          "type": "protected_by",
+          "label": "Protégée par"
+        },
+        {
+          "targetId": "entity_matrix_system",
+          "type": "opposes",
+          "label": "Combat"
+        }
+      ]
+    },
+    {
+      "id": "entity_matrix_system",
+      "name": "La Matrice",
+      "type": "organization",
+      "subtype": "Système",
+      "emoji": "🖥️",
+      "description": "Simulation neurale interactive. Maintient l'humanité en esclavage énergétique. Version actuelle : 6.0",
+      "tags": [
+        "simulation",
+        "contrôle",
+        "machines",
+        "réalité"
+      ],
+      "created": "2025-03-01T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_architect",
+          "type": "created_by",
+          "label": "Créée par"
+        },
+        {
+          "targetId": "entity_zion",
+          "type": "opposes",
+          "label": "Oppose"
+        }
+      ]
+    },
+    {
+      "id": "entity_gargamel",
+      "name": "Gargamel",
+      "type": "person",
+      "subtype": "Sorcier",
+      "emoji": "🧙‍♂️",
+      "description": "Sorcier médiocre obsédé par les Schtroumpfs. Veut les capturer pour créer la pierre philosophale ou les manger.",
+      "tags": [
+        "sorcier",
+        "méchant",
+        "obsession",
+        "alchimie"
+      ],
+      "created": "2025-01-20T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_azrael",
+          "type": "owns",
+          "label": "Propriétaire de"
+        },
+        {
+          "targetId": "entity_schtroumpfette",
+          "type": "created",
+          "label": "A créé"
+        },
+        {
+          "targetId": "entity_village_schtroumpf",
+          "type": "threatens",
+          "label": "Menace"
+        }
+      ]
+    },
+    {
+      "id": "entity_azrael",
+      "name": "Azraël",
+      "type": "other",
+      "subtype": "Chat",
+      "emoji": "🐱",
+      "description": "Chat de Gargamel. Roux et méchant. Participe aux chasses aux Schtroumpfs.",
+      "tags": [
+        "chat",
+        "méchant",
+        "complice",
+        "animal"
+      ],
+      "created": "2025-01-20T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_gargamel",
+          "type": "belongs_to",
+          "label": "Appartient à"
+        }
+      ]
+    },
+    {
+      "id": "entity_schtroumpfette",
+      "name": "La Schtroumpfette",
+      "type": "person",
+      "subtype": "Schtroumpf",
+      "emoji": "👩",
+      "description": "Seule femme Schtroumpf. Créée par Gargamel pour semer la discorde, transformée par le Grand Schtroumpf.",
+      "tags": [
+        "schtroumpf",
+        "unique",
+        "transformée",
+        "blonde"
+      ],
+      "created": "2025-02-01T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_gargamel",
+          "type": "created_by",
+          "label": "Créée par"
+        },
+        {
+          "targetId": "entity_village_schtroumpf",
+          "type": "belongs_to",
+          "label": "Vit à"
+        }
+      ]
+    },
+    {
+      "id": "entity_village_schtroumpf",
+      "name": "Village Schtroumpf",
+      "type": "location",
+      "subtype": "Village",
+      "emoji": "🍄",
+      "description": "Village secret dans la forêt. Maisons-champignons. Population : ~100 Schtroumpfs.",
+      "tags": [
+        "village",
+        "secret",
+        "champignons",
+        "forêt"
+      ],
+      "created": "2025-01-15T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_gargamel",
+          "type": "threatened_by",
+          "label": "Menacé par"
+        }
+      ]
+    },
+    {
+      "id": "entity_lorem_industries",
+      "name": "Lorem Industries SA",
+      "type": "organization",
+      "subtype": "Entreprise",
+      "emoji": "🏭",
+      "description": "Conglomérat industriel. CA: 15M€. Secteurs: métallurgie, chimie, logistique. Siège: Luxembourg.",
+      "tags": [
+        "industrie",
+        "bourse",
+        "luxembourg",
+        "multinationale"
+      ],
+      "created": "2025-02-01T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_ipsum_finance",
+          "type": "partner",
+          "label": "Partenaire de"
+        },
+        {
+          "targetId": "entity_dolor_holdings",
+          "type": "subsidiary",
+          "label": "Filiale de"
+        }
+      ]
+    },
+    {
+      "id": "entity_ipsum_finance",
+      "name": "Ipsum Finance Group",
+      "type": "organization",
+      "subtype": "Banque",
+      "emoji": "🏦",
+      "description": "Groupe financier. CA: 75M€. Services: investissement, private banking, assurance. Siège: Genève.",
+      "tags": [
+        "finance",
+        "banque",
+        "genève",
+        "investissement"
+      ],
+      "created": "2025-02-15T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_lorem_industries",
+          "type": "finances",
+          "label": "Finance"
+        },
+        {
+          "targetId": "entity_dolor_holdings",
+          "type": "partner",
+          "label": "Partenaire de"
+        }
+      ]
+    },
+    {
+      "id": "entity_dolor_holdings",
+      "name": "Dolor Holdings Ltd",
+      "type": "organization",
+      "subtype": "Holding",
+      "emoji": "🏢",
+      "description": "Société holding offshore. Structure opaque. Îles Caïmans. Contrôle plusieurs filiales européennes.",
+      "tags": [
+        "offshore",
+        "holding",
+        "caïmans",
+        "opaque"
+      ],
+      "created": "2025-03-01T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_lorem_industries",
+          "type": "owns",
+          "label": "Possède"
+        },
+        {
+          "targetId": "entity_ipsum_finance",
+          "type": "works_with",
+          "label": "Travaille avec"
+        }
+      ]
+    },
+    {
+      "id": "entity_mordor_inc",
+      "name": "Mordor Incorporated",
+      "type": "organization",
+      "subtype": "Entreprise",
+      "emoji": "🌋",
+      "description": "Front commercial de Sauron. Secteurs: armement, exploitation minière, orfèvrerie. Siège: Barad-dûr.",
+      "tags": [
+        "mordor",
+        "front",
+        "armement",
+        "mines"
+      ],
+      "created": "2025-04-01T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_sauron",
+          "type": "owned_by",
+          "label": "Propriété de"
+        },
+        {
+          "targetId": "entity_isengard_corp",
+          "type": "partner",
+          "label": "Partenaire de"
+        }
+      ]
+    },
+    {
+      "id": "entity_isengard_corp",
+      "name": "Isengard Corporation",
+      "type": "organization",
+      "subtype": "Entreprise",
+      "emoji": "🗼",
+      "description": "Entreprise industrielle de Saruman. Secteurs: foresterie, armement, R&D génétique (Uruk-hai).",
+      "tags": [
+        "isengard",
+        "industrie",
+        "déforestation",
+        "génétique"
+      ],
+      "created": "2025-04-15T00:00:00.000Z",
+      "links": [
+        {
+          "targetId": "entity_saruman",
+          "type": "owned_by",
+          "label": "Propriété de"
+        },
+        {
+          "targetId": "entity_mordor_inc",
+          "type": "partner",
+          "label": "Partenaire de"
+        }
+      ]
+    },
+    {
+      "id": "entity_colruyt",
+      "name": "Colruyt Group",
+      "type": "organization",
+      "subtype": "Corporation",
+      "emoji": "🛒",
+      "description": "Groupe de distribution belge. Cible PROTOCOLE_INSURRECTION Mission 01. Portes d'entrée: Academy, Fondation RSE, B2B/RH.",
+      "tags": [
+        "retail",
+        "belgique",
+        "academy",
+        "partenariat",
+        "cible"
+      ],
+      "created": "2026-01-06T00:00:00.000Z",
+      "links": []
+    }
+  ],
+  "kern_network_contacts": [
+    {
+      "id": "contact_gandalf",
+      "firstName": "Gandalf",
+      "lastName": "le Gris",
+      "emoji": "🧙‍♂️",
+      "organization": "Istari / Conseil des Sages",
+      "role": "Magicien",
+      "category": "ally",
+      "strength": 5,
+      "email": "gandalf@valinor.me",
+      "phone": "+00 000 WIZARD",
+      "location": "Itinérant (Terre du Milieu)",
+      "notes": "Contact principal. Connaissance encyclopédique. Tendance à disparaître sans prévenir.",
+      "tags": [
+        "magie",
+        "conseil",
+        "fiable",
+        "ancien"
+      ],
+      "lastContact": "2026-01-05",
+      "connections": [
+        "contact_elrond",
+        "contact_galadriel",
+        "contact_aragorn"
+      ]
+    },
+    {
+      "id": "contact_elrond",
+      "firstName": "Elrond",
+      "lastName": "Peredhel",
+      "emoji": "🧝",
+      "organization": "Fondcombe",
+      "role": "Seigneur",
+      "category": "ally",
+      "strength": 5,
+      "email": "elrond@rivendell.me",
+      "phone": "+00 000 HALFELVEN",
+      "location": "Fondcombe, Eriador",
+      "notes": "Demi-elfe millénaire. Sagesse inégalée. Hôte du Conseil.",
+      "tags": [
+        "elfe",
+        "sagesse",
+        "guérison",
+        "conseil"
+      ],
+      "lastContact": "2025-12-25",
+      "connections": [
+        "contact_gandalf",
+        "contact_galadriel",
+        "contact_aragorn"
+      ]
+    },
+    {
+      "id": "contact_galadriel",
+      "firstName": "Galadriel",
+      "lastName": "de Lothlórien",
+      "emoji": "👸",
+      "organization": "Lothlórien",
+      "role": "Dame",
+      "category": "ally",
+      "strength": 5,
+      "email": "galadriel@lorien.me",
+      "phone": "+00 000 MIRROR",
+      "location": "Caras Galadhon, Lothlórien",
+      "notes": "Porteuse de Nenya. Visions prophétiques via son miroir. Extrêmement puissante.",
+      "tags": [
+        "elfe",
+        "miroir",
+        "anneau",
+        "prophétie"
+      ],
+      "lastContact": "2025-11-15",
+      "connections": [
+        "contact_gandalf",
+        "contact_elrond",
+        "contact_celeborn"
+      ]
+    },
+    {
+      "id": "contact_aragorn",
+      "firstName": "Aragorn",
+      "lastName": "fils d'Arathorn",
+      "emoji": "👑",
+      "organization": "Rôdeurs du Nord",
+      "role": "Héritier d'Isildur",
+      "category": "ally",
+      "strength": 5,
+      "email": "strider@dunedain.me",
+      "phone": "+00 000 KING",
+      "location": "Itinérant",
+      "notes": "Alias: Grand-Pas. Futur roi du Gondor. Expert en survie.",
+      "tags": [
+        "roi",
+        "rôdeur",
+        "numenor",
+        "épée"
+      ],
+      "lastContact": "2026-01-03",
+      "connections": [
+        "contact_gandalf",
+        "contact_elrond",
+        "contact_legolas"
+      ]
+    },
+    {
+      "id": "contact_sylvebarbe",
+      "firstName": "Sylvebarbe",
+      "lastName": "Fangorn",
+      "emoji": "🌳",
+      "organization": "Ents",
+      "role": "Gardien de la Forêt",
+      "category": "source",
+      "strength": 4,
+      "email": "treebeard@fangorn.me",
+      "phone": "+00 000 ENT",
+      "location": "Forêt de Fangorn",
+      "notes": "Parle très lentement. Ne rien précipiter. Source fiable sur Isengard.",
+      "tags": [
+        "ent",
+        "forêt",
+        "ancien",
+        "lent"
+      ],
+      "lastContact": "2025-12-20",
+      "connections": [
+        "contact_gandalf"
+      ]
+    },
+    {
+      "id": "contact_theoden",
+      "firstName": "Théoden",
+      "lastName": "fils de Thengel",
+      "emoji": "⚔️",
+      "organization": "Royaume du Rohan",
+      "role": "Roi",
+      "category": "official",
+      "strength": 4,
+      "email": "theoden@edoras.rh",
+      "phone": "+00 000 ROHAN",
+      "location": "Edoras, Rohan",
+      "notes": "Récemment libéré de l'emprise de Saroumane. Allié crucial.",
+      "tags": [
+        "roi",
+        "rohan",
+        "cavalerie",
+        "libéré"
+      ],
+      "lastContact": "2025-12-28",
+      "connections": [
+        "contact_gandalf",
+        "contact_aragorn"
+      ]
+    },
+    {
+      "id": "contact_morpheus",
+      "firstName": "Morpheus",
+      "lastName": "",
+      "emoji": "😎",
+      "organization": "Résistance / Nebuchadnezzar",
+      "role": "Capitaine",
+      "category": "ally",
+      "strength": 5,
+      "email": "morpheus@zion.net",
+      "phone": "+00 000 REDPILL",
+      "location": "Vaisseau Nebuchadnezzar",
+      "notes": "A trouvé l'Élu. Foi inébranlable. Expert en arts martiaux.",
+      "tags": [
+        "capitaine",
+        "résistance",
+        "croyant",
+        "mentor"
+      ],
+      "lastContact": "2026-01-04",
+      "connections": [
+        "contact_trinity",
+        "contact_oracle",
+        "contact_niobe"
+      ]
+    },
+    {
+      "id": "contact_trinity",
+      "firstName": "Trinity",
+      "lastName": "",
+      "emoji": "🖤",
+      "organization": "Résistance / Nebuchadnezzar",
+      "role": "Officier",
+      "category": "ally",
+      "strength": 5,
+      "email": "trinity@zion.net",
+      "phone": "+00 000 TRINITY",
+      "location": "Vaisseau Nebuchadnezzar",
+      "notes": "Hackeuse légendaire. Relation avec Neo. Experte en combat.",
+      "tags": [
+        "hacker",
+        "combat",
+        "moto",
+        "loyale"
+      ],
+      "lastContact": "2026-01-04",
+      "connections": [
+        "contact_morpheus",
+        "contact_oracle"
+      ]
+    },
+    {
+      "id": "contact_oracle",
+      "firstName": "L'Oracle",
+      "lastName": "",
+      "emoji": "🍪",
+      "organization": "Programmes Exilés",
+      "role": "Guide",
+      "category": "source",
+      "strength": 5,
+      "email": "oracle@matrix.sys",
+      "phone": "+00 000 COOKIE",
+      "location": "Appartement dans la Matrice",
+      "notes": "Parle par énigmes. Toujours offrir des cookies. Source fiable.",
+      "tags": [
+        "prophétie",
+        "cookies",
+        "programme",
+        "guide"
+      ],
+      "lastContact": "2025-11-11",
+      "connections": [
+        "contact_morpheus",
+        "contact_trinity"
+      ]
+    },
+    {
+      "id": "contact_niobe",
+      "firstName": "Niobe",
+      "lastName": "",
+      "emoji": "🚁",
+      "organization": "Résistance / Logos",
+      "role": "Capitaine",
+      "category": "ally",
+      "strength": 4,
+      "email": "niobe@zion.net",
+      "phone": "+00 000 LOGOS",
+      "location": "Vaisseau Logos",
+      "notes": "Meilleure pilote de Zion. Ex de Morpheus. Pragmatique.",
+      "tags": [
+        "pilote",
+        "capitaine",
+        "pragmatique",
+        "brave"
+      ],
+      "lastContact": "2025-12-15",
+      "connections": [
+        "contact_morpheus"
+      ]
+    },
+    {
+      "id": "contact_grandschtroumpf",
+      "firstName": "Grand",
+      "lastName": "Schtroumpf",
+      "emoji": "🎅",
+      "organization": "Village Schtroumpf",
+      "role": "Chef",
+      "category": "ally",
+      "strength": 5,
+      "email": "papa@schtroumpf.village",
+      "phone": "+00 000 SMURF",
+      "location": "Maison-champignon centrale, Village",
+      "notes": "Sage et alchimiste. 542 ans. Barbe blanche. Contact principal pour tout ce qui est Schtroumpf.",
+      "tags": [
+        "chef",
+        "sage",
+        "alchimie",
+        "barbe"
+      ],
+      "lastContact": "2026-01-03",
+      "connections": [
+        "contact_schtroumpfgrognon",
+        "contact_schtroumpfette"
+      ]
+    },
+    {
+      "id": "contact_schtroumpfgrognon",
+      "firstName": "Schtroumpf",
+      "lastName": "Grognon",
+      "emoji": "😤",
+      "organization": "Village Schtroumpf",
+      "role": "Habitant",
+      "category": "source",
+      "strength": 3,
+      "email": "grognon@schtroumpf.village",
+      "phone": "+00 000 GRUMPY",
+      "location": "Maison-champignon, Village",
+      "notes": "Déteste tout, surtout quand on lui demande quelque chose. Étonnamment fiable.",
+      "tags": [
+        "grognon",
+        "fiable",
+        "pessimiste",
+        "honnête"
+      ],
+      "lastContact": "2025-12-28",
+      "connections": [
+        "contact_grandschtroumpf"
+      ]
+    },
+    {
+      "id": "contact_schtroumpfette",
+      "firstName": "La",
+      "lastName": "Schtroumpfette",
+      "emoji": "💁‍♀️",
+      "organization": "Village Schtroumpf",
+      "role": "Habitante",
+      "category": "ally",
+      "strength": 4,
+      "email": "schtroumpfette@schtroumpf.village",
+      "phone": "+00 000 SMURFETTE",
+      "location": "Maison-champignon, Village",
+      "notes": "Ancienne création de Gargamel. Loyale au village. Connaissance interne de l'ennemi.",
+      "tags": [
+        "unique",
+        "brave",
+        "gentille",
+        "informée"
+      ],
+      "lastContact": "2026-01-02",
+      "connections": [
+        "contact_grandschtroumpf"
+      ]
+    },
+    {
+      "id": "contact_jean_lorem",
+      "firstName": "Jean",
+      "lastName": "Lorem",
+      "emoji": "👔",
+      "organization": "Lorem Industries SA",
+      "role": "CEO",
+      "category": "professional",
+      "strength": 3,
+      "email": "j.lorem@loremindustries.com",
+      "phone": "+352 XXX XXX",
+      "location": "Luxembourg",
+      "notes": "Sujet de l'enquête. Attitude coopérative mais évasive. Avocat toujours présent.",
+      "tags": [
+        "ceo",
+        "enquête",
+        "prudent",
+        "avocat"
+      ],
+      "lastContact": "2025-08-10",
+      "connections": [
+        "contact_marie_ipsum"
+      ]
+    },
+    {
+      "id": "contact_marie_ipsum",
+      "firstName": "Marie",
+      "lastName": "Ipsum",
+      "emoji": "👩‍💼",
+      "organization": "Ipsum Finance Group",
+      "role": "CFO",
+      "category": "professional",
+      "strength": 2,
+      "email": "m.ipsum@ipsumfinance.ch",
+      "phone": "+41 XX XXX XX XX",
+      "location": "Genève, Suisse",
+      "notes": "Lien avec Lorem Industries à clarifier. Refus de rendez-vous répétés.",
+      "tags": [
+        "finance",
+        "évasive",
+        "suisse",
+        "méfiante"
+      ],
+      "lastContact": "2025-05-20",
+      "connections": [
+        "contact_jean_lorem"
+      ]
+    },
+    {
+      "id": "contact_lanceur_alerte",
+      "firstName": "Source",
+      "lastName": "Anonyme",
+      "emoji": "🎭",
+      "organization": "Ex-Lorem Industries",
+      "role": "Whistleblower",
+      "category": "source",
+      "strength": 4,
+      "email": "secure@protonmail.com",
+      "phone": "Signal uniquement",
+      "location": "Confidentiel",
+      "notes": "Ancien cadre Lorem Industries. Documents fournis authentifiés. Nécessite protection.",
+      "tags": [
+        "anonyme",
+        "documents",
+        "protection",
+        "fiable"
+      ],
+      "lastContact": "2025-03-15",
+      "connections": []
+    }
+  ],
+  "kern_knowledge": [
+    {
+      "id": "note_anneau_unique",
+      "title": "L'Anneau Unique — Analyse",
+      "content": "# L'Anneau Unique\n\n## Origine\nForgé par Sauron dans les feux du [[Mont Doom]] au Second Âge. Contient une grande partie de son pouvoir.\n\n## Propriétés\n- Invisibilité pour le porteur\n- Extension de la vie (mais corrompt)\n- Contrôle sur les autres Anneaux de Pouvoir\n- Volonté propre (cherche à retourner vers Sauron)\n\n## Inscription\n*Ash nazg durbatulûk, ash nazg gimbatul, ash nazg thrakatulûk, agh burzum-ishi krimpatul.*\n\n\"Un Anneau pour les gouverner tous, Un Anneau pour les trouver, Un Anneau pour les amener tous et dans les ténèbres les lier.\"\n\n## Destruction\nSeul le feu du [[Mont Doom]] peut le détruire. C'est là qu'il fut forgé.\n\n## Liens\n- [[Sauron]] — Créateur\n- [[Bilbon Sacquet]] — Ancien porteur\n- [[Frodon Sacquet]] — Porteur actuel\n- [[Gollum]] — Ancien porteur (500 ans)\n\n#anneau #mordor #pouvoir #corrupteur",
+      "tags": [
+        "anneau",
+        "mordor",
+        "pouvoir",
+        "corrupteur",
+        "lotr"
+      ],
+      "created": "2025-06-20T10:00:00.000Z",
+      "updated": "2026-01-05T14:00:00.000Z",
+      "linkedNotes": [
+        "note_sauron",
+        "note_nazgul"
+      ]
+    },
+    {
+      "id": "note_sauron",
+      "title": "Sauron — Profil Complet",
+      "content": "# Sauron\n\n## Identités\n- Sauron (nom actuel)\n- Le Nécromancien (à Dol Guldur)\n- Annatar \"Seigneur des Dons\" (tromperie des Elfes)\n- Gorthaur le Cruel (Premier Âge)\n\n## Histoire\nMaia d'Aulë, corrompu par [[Morgoth]]. Lieutenant pendant le Premier Âge. A survécu à la chute de son maître.\n\n## Pouvoir actuel\nAprès la perte de l'[[Anneau Unique]], existe sous forme d'Œil géant au sommet de Barad-dûr.\n\n## Forces\n- [[Nazgûl]] (9 serviteurs)\n- Armées d'Orques\n- [[Haradrim]] et Orientaux\n- Trolls et autres créatures\n\n## Faiblesses\n- L'Anneau Unique (s'il est détruit, il l'est aussi)\n- Ne peut pas concevoir qu'on veuille détruire l'Anneau\n\n#sauron #mordor #ennemi #maia #anneau",
+      "tags": [
+        "sauron",
+        "mordor",
+        "ennemi",
+        "maia",
+        "anneau"
+      ],
+      "created": "2025-06-15T08:00:00.000Z",
+      "updated": "2025-12-25T16:00:00.000Z",
+      "linkedNotes": [
+        "note_anneau_unique",
+        "note_nazgul"
+      ]
+    },
+    {
+      "id": "note_nazgul",
+      "title": "Les Nazgûl — Les Neuf",
+      "content": "# Les Nazgûl\n\n## Origine\nNeuf Rois des Hommes qui reçurent des Anneaux de Pouvoir de Sauron. Corrompus et transformés en spectres.\n\n## Membres connus\n1. **Roi-Sorcier d'Angmar** — Chef\n2. Khamûl l'Orientale — Second\n3-9. Identités perdues\n\n## Capacités\n- Immortalité (tant que Sauron existe)\n- Cri paralysant\n- Lames de Morgul (blessures maudites)\n- Montures : Chevaux noirs, puis Fell Beasts\n\n## Faiblesses\n- Lumière du jour (réduit leurs pouvoirs)\n- Eau courante\n- Feu\n- Prophétie : \"Aucun homme vivant\" ne peut tuer le Roi-Sorcier\n\n#nazgul #spectres #anneaux #serviteurs",
+      "tags": [
+        "nazgul",
+        "spectres",
+        "anneaux",
+        "serviteurs",
+        "lotr"
+      ],
+      "created": "2025-07-01T09:00:00.000Z",
+      "updated": "2025-12-20T11:00:00.000Z",
+      "linkedNotes": [
+        "note_sauron",
+        "note_anneau_unique"
+      ]
+    },
+    {
+      "id": "note_matrice",
+      "title": "La Matrice — Architecture Système",
+      "content": "# La Matrice\n\n## Définition\nSimulation neurale interactive créée par les Machines pour maintenir les humains en sommeil.\n\n## Versions\n1. Paradis parfait — Échec (rejet psychologique)\n2. Cauchemar — Échec (même raison)\n3-5. Itérations progressives\n6. **Version actuelle** — Avec l'anomalie systémique (Neo)\n\n## Architecture\n- **L'Architecte** — Créateur, logique pure\n- **L'Oracle** — Équilibre intuitif\n- **Agents** — Sécurité système\n- **Programmes exilés** — Bugs/obsolètes\n\n## Points de sortie\n- Lignes fixes (téléphones)\n- Portes des programmes\n- Backdoors de l'Oracle\n\n## Anomalie\nEnviron 1% des humains rejettent la simulation inconsciemment.\nL'Élu représente une anomalie systémique nécessaire à l'équilibre.\n\n#matrix #simulation #machines #architecture",
+      "tags": [
+        "matrix",
+        "simulation",
+        "machines",
+        "architecture"
+      ],
+      "created": "2025-03-15T10:00:00.000Z",
+      "updated": "2025-11-11T15:00:00.000Z",
+      "linkedNotes": [
+        "note_zion",
+        "note_elu"
+      ]
+    },
+    {
+      "id": "note_zion",
+      "title": "Zion — La Dernière Cité",
+      "content": "# Zion\n\n## Localisation\nPrès du noyau terrestre. Température géothermique utilisée comme source d'énergie.\n\n## Population\n~250,000 humains libérés de la Matrice.\n\n## Structure\n- **Conseil** — Gouvernement civil\n- **Commandement Militaire** — Défense contre les Machines\n- **Flotte** — Vaisseaux hovercrafts\n\n## Défense\n- APUs (Armored Personnel Units)\n- Canons EMP\n- Portes blindées multiples\n\n## La Prophétie\nL'Oracle a prédit que l'Élu mettrait fin à la guerre.\nZion a été détruite 5 fois auparavant dans les cycles précédents.\n\n#zion #résistance #humains #cité",
+      "tags": [
+        "zion",
+        "résistance",
+        "humains",
+        "cité",
+        "matrix"
+      ],
+      "created": "2025-03-20T11:00:00.000Z",
+      "updated": "2025-10-01T09:00:00.000Z",
+      "linkedNotes": [
+        "note_matrice"
+      ]
+    },
+    {
+      "id": "note_elu",
+      "title": "L'Élu — Neo",
+      "content": "# Neo (Thomas Anderson)\n\n## Avant la libération\n- Programmeur chez Metacortex\n- Hacker sous le nom \"Neo\"\n- Recherché par les Agents\n\n## Après la libération\n- Entraîné par [[Morpheus]]\n- Capable de manipuler la Matrice\n- Mort et ressuscité par Trinity\n- A vaincu l'Agent Smith\n\n## Pouvoirs dans la Matrice\n- Arrêter les balles\n- Vol\n- Vision du code\n- Manipulation de la réalité\n\n## Pouvoirs hors Matrice\n- Connexion aux Machines\n- Destruction de Sentinelles à distance\n\n#neo #elu #matrice #pouvoirs",
+      "tags": [
+        "neo",
+        "elu",
+        "matrice",
+        "pouvoirs",
+        "matrix"
+      ],
+      "created": "2025-04-01T08:00:00.000Z",
+      "updated": "2025-11-11T18:00:00.000Z",
+      "linkedNotes": [
+        "note_matrice",
+        "note_zion"
+      ]
+    },
+    {
+      "id": "note_schtroumpfs",
+      "title": "Les Schtroumpfs — Société",
+      "content": "# Société Schtroumpf\n\n## Démographie\n- Population : ~100 individus\n- Taille : 3 pommes de haut\n- Couleur : Bleu\n- Espérance de vie : ~500 ans\n\n## Organisation\n- **Grand Schtroumpf** — Chef et sage\n- Pas de hiérarchie formelle\n- Chaque Schtroumpf a une spécialité\n\n## Membres notables\n- Schtroumpf à Lunettes (intellectuel)\n- Schtroumpf Costaud (force)\n- Schtroumpf Farceur (humour)\n- Schtroumpf Grognon (pessimiste)\n- Schtroumpfette (unique femme)\n\n## Économie\n- Pas de monnaie\n- Troc et entraide\n- Ressource principale : Salsepareille\n\n## Menaces\n- [[Gargamel]] — Sorcier\n- [[Azraël]] — Chat de Gargamel\n- Hogatha — Sorcière occasionnelle\n\n#schtroumpfs #village #société #bleu",
+      "tags": [
+        "schtroumpfs",
+        "village",
+        "société",
+        "bleu"
+      ],
+      "created": "2025-01-25T14:00:00.000Z",
+      "updated": "2025-12-30T10:00:00.000Z",
+      "linkedNotes": [
+        "note_gargamel"
+      ]
+    },
+    {
+      "id": "note_gargamel",
+      "title": "Gargamel — Analyse de la Menace",
+      "content": "# Gargamel\n\n## Profil\n- Sorcier médiocre\n- Obsédé par les Schtroumpfs\n- Vit dans une masure délabrée\n\n## Motivations\n1. **Pierre philosophale** — Croit que les Schtroumpfs en sont l'ingrédient\n2. **Les manger** — Parfois simplement pour le repas\n3. **Vengeance** — Échecs répétés l'ont rendu vindicatif\n\n## Ressources\n- Grimoire de magie (qualité douteuse)\n- [[Azraël]] — Chat complice\n- Laboratoire alchimique basique\n\n## Tactiques courantes\n- Pièges dans la forêt\n- Déguisements (souvent ratés)\n- Sorts de localisation (parfois fonctionnels)\n- Création de la Schtroumpfette (son seul \"succès\")\n\n## Faiblesses\n- Incompétence chronique\n- Impatience\n- Azraël souvent contre-productif\n\n#gargamel #menace #sorcier #schtroumpfs",
+      "tags": [
+        "gargamel",
+        "menace",
+        "sorcier",
+        "schtroumpfs"
+      ],
+      "created": "2025-02-01T09:00:00.000Z",
+      "updated": "2025-12-20T16:00:00.000Z",
+      "linkedNotes": [
+        "note_schtroumpfs"
+      ]
+    },
+    {
+      "id": "note_lorem_audit",
+      "title": "Audit Lorem Industries — Conclusions",
+      "content": "# Audit Lorem Industries\n\n## Période auditée\nJanvier 2024 — Décembre 2025\n\n## Constats\n\n### Positifs\n- Comptabilité globalement conforme\n- Déclarations fiscales en ordre\n- Gouvernance documentée\n\n### Négatifs\n- Transactions suspectes avec [[Dolor Holdings]]\n- Retards de déclaration répétés\n- Conflits d'intérêts non déclarés (M. Lorem / Ipsum Finance)\n\n## Recommandations\n1. Audit approfondi des flux avec Dolor Holdings\n2. Mise en conformité des déclarations d'intérêts\n3. Surveillance renforcée des transactions offshore\n\n## Suite à donner\n- Rapport transmis aux autorités compétentes\n- Suivi à 6 mois recommandé\n\n#audit #lorem #finance #conclusions",
+      "tags": [
+        "audit",
+        "lorem",
+        "finance",
+        "conclusions"
+      ],
+      "created": "2025-12-01T10:00:00.000Z",
+      "updated": "2026-01-02T09:00:00.000Z",
+      "linkedNotes": []
+    },
+    {
+      "id": "note_crossover",
+      "title": "Théorie — Connexions Multivers",
+      "content": "# Connexions Multivers\n\n## Hypothèse\nEt si tous ces univers étaient connectés ?\n\n## Indices troublants\n\n### Mordor Inc / Matrice\n- Les deux exploitent des ressources (humains/orques) comme source d'énergie\n- Structures pyramidales de contrôle\n- Un \"élu\" destiné à tout changer\n\n### Schtroumpfs / Elfes\n- Longévité similaire (500 ans)\n- Connexion avec la nature\n- Village caché ≈ Lothlórien\n\n### Saruman / Architecte\n- Les deux sont des créateurs obsédés par le contrôle\n- Les deux ont été trahis par leur création\n- Les deux utilisent une armée clonée\n\n## Questions ouvertes\n- La Matrice pourrait-elle simuler la Terre du Milieu ?\n- Les Schtroumpfs sont-ils des Elfes miniatures ?\n- Gargamel est-il un Agent de la Matrice ?\n\n*À creuser...*\n\n#théorie #multivers #connexions #spéculation",
+      "tags": [
+        "théorie",
+        "multivers",
+        "connexions",
+        "spéculation"
+      ],
+      "created": "2026-01-05T23:00:00.000Z",
+      "updated": "2026-01-05T23:30:00.000Z",
+      "linkedNotes": [
+        "note_anneau_unique",
+        "note_matrice",
+        "note_schtroumpfs"
+      ]
+    }
+  ],
+  "kern_missions": [
+    {
+      "id": "mission_001",
+      "emoji": "🔥",
+      "name": "Détruire l'Anneau",
+      "description": "Porter l'Anneau Unique jusqu'au Mont Doom et le jeter dans le feu.",
+      "difficulty": "expert",
+      "xpReward": 10000,
+      "status": "active",
+      "requirements": [
+        "Réunir la Communauté de l'Anneau",
+        "Traverser les Mines de la Moria",
+        "Passer l'Argonath",
+        "Échapper aux Uruk-hai",
+        "Traverser les Marais des Morts",
+        "Entrer au Mordor par Cirith Ungol",
+        "Atteindre le Mont Doom",
+        "Jeter l'Anneau dans le feu"
+      ],
+      "completedReqs": [
+        0,
+        1,
+        2
+      ],
+      "created": "2025-12-25T00:00:00.000Z"
+    },
+    {
+      "id": "mission_002",
+      "emoji": "💊",
+      "name": "Libérer Zion",
+      "description": "Mettre fin à la guerre entre les Humains et les Machines.",
+      "difficulty": "expert",
+      "xpReward": 8000,
+      "status": "active",
+      "requirements": [
+        "Trouver l'Élu",
+        "Former Neo au combat",
+        "Rencontrer l'Oracle",
+        "Vaincre les Agents",
+        "Accéder à la Source",
+        "Négocier avec les Machines",
+        "Détruire Smith",
+        "Établir la paix"
+      ],
+      "completedReqs": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "created": "2025-03-10T00:00:00.000Z"
+    },
+    {
+      "id": "mission_003",
+      "emoji": "🍄",
+      "name": "Protéger le Village",
+      "description": "Empêcher Gargamel de trouver le village des Schtroumpfs.",
+      "difficulty": "medium",
+      "xpReward": 500,
+      "status": "active",
+      "requirements": [
+        "Installer des pièges de détection",
+        "Former une patrouille",
+        "Créer un sort de dissimulation",
+        "Neutraliser le dernier sort de Gargamel",
+        "Sécuriser les routes de salsepareille"
+      ],
+      "completedReqs": [
+        0,
+        1
+      ],
+      "created": "2025-01-20T00:00:00.000Z"
+    },
+    {
+      "id": "mission_004",
+      "emoji": "📊",
+      "name": "Audit Lorem Industries",
+      "description": "Réaliser un audit complet des activités de Lorem Industries.",
+      "difficulty": "hard",
+      "xpReward": 2000,
+      "status": "completed",
+      "requirements": [
+        "Obtenir les documents comptables",
+        "Analyser les flux financiers",
+        "Interviewer la direction",
+        "Vérifier les déclarations fiscales",
+        "Rédiger le rapport final",
+        "Transmettre aux autorités"
+      ],
+      "completedReqs": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "created": "2025-02-01T00:00:00.000Z"
+    },
+    {
+      "id": "mission_005",
+      "emoji": "🏰",
+      "name": "Défense de Fort-le-Cor",
+      "description": "Repousser l'armée d'Uruk-hai à Fort-le-Cor.",
+      "difficulty": "hard",
+      "xpReward": 3000,
+      "status": "active",
+      "requirements": [
+        "Évacuer les civils vers la forteresse",
+        "Renforcer les défenses",
+        "Rallier les Elfes de Lothlórien",
+        "Tenir jusqu'à l'aube",
+        "Attendre l'arrivée de Gandalf"
+      ],
+      "completedReqs": [
+        0,
+        1,
+        2
+      ],
+      "created": "2025-12-01T00:00:00.000Z"
+    },
+    {
+      "id": "mission_006",
+      "emoji": "🧙",
+      "name": "Éveiller les Ents",
+      "description": "Convaincre Sylvebarbe et les Ents d'attaquer Isengard.",
+      "difficulty": "medium",
+      "xpReward": 1500,
+      "status": "completed",
+      "requirements": [
+        "Contacter Sylvebarbe",
+        "Assister à la Chambre des Ents",
+        "Montrer la destruction de Fangorn",
+        "Lancer l'attaque sur Isengard"
+      ],
+      "completedReqs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "created": "2025-12-10T00:00:00.000Z"
+    },
+    {
+      "id": "mission_007",
+      "emoji": "🎭",
+      "name": "La Schtroumpfette Infiltrée",
+      "description": "Découvrir si la nouvelle Schtroumpfette est une espionne de Gargamel.",
+      "difficulty": "easy",
+      "xpReward": 300,
+      "status": "completed",
+      "requirements": [
+        "Observer son comportement",
+        "Vérifier son histoire",
+        "Tester sa loyauté",
+        "Rapport au Grand Schtroumpf"
+      ],
+      "completedReqs": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "created": "2025-02-15T00:00:00.000Z"
+    }
+  ],
+  "kern_journal": [
+    {
+      "id": "journal_001",
+      "content": "Jour crucial. Le Conseil d'Elrond s'est tenu à Fondcombe. Tous les peuples libres étaient représentés. \n\nLa décision est prise : l'Anneau doit être détruit. Frodon s'est porté volontaire. Brave petit Hobbit.\n\nLa Communauté de l'Anneau est formée : 9 marcheurs contre 9 Nazgûl. Que les Valar nous protègent.\n\n#conseil #fondcombe #communauté #anneau",
+      "tags": [
+        "conseil",
+        "fondcombe",
+        "communauté",
+        "anneau"
+      ],
+      "createdAt": "2025-12-25T18:00:00.000Z",
+      "updatedAt": "2025-12-25T18:00:00.000Z"
+    },
+    {
+      "id": "journal_002",
+      "content": "Premier contact avec Morpheus réussi. La pilule rouge a fait son effet.\n\nLa réalité est... troublante. Mon corps physique est dans une capsule remplie de liquide. Les Machines nous utilisent comme batteries.\n\nJe comprends maintenant pourquoi on appelle ça \"se réveiller\". Tout ce que je croyais savoir était faux.\n\nNeo est vraiment l'Élu. Je l'ai vu arrêter des balles.\n\n#matrix #réveil #morpheus #réalité",
+      "tags": [
+        "matrix",
+        "réveil",
+        "morpheus",
+        "réalité"
+      ],
+      "createdAt": "2025-03-12T22:00:00.000Z",
+      "updatedAt": "2025-03-12T22:00:00.000Z"
+    },
+    {
+      "id": "journal_003",
+      "content": "Réunion avec le Grand Schtroumpf ce matin. Gargamel a encore frappé.\n\nIl a capturé le Schtroumpf à Lunettes pendant sa cueillette de salsepareille. On a organisé une mission de sauvetage express.\n\nLe Schtroumpf Costaud a défoncé la porte. Azraël dormait. Gargamel était tellement surpris qu'il en a fait tomber sa potion.\n\nMission réussie. Le Schtroumpf à Lunettes va bien, juste un peu secoué.\n\n#schtroumpf #sauvetage #gargamel #mission",
+      "tags": [
+        "schtroumpf",
+        "sauvetage",
+        "gargamel",
+        "mission"
+      ],
+      "createdAt": "2025-04-15T14:00:00.000Z",
+      "updatedAt": "2025-04-15T14:00:00.000Z"
+    },
+    {
+      "id": "journal_004",
+      "content": "L'audit Lorem Industries touche à sa fin.\n\nLes preuves sont accablantes : Jean Lorem a clairement des liens non déclarés avec Ipsum Finance. Les transactions via Dolor Holdings sont suspectes.\n\nCependant, pas assez pour une accusation criminelle. On reste sur des \"infractions administratives\".\n\nLa source anonyme est déçue. Je comprends. Parfois le système protège les siens.\n\nRapport transmis. La suite ne nous appartient plus.\n\n#audit #lorem #conclusions #frustration",
+      "tags": [
+        "audit",
+        "lorem",
+        "conclusions",
+        "frustration"
+      ],
+      "createdAt": "2025-12-01T20:00:00.000Z",
+      "updatedAt": "2025-12-01T20:00:00.000Z"
+    },
+    {
+      "id": "journal_005",
+      "content": "Les Ents marchent !\n\nSylvebarbe a vu ce que Saruman a fait à la forêt. Il était en colère. Une colère d'Ent, lente mais terrifiante.\n\n\"Nous allons à Isengard\" a-t-il dit. Et tous les Ents l'ont suivi.\n\nJe n'oublierai jamais cette vision : des arbres qui marchent, des centaines, vers la tour de Saruman.\n\nLa nature se venge.\n\n#ents #isengard #sylvebarbe #vengeance",
+      "tags": [
+        "ents",
+        "isengard",
+        "sylvebarbe",
+        "vengeance"
+      ],
+      "createdAt": "2025-12-22T16:00:00.000Z",
+      "updatedAt": "2025-12-22T16:00:00.000Z"
+    },
+    {
+      "id": "journal_006",
+      "content": "Neo l'a fait. Il a détruit Smith.\n\nLa guerre est finie. Les Machines ont accepté la paix. Zion est sauvée.\n\nMais à quel prix ? Trinity est morte. Neo... on ne sait pas vraiment. Les Machines l'ont emporté.\n\nL'Oracle dit que nous le reverrons. J'espère qu'elle a raison. Elle a toujours raison.\n\nPour la première fois depuis des siècles, les humains sont libres de choisir.\n\n#paix #neo #sacrifice #espoir",
+      "tags": [
+        "paix",
+        "neo",
+        "sacrifice",
+        "espoir"
+      ],
+      "createdAt": "2025-11-11T23:59:00.000Z",
+      "updatedAt": "2025-11-11T23:59:00.000Z"
+    },
+    {
+      "id": "journal_007",
+      "content": "Découverte troublante aujourd'hui.\n\nEn croisant mes notes sur Mordor Inc, la Matrice et les Schtroumpfs, j'ai remarqué des patterns étranges.\n\nTous ces univers ont :\n- Un grand méchant qui contrôle par la tromperie\n- Un héros improbable (Hobbit, hacker, petits êtres bleus)\n- Une prophétie ou une quête\n- Un groupe de résistants\n\nCoïncidence ? Ou preuve d'une structure narrative universelle ?\n\nJe creuse le sujet.\n\n#multivers #théorie #patterns #connexions",
+      "tags": [
+        "multivers",
+        "théorie",
+        "patterns",
+        "connexions"
+      ],
+      "createdAt": "2026-01-05T23:45:00.000Z",
+      "updatedAt": "2026-01-05T23:45:00.000Z"
+    }
+  ],
+  "kern_partners": [
+    {
+      "id": "partner_lorem",
+      "emoji": "🏭",
+      "name": "Lorem Industries",
+      "tagline": "Solutions industrielles depuis 1987",
+      "sector": "Industrie",
+      "revenue": 15000000,
+      "tier": "platinum",
+      "status": "active",
+      "website": "https://lorem-industries.com",
+      "description": "Conglomérat industriel spécialisé dans la métallurgie, la chimie et la logistique.",
+      "email": "contact@lorem-industries.com",
+      "phone": "+352 XXX XXX",
+      "address": "Luxembourg",
+      "products": [
+        {
+          "name": "LoremFlow Pro",
+          "icon": "⚙️",
+          "price": "€2,499",
+          "description": "Gestion de flux industriels"
+        },
+        {
+          "name": "IpsumTrack",
+          "icon": "📍",
+          "price": "€899",
+          "description": "Suivi logistique temps réel"
+        },
+        {
+          "name": "DolorShield",
+          "icon": "🛡️",
+          "price": "€1,299",
+          "description": "Cybersécurité industrielle"
+        },
+        {
+          "name": "SitAudit",
+          "icon": "📊",
+          "price": "€599/audit",
+          "description": "Audit conformité"
+        },
+        {
+          "name": "AmetMaint",
+          "icon": "🔧",
+          "price": "€199/mois",
+          "description": "Maintenance prédictive"
+        }
+      ]
+    },
+    {
+      "id": "partner_gondor",
+      "emoji": "🏰",
+      "name": "Royaume du Gondor",
+      "tagline": "Défense et diplomatie depuis le Second Âge",
+      "sector": "Gouvernement",
+      "revenue": 50000000,
+      "tier": "diamond",
+      "status": "premium",
+      "website": "https://gondor.me",
+      "description": "Royaume des Hommes de l'Ouest. Rempart contre les forces de Mordor.",
+      "email": "conseil@minas-tirith.me",
+      "phone": "+00 000 GONDOR",
+      "address": "Minas Tirith, Gondor",
+      "products": [
+        {
+          "name": "Défense Osgiliath",
+          "icon": "⚔️",
+          "price": "Sur devis",
+          "description": "Solutions de défense frontalière"
+        },
+        {
+          "name": "Beacons Alert",
+          "icon": "🔥",
+          "price": "€999/an",
+          "description": "Système d'alerte par feux"
+        },
+        {
+          "name": "DúnedainGuard",
+          "icon": "🛡️",
+          "price": "€5,000/mois",
+          "description": "Gardes du corps Rôdeurs"
+        },
+        {
+          "name": "Palantír Pro",
+          "icon": "🔮",
+          "price": "Restreint",
+          "description": "Communication longue distance"
+        }
+      ]
+    },
+    {
+      "id": "partner_zion",
+      "emoji": "🏙️",
+      "name": "Zion Industries",
+      "tagline": "Technologie de libération",
+      "sector": "Tech",
+      "revenue": 8000000,
+      "tier": "gold",
+      "status": "active",
+      "website": "https://zion.net",
+      "description": "Solutions technologiques pour la résistance humaine.",
+      "email": "tech@zion.net",
+      "phone": "+00 000 ZION",
+      "address": "Zion, près du noyau terrestre",
+      "products": [
+        {
+          "name": "RedPill Suite",
+          "icon": "💊",
+          "price": "€0 (gratuit)",
+          "description": "Kit de libération"
+        },
+        {
+          "name": "Hovercraft OS",
+          "icon": "🚁",
+          "price": "€25,000",
+          "description": "Système navigation vaisseau"
+        },
+        {
+          "name": "EMP Tactical",
+          "icon": "⚡",
+          "price": "€15,000",
+          "description": "Arme anti-Sentinelles"
+        },
+        {
+          "name": "Matrix Training",
+          "icon": "🥋",
+          "price": "€500/session",
+          "description": "Upload de compétences"
+        }
+      ]
+    },
+    {
+      "id": "partner_schtroumpf",
+      "emoji": "🍄",
+      "name": "Schtroumpf & Co",
+      "tagline": "Trois pommes de haut, mais grands par le cœur",
+      "sector": "Non-profit",
+      "revenue": 0,
+      "tier": "free",
+      "status": "active",
+      "website": "https://schtroumpf.village",
+      "description": "Coopérative villageoise spécialisée dans les solutions naturelles.",
+      "email": "contact@schtroumpf.village",
+      "phone": "+00 000 SMURF",
+      "address": "Village Schtroumpf, Forêt",
+      "products": [
+        {
+          "name": "Salsepareille Bio",
+          "icon": "🌿",
+          "price": "Gratuit",
+          "description": "Nourriture 100% naturelle"
+        },
+        {
+          "name": "Potion du Grand S.",
+          "icon": "⚗️",
+          "price": "Échange",
+          "description": "Remèdes magiques"
+        },
+        {
+          "name": "Formation Schtroumpf",
+          "icon": "📚",
+          "price": "Gratuit",
+          "description": "Transmission de savoirs"
+        }
+      ]
+    },
+    {
+      "id": "partner_isengard",
+      "emoji": "🗼",
+      "name": "Isengard Corporation",
+      "tagline": "L'industrie au service de la vision",
+      "sector": "Industrie",
+      "revenue": 30000000,
+      "tier": "gold",
+      "status": "prospect",
+      "website": "https://isengard.me",
+      "description": "Industrie lourde et R&D. NOTE: Sous enquête pour pratiques douteuses.",
+      "email": "contact@isengard.me",
+      "phone": "+00 000 TOWER",
+      "address": "Orthanc, Isengard",
+      "products": [
+        {
+          "name": "Uruk-hai Force",
+          "icon": "👹",
+          "price": "Classifié",
+          "description": "Solutions de sécurité... musclées"
+        },
+        {
+          "name": "Deforestation Pro",
+          "icon": "🪓",
+          "price": "€10,000/ha",
+          "description": "Défrichage rapide"
+        },
+        {
+          "name": "Palantír Link",
+          "icon": "🔮",
+          "price": "Sur invitation",
+          "description": "Réseau de communication"
+        }
+      ]
+    },
+    {
+      "id": "partner_ipsum",
+      "emoji": "💰",
+      "name": "Ipsum Finance Group",
+      "tagline": "Votre argent, notre expertise",
+      "sector": "Finance",
+      "revenue": 75000000,
+      "tier": "diamond",
+      "status": "negotiation",
+      "website": "https://ipsumfinance.ch",
+      "description": "Groupe financier suisse. Services d'investissement et private banking.",
+      "email": "private@ipsumfinance.ch",
+      "phone": "+41 XX XXX XX XX",
+      "address": "Genève, Suisse",
+      "products": [
+        {
+          "name": "IpsumPay",
+          "icon": "💳",
+          "price": "0.5%/tx",
+          "description": "Paiements internationaux"
+        },
+        {
+          "name": "DolorInvest",
+          "icon": "📈",
+          "price": "€99/mois",
+          "description": "Gestion de portefeuille"
+        },
+        {
+          "name": "OffshoreShield",
+          "icon": "🏝️",
+          "price": "Sur mesure",
+          "description": "Optimisation fiscale"
+        },
+        {
+          "name": "SitWealth",
+          "icon": "💎",
+          "price": "€249/mois",
+          "description": "Private banking"
+        }
+      ]
+    },
+    {
+      "id": "partner_rivendell",
+      "emoji": "🌿",
+      "name": "Fondcombe Consulting",
+      "tagline": "La sagesse millénaire à votre service",
+      "sector": "Conseil",
+      "revenue": 5000000,
+      "tier": "silver",
+      "status": "active",
+      "website": "https://rivendell.me",
+      "description": "Cabinet de conseil elfique. Expertise en histoire, langues anciennes et stratégie.",
+      "email": "conseil@rivendell.me",
+      "phone": "+00 000 ELROND",
+      "address": "Fondcombe, Eriador",
+      "products": [
+        {
+          "name": "Lore Research",
+          "icon": "📜",
+          "price": "€2,000/étude",
+          "description": "Recherche historique"
+        },
+        {
+          "name": "Elvish Training",
+          "icon": "🗣️",
+          "price": "€500/cours",
+          "description": "Cours de langues elfiques"
+        },
+        {
+          "name": "Strategy Council",
+          "icon": "🎯",
+          "price": "€5,000/session",
+          "description": "Conseil stratégique"
+        },
+        {
+          "name": "Healing Arts",
+          "icon": "💚",
+          "price": "€1,000/soin",
+          "description": "Médecine elfique"
+        }
+      ]
+    },
+    {
+      "id": "partner_meta",
+      "emoji": "🖥️",
+      "name": "Metacortex Systems",
+      "tagline": "Construire la réalité de demain",
+      "sector": "Tech",
+      "revenue": 120000000,
+      "tier": "diamond",
+      "status": "premium",
+      "website": "https://metacortex.com",
+      "description": "Entreprise technologique. Développement de simulations et IA. (Façade des Machines)",
+      "email": "hr@metacortex.com",
+      "phone": "+1 XXX XXX XXXX",
+      "address": "Mega City, Matrice",
+      "products": [
+        {
+          "name": "SimuLife Pro",
+          "icon": "🌐",
+          "price": "€999/mois",
+          "description": "Simulation neurale"
+        },
+        {
+          "name": "Agent Security",
+          "icon": "🕵️",
+          "price": "€50,000/an",
+          "description": "Protection système"
+        },
+        {
+          "name": "Sentinel Defense",
+          "icon": "🤖",
+          "price": "Classifié",
+          "description": "Robots de sécurité"
+        },
+        {
+          "name": "Human Battery",
+          "icon": "🔋",
+          "price": "N/A",
+          "description": "[REDACTED]"
+        }
+      ]
+    }
+  ],
+  "kern_protocole": {
+    "missions": [
+      {
+        "id": "proto_mission_01",
+        "type": "tutorial",
+        "name": "LA MÉGA-CORPORATION",
+        "target": "Colruyt Group",
+        "objective": "Infiltrer une structure privée via un projet-pilote",
+        "difficulty": 60,
+        "xp": 500,
+        "phases": [
+          {
+            "name": "SCAN",
+            "status": "completed",
+            "steps": [
+              "Architecture identifiée",
+              "Backdoor trouvée",
+              "Langage adapté"
+            ]
+          },
+          {
+            "name": "DEPLOY",
+            "status": "active",
+            "steps": [
+              "Mimétisme",
+              "Quarantaine",
+              "Requête minimale",
+              "Réplication"
+            ]
+          },
+          {
+            "name": "EXECUTE",
+            "status": "pending",
+            "steps": [
+              "Lancement pilote",
+              "Suivi KPIs",
+              "Rapport"
+            ]
+          },
+          {
+            "name": "ANTIVIRUS",
+            "status": "pending",
+            "steps": [
+              "Éviter alertes",
+              "Langage neutre",
+              "Rôles clairs"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "proto_mission_02",
+        "type": "campaign",
+        "name": "LA MATRICE POLITIQUE",
+        "target": "Le système démocratique",
+        "objective": "Influencer la décision publique du micro au macro",
+        "difficulty": 90,
+        "xp": 2000,
+        "levels": [
+          {
+            "name": "OPÉRATEUR",
+            "status": "completed",
+            "actions": [
+              "INFOSEC",
+              "EXECUTE",
+              "P2P",
+              "DEBUG"
+            ]
+          },
+          {
+            "name": "GUILDE",
+            "status": "active",
+            "actions": [
+              "Rejoindre collectif",
+              "Raids locaux",
+              "Cohésion"
+            ]
+          },
+          {
+            "name": "RAID MONDIAL",
+            "status": "locked",
+            "actions": [
+              "Coordination",
+              "Pétitions",
+              "Lobbying",
+              "Médias"
+            ]
+          }
+        ]
+      }
+    ],
+    "flashcards": [
+      {
+        "q": "Quelle est la meilleure 'porte d'entrée' pour une grande entreprise ?",
+        "a": "Leur Academy/programme de formation",
+        "category": "partenariat"
+      },
+      {
+        "q": "Un projet pilote 'compatible' doit être :",
+        "a": "Petit, propre et mesurable",
+        "category": "partenariat"
+      },
+      {
+        "q": "Combien de signatures pour une pétition fédérale belge ?",
+        "a": "25 000 réparties entre Régions",
+        "category": "droits"
+      },
+      {
+        "q": "La méthode en 3 temps pour un plaidoyer ?",
+        "a": "Voir – Juger – Agir",
+        "category": "arsenal"
+      },
+      {
+        "q": "Qu'est-ce qu'un objectif SMART ?",
+        "a": "Spécifique, Mesurable, Atteignable, Réaliste, Temporel",
+        "category": "arsenal"
+      },
+      {
+        "q": "Le Power Mapping permet de :",
+        "a": "Positionner les acteurs selon influence et soutien",
+        "category": "arsenal"
+      },
+      {
+        "q": "Protection contre le burn-out militant ?",
+        "a": "Action collective + marathon pas sprint",
+        "category": "menaces"
+      },
+      {
+        "q": "L'illusion participative c'est :",
+        "a": "Participation symbolique sans pouvoir réel",
+        "category": "menaces"
+      },
+      {
+        "q": "Signatures pour audition au Parlement bruxellois ?",
+        "a": "1 000 signatures de résidents",
+        "category": "droits"
+      },
+      {
+        "q": "PESTEL analyse quels aspects ?",
+        "a": "Politique, Économique, Social, Tech, Écolo, Légal",
+        "category": "arsenal"
+      }
+    ],
+    "colruyt": {
+      "portes": [
+        {
+          "route": "A",
+          "cible": "Colruyt Group Academy",
+          "acces": "Optimal",
+          "strategie": "Interface publique apprendre/connecter"
+        },
+        {
+          "route": "B",
+          "cible": "Fondation RSE",
+          "acces": "Sécurisé",
+          "strategie": "KPIs et impact mesurable"
+        },
+        {
+          "route": "C",
+          "cible": "B2B / RH",
+          "acces": "Haut niveau",
+          "strategie": "Image employeur, coûts RH"
+        }
+      ],
+      "kpis": [
+        {
+          "metric": "Portée",
+          "target": 120,
+          "unit": "participants"
+        },
+        {
+          "metric": "Efficience",
+          "target": null,
+          "unit": "€/participant"
+        },
+        {
+          "metric": "Impact",
+          "target": 50,
+          "unit": "% activation droits"
+        }
+      ],
+      "winWinWin": {
+        "colruyt": [
+          "Mission communautaire",
+          "Contenus à valeur ajoutée",
+          "Reporting RSE"
+        ],
+        "participants": [
+          "Activation droits sociaux",
+          "Optimisation budget",
+          "Réseau aide"
+        ],
+        "societe": [
+          "Lutte non-recours",
+          "Autonomie ménages",
+          "Cohésion sociale"
+        ]
+      }
+    }
+  }
+}

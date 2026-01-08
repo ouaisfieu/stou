@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⬡ KERN — Charger les Données de Démo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --text: #e0e0e0;
+            --text-dim: #888;
+            --accent: #6366f1;
+            --green: #4ade80;
+            --amber: #fbbf24;
+            --cyan: #22d3ee;
+            --red: #f87171;
+            --purple: #a78bfa;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: var(--text-dim);
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .universes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .universe {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .universe-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .universe-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .universe-desc {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat {
+            background: rgba(255,255,255,0.03);
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--cyan);
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--purple));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+            margin-top: 1rem;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .btn-danger {
+            background: rgba(248, 113, 113, 0.2);
+            color: var(--red);
+            margin-top: 1rem;
+        }
+        
+        .btn-danger:hover {
+            background: rgba(248, 113, 113, 0.3);
+        }
+        
+        .result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .result.success {
+            display: block;
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid var(--green);
+            color: var(--green);
+        }
+        
+        .result.error {
+            display: block;
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid var(--red);
+            color: var(--red);
+        }
+        
+        .warning {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid var(--amber);
+            color: var(--amber);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .characters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .character {
+            background: rgba(255,255,255,0.05);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+        
+        .footer a {
+            color: var(--cyan);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">⬡</div>
+            <h1>KERN — Données de Démo</h1>
+            <p class="subtitle">Chargez un jeu de données complet pour tester l'écosystème</p>
+        </div>
+        
+        <div class="card">
+            <h2>🌍 Univers inclus</h2>
+            <div class="universes">
+                <div class="universe">
+                    <div class="universe-icon">🧙</div>
+                    <div class="universe-name">LOTR</div>
+                    <div class="universe-desc">Sauron, Gandalf, Nazgûl, Mordor Inc...</div>
+                </div>
+                <div class="universe">
+                    <div class="universe-icon">💊</div>
+                    <div class="universe-name">Matrix</div>
+                    <div class="universe-desc">Neo, Morpheus, Zion, Agents...</div>
+                </div>
+                <div class="universe">
+                    <div class="universe-icon">🍄</div>
+                    <div class="universe-name">Schtroumpfs</div>
+                    <div class="universe-desc">Gargamel, Grand Schtroumpf, Village...</div>
+                </div>
+                <div class="universe">
+                    <div class="universe-icon">💼</div>
+                    <div class="universe-name">Lorem Ipsum</div>
+                    <div class="universe-desc">Lorem Industries, Ipsum Finance...</div>
+                </div>
+            </div>
+            
+            <h2>📊 Contenu</h2>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Dossiers</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">20</div>
+                    <div class="stat-label">Entités</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">17</div>
+                    <div class="stat-label">Contacts</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">10</div>
+                    <div class="stat-label">Notes</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">7</div>
+                    <div class="stat-label">Missions</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">7</div>
+                    <div class="stat-label">Journal</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Partenaires</div>
+                </div>
+            </div>
+            
+            <h2>👥 Personnages</h2>
+            <div class="characters">
+                <span class="character">🧙 Gandalf</span>
+                <span class="character">👁️ Sauron</span>
+                <span class="character">👻 Nazgûl</span>
+                <span class="character">🧙‍♂️ Saruman</span>
+                <span class="character">🕴️ Neo</span>
+                <span class="character">😎 Morpheus</span>
+                <span class="character">🖤 Trinity</span>
+                <span class="character">🕵️ Agent Smith</span>
+                <span class="character">🎅 Grand Schtroumpf</span>
+                <span class="character">🧙‍♂️ Gargamel</span>
+                <span class="character">👩 Schtroumpfette</span>
+                <span class="character">👔 Jean Lorem</span>
+                <span class="character">👸 Galadriel</span>
+                <span class="character">🧝 Elrond</span>
+                <span class="character">🔮 L'Oracle</span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>⚡ Actions</h2>
+            
+            <div class="warning">
+                ⚠️ <strong>Attention :</strong> Charger les données de démo écrasera vos données existantes !
+            </div>
+            
+            <button class="btn btn-primary" onclick="loadDemoData()">
+                🚀 Charger les données de démo
+            </button>
+            
+            <button class="btn btn-secondary" onclick="window.location.href='00-kern-nexus.html'">
+                ← Retour à KERN::NEXUS
+            </button>
+            
+            <button class="btn btn-danger" onclick="clearAllData()">
+                🗑️ Effacer toutes les données
+            </button>
+            
+            <div class="result" id="result"></div>
+        </div>
+        
+        <div class="footer">
+            <p>Les données de démo sont stockées dans <code>demo-data.js</code></p>
+            <p><a href="00-kern-nexus.html">KERN::NEXUS</a> • <a href="README.md">Documentation</a></p>
+        </div>
+    </div>
+    
+    <script src="demo-data.js"></script>
+    <script>
+        function loadDemoData() {
+            const result = document.getElementById('result');
+            try {
+                // Le script demo-data.js s'exécute automatiquement
+                // On vérifie juste que les données sont bien là
+                const agent = localStorage.getItem('kern_agent');
+                if (agent) {
+                    result.className = 'result success';
+                    result.innerHTML = `
+                        <strong>✅ Données chargées avec succès !</strong><br>
+                        Agent: ${JSON.parse(agent).codename}<br>
+                        <br>
+                        <a href="00-kern-nexus.html" style="color: inherit;">→ Aller à KERN::NEXUS</a>
+                    `;
+                } else {
+                    throw new Error('Les données n\'ont pas été sauvegardées');
+                }
+            } catch (e) {
+                result.className = 'result error';
+                result.innerHTML = `<strong>❌ Erreur :</strong> ${e.message}`;
+            }
+        }
+        
+        function clearAllData() {
+            if (confirm('Êtes-vous sûr de vouloir effacer TOUTES les données KERN ?')) {
+                const keys = [
+                    'kern_agent',
+                    'kern_dossiers', 
+                    'kern_entities',
+                    'kern_network_contacts',
+                    'kern_knowledge',
+                    'kern_missions',
+                    'kern_journal',
+                    'kern_partners',
+                    'nexus_prime_state'
+                ];
+                
+                keys.forEach(key => localStorage.removeItem(key));
+                
+                const result = document.getElementById('result');
+                result.className = 'result success';
+                result.innerHTML = '<strong>🗑️ Toutes les données ont été effacées.</strong>';
+            }
+        }
+        
+        // Auto-load on page load
+        window.onload = function() {
+            console.log('Page de chargement des données de démo prête.');
+        };
+    </script>
+</body>
+</html>

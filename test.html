@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 KERN Tests</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        h1 { color: #fbbf24; margin-bottom: 0.5rem; }
+        .subtitle { color: #888; margin-bottom: 2rem; }
+        
+        .test-suite {
+            background: #12121a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .test-suite h2 {
+            color: #22d3ee;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .test {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .test:last-child { border: none; }
+        
+        .test-status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        .test-status.pass { background: #4ade80; color: #000; }
+        .test-status.fail { background: #ef4444; color: #fff; }
+        .test-status.pending { background: #888; color: #fff; }
+        
+        .test-name { flex: 1; }
+        .test-time { color: #888; font-size: 0.8rem; }
+        
+        .summary {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 2rem;
+        }
+        .summary-item {
+            text-align: center;
+        }
+        .summary-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .summary-value.pass { color: #4ade80; }
+        .summary-value.fail { color: #ef4444; }
+        .summary-label { color: #888; font-size: 0.85rem; }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            background: #4ade80;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        .btn:hover { background: #22c55e; }
+        .btn.secondary { background: #333; color: #fff; }
+        
+        .error-details {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #f87171;
+        }
+        
+        .actions { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <h1>🧪 KERN Test Suite</h1>
+    <p class="subtitle">Tests automatisés pour valider le bon fonctionnement</p>
+    
+    <div class="actions">
+        <button class="btn" onclick="runAllTests()">▶️ Lancer tous les tests</button>
+        <button class="btn secondary" onclick="KERN.clearAllData(); location.reload();">🗑️ Reset & Relancer</button>
+        <a href="debug.html" class="btn secondary" style="text-decoration:none; display:inline-block;">🔧 Debug</a>
+        <a href="00-kern-nexus.html" class="btn secondary" style="text-decoration:none; display:inline-block;">🏠 NEXUS</a>
+    </div>
+    
+    <div class="summary" id="summary">
+        <div class="summary-item">
+            <div class="summary-value" id="totalTests">-</div>
+            <div class="summary-label">Tests</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value pass" id="passedTests">-</div>
+            <div class="summary-label">Passés</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value fail" id="failedTests">-</div>
+            <div class="summary-label">Échoués</div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-value" id="totalTime" style="color: #22d3ee;">-</div>
+            <div class="summary-label">Temps</div>
+        </div>
+    </div>
+    
+    <div id="testResults"></div>
+    
+    <script src="kern-core.js"></script>
+    <script>
+        // Test framework
+        const testSuites = [];
+        let currentSuite = null;
+        
+        function describe(name, fn) {
+            currentSuite = { name, tests: [] };
+            testSuites.push(currentSuite);
+            fn();
+            currentSuite = null;
+        }
+        
+        function test(name, fn) {
+            if (currentSuite) {
+                currentSuite.tests.push({ name, fn, status: 'pending', error: null, time: 0 });
+            }
+        }
+        
+        function expect(value) {
+            return {
+                toBe(expected) {
+                    if (value !== expected) {
+                        throw new Error(`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(value)}`);
+                    }
+                },
+                toEqual(expected) {
+                    if (JSON.stringify(value) !== JSON.stringify(expected)) {
+                        throw new Error(`Expected ${JSON.stringify(expected)}, got ${JSON.stringify(value)}`);
+                    }
+                },
+                toBeTruthy() {
+                    if (!value) {
+                        throw new Error(`Expected truthy value, got ${JSON.stringify(value)}`);
+                    }
+                },
+                toBeFalsy() {
+                    if (value) {
+                        throw new Error(`Expected falsy value, got ${JSON.stringify(value)}`);
+                    }
+                },
+                toBeGreaterThan(expected) {
+                    if (!(value > expected)) {
+                        throw new Error(`Expected ${value} > ${expected}`);
+                    }
+                },
+                toContain(expected) {
+                    if (!value.includes(expected)) {
+                        throw new Error(`Expected ${JSON.stringify(value)} to contain ${JSON.stringify(expected)}`);
+                    }
+                },
+                toHaveProperty(prop) {
+                    if (value[prop] === undefined) {
+                        throw new Error(`Expected property "${prop}" to exist`);
+                    }
+                },
+                toBeArray() {
+                    if (!Array.isArray(value)) {
+                        throw new Error(`Expected array, got ${typeof value}`);
+                    }
+                }
+            };
+        }
+        
+        // ========================================
+        // TEST DEFINITIONS
+        // ========================================
+        
+        describe('🔧 KERN Core', () => {
+            test('KERN est défini globalement', () => {
+                expect(window.KERN).toBeTruthy();
+            });
+            
+            test('VERSION existe', () => {
+                expect(KERN.VERSION).toBeTruthy();
+            });
+            
+            test('SCHEMA_VERSION est 2.0', () => {
+                expect(KERN.SCHEMA_VERSION).toBe('2.0');
+            });
+            
+            test('KEYS contient les bonnes clés', () => {
+                expect(KERN.KEYS.AGENT).toBe('kern_agent_profile');
+                expect(KERN.KEYS.CONTACTS).toBe('kern_network_contacts');
+                expect(KERN.KEYS.NOTES).toBe('kern_knowledge');
+            });
+        });
+        
+        describe('👤 Agent Profile', () => {
+            test('getAgent() retourne un agent', () => {
+                const agent = KERN.getAgent();
+                expect(agent).toBeTruthy();
+            });
+            
+            test('Agent a un codename', () => {
+                const agent = KERN.getAgent();
+                expect(agent.codename).toBeTruthy();
+            });
+            
+            test('Agent a stats complet', () => {
+                const agent = KERN.getAgent();
+                expect(agent.stats).toBeTruthy();
+                expect(agent.stats.dossiersCreated).toBeTruthy(); // number, même si 0
+                expect(agent.stats).toHaveProperty('dossiersCreated');
+                expect(agent.stats).toHaveProperty('entitiesCreated');
+                expect(agent.stats).toHaveProperty('contactsAdded');
+                expect(agent.stats).toHaveProperty('daysActive');
+            });
+            
+            test('Agent a skills complet', () => {
+                const agent = KERN.getAgent();
+                expect(agent.skills).toBeTruthy();
+                expect(agent.skills).toHaveProperty('investigation');
+                expect(agent.skills).toHaveProperty('network');
+                expect(agent.skills).toHaveProperty('analysis');
+                expect(agent.skills).toHaveProperty('documentation');
+                expect(agent.skills).toHaveProperty('fieldwork');
+                expect(agent.skills).toHaveProperty('opsec');
+            });
+            
+            test('Agent a achievements (array)', () => {
+                const agent = KERN.getAgent();
+                expect(agent.achievements).toBeArray();
+            });
+            
+            test('Agent a settings', () => {
+                const agent = KERN.getAgent();
+                expect(agent.settings).toBeTruthy();
+                expect(agent.settings).toHaveProperty('theme');
+            });
+        });
+        
+        describe('📊 getStats()', () => {
+            test('getStats() retourne un objet', () => {
+                const stats = KERN.getStats();
+                expect(stats).toBeTruthy();
+            });
+            
+            test('stats.agent existe', () => {
+                const stats = KERN.getStats();
+                expect(stats.agent).toBeTruthy();
+            });
+            
+            test('stats.data existe', () => {
+                const stats = KERN.getStats();
+                expect(stats.data).toBeTruthy();
+            });
+            
+            test('stats.data a les compteurs', () => {
+                const stats = KERN.getStats();
+                expect(stats.data).toHaveProperty('dossiers');
+                expect(stats.data).toHaveProperty('entities');
+                expect(stats.data).toHaveProperty('contacts');
+                expect(stats.data).toHaveProperty('notes');
+            });
+            
+            test('stats.agent.stats existe', () => {
+                const stats = KERN.getStats();
+                expect(stats.agent.stats).toBeTruthy();
+                expect(stats.agent.stats).toHaveProperty('dossiersCreated');
+            });
+        });
+        
+        describe('📥 Import/Export', () => {
+            test('exportAllData() retourne les données', () => {
+                const data = KERN.exportAllData();
+                expect(data).toBeTruthy();
+                expect(data).toHaveProperty('kern_agent_profile');
+                expect(data).toHaveProperty('kern_dossiers');
+            });
+            
+            test('Export contient _meta', () => {
+                const data = KERN.exportAllData();
+                expect(data._meta).toBeTruthy();
+                expect(data._meta.version).toBe('2.0');
+            });
+            
+            test('importData() avec données vides retourne erreur', () => {
+                const report = KERN.importData(null);
+                expect(report.success).toBeFalsy();
+            });
+            
+            test('importData() corrige les clés legacy', () => {
+                const testData = {
+                    kern_agent: { codename: 'TEST-AGENT' },  // Clé legacy
+                    kern_dossiers: []
+                };
+                const report = KERN.importData(testData);
+                expect(report.warnings.length).toBeGreaterThan(0);
+            });
+            
+            test('importData() valide et complète l\'agent', () => {
+                const testData = {
+                    kern_agent_profile: { codename: 'INCOMPLETE-AGENT' }  // Agent sans stats
+                };
+                KERN.importData(testData);
+                const agent = KERN.getAgent();
+                expect(agent.stats).toBeTruthy();
+                expect(agent.settings).toBeTruthy();
+            });
+        });
+        
+        describe('📁 Dossiers API', () => {
+            test('getAllDossiers() retourne un array', () => {
+                const dossiers = KERN.getAllDossiers();
+                expect(dossiers).toBeArray();
+            });
+            
+            test('createDossier() crée un dossier', () => {
+                const before = KERN.getAllDossiers().length;
+                KERN.createDossier({ title: 'Test Dossier' });
+                const after = KERN.getAllDossiers().length;
+                expect(after).toBeGreaterThan(before);
+            });
+        });
+        
+        describe('🕸️ Entities API', () => {
+            test('getAllEntities() retourne un array', () => {
+                const entities = KERN.getAllEntities();
+                expect(entities).toBeArray();
+            });
+            
+            test('Entités ont links array', () => {
+                const entities = KERN.getAllEntities();
+                if (entities.length > 0) {
+                    expect(entities[0].links).toBeArray();
+                }
+            });
+        });
+        
+        describe('👥 Contacts API', () => {
+            test('getAllContacts() retourne un array', () => {
+                const contacts = KERN.getAllContacts();
+                expect(contacts).toBeArray();
+            });
+            
+            test('Contacts ont connections array', () => {
+                const contacts = KERN.getAllContacts();
+                if (contacts.length > 0) {
+                    expect(contacts[0].connections).toBeArray();
+                }
+            });
+        });
+        
+        // ========================================
+        // TEST RUNNER
+        // ========================================
+        
+        async function runAllTests() {
+            const startTime = Date.now();
+            let passed = 0;
+            let failed = 0;
+            
+            for (const suite of testSuites) {
+                for (const test of suite.tests) {
+                    const testStart = Date.now();
+                    try {
+                        test.fn();
+                        test.status = 'pass';
+                        passed++;
+                    } catch (e) {
+                        test.status = 'fail';
+                        test.error = e.message;
+                        failed++;
+                    }
+                    test.time = Date.now() - testStart;
+                }
+            }
+            
+            const totalTime = Date.now() - startTime;
+            
+            // Update summary
+            document.getElementById('totalTests').textContent = passed + failed;
+            document.getElementById('passedTests').textContent = passed;
+            document.getElementById('failedTests').textContent = failed;
+            document.getElementById('totalTime').textContent = totalTime + 'ms';
+            
+            // Render results
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = testSuites.map(suite => `
+                <div class="test-suite">
+                    <h2>${suite.name}</h2>
+                    ${suite.tests.map(t => `
+                        <div class="test">
+                            <div class="test-status ${t.status}">${t.status === 'pass' ? '✓' : '✗'}</div>
+                            <div class="test-name">
+                                ${t.name}
+                                ${t.error ? `<div class="error-details">${t.error}</div>` : ''}
+                            </div>
+                            <div class="test-time">${t.time}ms</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+        
+        // Auto-run on load
+        KERN.ready(() => {
+            runAllTests();
+        });
+    </script>
+</body>
+</html>
