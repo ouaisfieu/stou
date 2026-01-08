@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎮 FONDATEUR QUEST — Ton parcours vers la fortune</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-accent: #1a1a25;
+      --text: #e8e8ed;
+      --text-muted: #8888a0;
+      --purple: #a78bfa;
+      --blue: #60a5fa;
+      --green: #34d399;
+      --orange: #fb923c;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --pink: #f472b6;
+      --cyan: #22d3ee;
+      --xp-bar: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      padding: 3rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .game-title {
+      font-family: 'Press Start 2P', cursive;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      background: var(--xp-bar);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .game-subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* PLAYER CARD */
+    .player-card {
+      background: var(--bg-card);
+      border: 2px solid var(--purple);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .player-avatar {
+      width: 100px;
+      height: 100px;
+      background: var(--bg-accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      border: 3px solid var(--purple);
+    }
+
+    .player-info h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .player-title {
+      color: var(--yellow);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .xp-container {
+      background: var(--bg-accent);
+      border-radius: 100px;
+      height: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .xp-bar {
+      height: 100%;
+      background: var(--xp-bar);
+      border-radius: 100px;
+      transition: width 0.5s ease;
+    }
+
+    .xp-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+    .player-stats {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .level-badge {
+      background: var(--purple);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .level-badge .level {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 2rem;
+    }
+
+    .level-badge .label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* STATS ROW */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-box {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-box .icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .stat-box .value { font-size: 1.8rem; font-weight: 700; color: var(--purple); }
+    .stat-box .label { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 1rem;
+    }
+
+    .tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .tab:hover { background: var(--bg-accent); color: var(--text); }
+    .tab.active { background: var(--purple); color: white; }
+
+    /* CONTENT PANELS */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* QUESTS */
+    .quests-container {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .quest-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+      transition: all 0.3s;
+    }
+
+    .quest-card:hover {
+      border-color: var(--purple);
+      transform: translateX(5px);
+    }
+
+    .quest-card.completed {
+      opacity: 0.6;
+      border-color: var(--green);
+    }
+
+    .quest-card.completed .quest-checkbox {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .quest-checkbox {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--purple);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 1.2rem;
+    }
+
+    .quest-checkbox:hover {
+      background: var(--purple);
+    }
+
+    .quest-info h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .quest-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .quest-reward {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .quest-xp {
+      background: var(--bg-accent);
+      padding: 0.5rem 1rem;
+      border-radius: 100px;
+      font-weight: 600;
+      color: var(--yellow);
+    }
+
+    .quest-type {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* QUEST CATEGORIES */
+    .quest-category {
+      margin-bottom: 2rem;
+    }
+
+    .quest-category-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .quest-category-header h3 {
+      font-size: 1.2rem;
+    }
+
+    .quest-category-header .count {
+      background: var(--bg-accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ACHIEVEMENTS */
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .achievement {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s;
+      opacity: 0.4;
+      filter: grayscale(1);
+    }
+
+    .achievement.unlocked {
+      opacity: 1;
+      filter: none;
+      border-color: var(--yellow);
+      box-shadow: 0 0 20px rgba(251, 191, 36, 0.2);
+    }
+
+    .achievement-icon {
+      font-size: 3rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .achievement h4 {
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .achievement p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* MILESTONES */
+    .milestones-container {
+      position: relative;
+    }
+
+    .milestone-line {
+      position: absolute;
+      left: 24px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--bg-accent);
+    }
+
+    .milestone {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .milestone-dot {
+      width: 50px;
+      height: 50px;
+      background: var(--bg-accent);
+      border: 2px solid var(--text-muted);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      z-index: 1;
+      flex-shrink: 0;
+    }
+
+    .milestone.reached .milestone-dot {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .milestone.current .milestone-dot {
+      background: var(--purple);
+      border-color: var(--purple);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(167, 139, 250, 0.5); }
+      50% { box-shadow: 0 0 0 10px rgba(167, 139, 250, 0); }
+    }
+
+    .milestone-content {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+      flex: 1;
+    }
+
+    .milestone-content h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .milestone-content p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+
+    .milestone-reward {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-accent);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    /* LEADERBOARD (fun) */
+    .leaderboard {
+      background: var(--bg-card);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .leaderboard-header {
+      background: var(--bg-accent);
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+    }
+
+    .leaderboard-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .leaderboard-item.you {
+      background: rgba(167, 139, 250, 0.1);
+    }
+
+    .leaderboard-rank {
+      font-size: 1.2rem;
+      font-weight: 700;
+      width: 30px;
+    }
+
+    .leaderboard-avatar {
+      font-size: 1.5rem;
+    }
+
+    .leaderboard-name {
+      flex: 1;
+    }
+
+    .leaderboard-score {
+      color: var(--yellow);
+      font-weight: 600;
+    }
+
+    /* REWARDS SHOP */
+    .rewards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .reward-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .reward-card:hover {
+      border-color: var(--yellow);
+      transform: translateY(-5px);
+    }
+
+    .reward-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .reward-card h4 {
+      margin-bottom: 0.5rem;
+    }
+
+    .reward-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .reward-cost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--yellow);
+      color: black;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    /* DAILY BONUS */
+    .daily-bonus {
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .daily-bonus h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .daily-bonus p {
+      opacity: 0.9;
+      margin-bottom: 1.5rem;
+    }
+
+    .daily-bonus button {
+      background: white;
+      color: var(--purple);
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .daily-bonus button:hover {
+      transform: scale(1.05);
+    }
+
+    .daily-bonus button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* STREAK */
+    .streak-container {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .streak-day {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .streak-day.completed {
+      background: var(--green);
+    }
+
+    .streak-day.today {
+      border: 2px solid white;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--bg-card);
+      border: 2px solid var(--green);
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .toast-icon { font-size: 1.5rem; }
+    .toast-xp { color: var(--yellow); font-weight: 700; }
+
+    /* LEVEL UP MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .level-up-modal {
+      background: var(--bg-card);
+      border: 2px solid var(--yellow);
+      border-radius: 24px;
+      padding: 3rem;
+      text-align: center;
+      animation: levelUp 0.5s ease;
+    }
+
+    @keyframes levelUp {
+      0% { transform: scale(0.5); opacity: 0; }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .level-up-modal h2 {
+      font-family: 'Press Start 2P', cursive;
+      color: var(--yellow);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .level-up-modal .new-level {
+      font-size: 5rem;
+      margin: 1rem 0;
+    }
+
+    .level-up-modal .new-title {
+      color: var(--purple);
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .level-up-modal button {
+      background: var(--yellow);
+      color: black;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .player-card { grid-template-columns: 1fr; text-align: center; }
+      .player-avatar { margin: 0 auto; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .quest-card { grid-template-columns: auto 1fr; }
+      .quest-reward { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- HEADER -->
+    <div class="header">
+      <h1 class="game-title">FONDATEUR QUEST</h1>
+      <p class="game-subtitle">Ton parcours vers la liberté financière 💰</p>
+    </div>
+
+    <!-- PLAYER CARD -->
+    <div class="player-card">
+      <div class="player-avatar">🦸</div>
+      <div class="player-info">
+        <h2 id="playerName">Fondateur Anonyme</h2>
+        <div class="player-title" id="playerTitle">🌱 Graine de Startup</div>
+        <div class="xp-container">
+          <div class="xp-bar" id="xpBar" style="width: 0%"></div>
+          <span class="xp-text" id="xpText">0 / 100 XP</span>
+        </div>
+      </div>
+      <div class="player-stats">
+        <div class="level-badge">
+          <div class="level" id="levelNum">1</div>
+          <div class="label">Niveau</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="icon">⚔️</div>
+        <div class="value" id="questsCompleted">0</div>
+        <div class="label">Quêtes terminées</div>
+      </div>
+      <div class="stat-box">
+        <div class="icon">🏆</div>
+        <div class="value" id="achievementsCount">0</div>
+        <div class="label">Achievements</div>
+      </div>
+      <div class="stat-box">
+        <div class="icon">🔥</div>
+        <div class="value" id="streakDays">0</div>
+        <div class="label">Jours de streak</div>
+      </div>
+      <div class="stat-box">
+        <div class="icon">💰</div>
+        <div class="value" id="goldCoins">0</div>
+        <div class="label">Pièces d'or</div>
+      </div>
+      <div class="stat-box">
+        <div class="icon">💎</div>
+        <div class="value" id="totalXP">0</div>
+        <div class="label">XP Total</div>
+      </div>
+    </div>
+
+    <!-- DAILY BONUS -->
+    <div class="daily-bonus">
+      <h3>🎁 Bonus quotidien</h3>
+      <p>Connecte-toi chaque jour pour maintenir ta streak et gagner des bonus !</p>
+      <button id="claimDaily" onclick="claimDailyBonus()">Réclamer +50 XP</button>
+      <div class="streak-container" id="streakContainer"></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="showPanel('quests')">⚔️ Quêtes</button>
+      <button class="tab" onclick="showPanel('achievements')">🏆 Achievements</button>
+      <button class="tab" onclick="showPanel('milestones')">🗺️ Parcours</button>
+      <button class="tab" onclick="showPanel('leaderboard')">👑 Classement</button>
+      <button class="tab" onclick="showPanel('rewards')">🎁 Récompenses</button>
+    </div>
+
+    <!-- QUESTS PANEL -->
+    <div class="panel active" id="quests">
+      <!-- JOUR 1 -->
+      <div class="quest-category">
+        <div class="quest-category-header">
+          <span>🚀</span>
+          <h3>Chapitre 1 — Le Réveil (Jour 1)</h3>
+          <span class="count" id="ch1Count">0/6</span>
+        </div>
+        <div class="quests-container">
+          <div class="quest-card" data-quest="1-1" data-xp="50" data-chapter="1">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>🌐 Créer le compte itch.io</h3>
+              <p class="quest-desc">Inscris-toi sur itch.io pour héberger POLiT!KA</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+50 XP</span>
+              <span class="quest-type">Débutant</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="1-2" data-xp="100" data-chapter="1">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>📦 Uploader POLiT!KA sur itch.io</h3>
+              <p class="quest-desc">Ton premier jeu en ligne ! C'est historique.</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+100 XP</span>
+              <span class="quest-type">Important</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="1-3" data-xp="50" data-chapter="1">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>💳 Créer le compte Gumroad</h3>
+              <p class="quest-desc">Ta machine à cash est presque prête</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+50 XP</span>
+              <span class="quest-type">Débutant</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="1-4" data-xp="100" data-chapter="1">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>💰 Créer POLiT!KA Pro sur Gumroad (29€)</h3>
+              <p class="quest-desc">Ton premier produit payant. Tu es officiellement entrepreneur.</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+100 XP</span>
+              <span class="quest-type">Important</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="1-5" data-xp="50" data-chapter="1">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>📧 Créer la newsletter Buttondown</h3>
+              <p class="quest-desc">Capture tes premiers fans</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+50 XP</span>
+              <span class="quest-type">Débutant</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="1-6" data-xp="150" data-chapter="1">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>✨ PUBLIER POLiT!KA (visible au monde)</h3>
+              <p class="quest-desc">BOSS DU CHAPITRE 1 — Le point de non-retour</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+150 XP</span>
+              <span class="quest-type">🔥 BOSS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JOUR 2 -->
+      <div class="quest-category">
+        <div class="quest-category-header">
+          <span>📣</span>
+          <h3>Chapitre 2 — La Proclamation (Jour 2)</h3>
+          <span class="count" id="ch2Count">0/5</span>
+        </div>
+        <div class="quests-container">
+          <div class="quest-card" data-quest="2-1" data-xp="75" data-chapter="2">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>💼 Publier le 1er post LinkedIn</h3>
+              <p class="quest-desc">Annonce au monde que tu existes</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+75 XP</span>
+              <span class="quest-type">Social</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="2-2" data-xp="50" data-chapter="2">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>🐦 Publier le thread Twitter</h3>
+              <p class="quest-desc">Viralité potentielle</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+50 XP</span>
+              <span class="quest-type">Social</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="2-3" data-xp="50" data-chapter="2">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>👥 Rejoindre 3 groupes Facebook secteur associatif</h3>
+              <p class="quest-desc">Infiltre les communautés cibles</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+50 XP</span>
+              <span class="quest-type">Social</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="2-4" data-xp="75" data-chapter="2">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>💬 Répondre à 5 commentaires</h3>
+              <p class="quest-desc">L'engagement crée la communauté</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+75 XP</span>
+              <span class="quest-type">Social</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="2-5" data-xp="100" data-chapter="2">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>🎯 Atteindre 500 vues sur un post</h3>
+              <p class="quest-desc">La preuve que quelqu'un t'écoute</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+100 XP</span>
+              <span class="quest-type">Milestone</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JOUR 3 -->
+      <div class="quest-category">
+        <div class="quest-category-header">
+          <span>🎯</span>
+          <h3>Chapitre 3 — La Chasse (Jour 3-4)</h3>
+          <span class="count" id="ch3Count">0/6</span>
+        </div>
+        <div class="quests-container">
+          <div class="quest-card" data-quest="3-1" data-xp="200" data-chapter="3">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>📧 Envoyer l'email à FESEFA</h3>
+              <p class="quest-desc">QUÊTE PRINCIPALE — Le gros poisson</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+200 XP</span>
+              <span class="quest-type">🔥 Principal</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="3-2" data-xp="50" data-chapter="3">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>📧 Envoyer 5 emails à des associations</h3>
+              <p class="quest-desc">Ne mets pas tous tes œufs dans le même panier</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+50 XP</span>
+              <span class="quest-type">Prospection</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="3-3" data-xp="75" data-chapter="3">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>📧 Envoyer 10 emails au total</h3>
+              <p class="quest-desc">La quantité mène à la qualité</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+75 XP</span>
+              <span class="quest-type">Prospection</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="3-4" data-xp="150" data-chapter="3">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>📬 Recevoir une première réponse positive</h3>
+              <p class="quest-desc">Quelqu'un est intéressé !</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+150 XP</span>
+              <span class="quest-type">Milestone</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="3-5" data-xp="200" data-chapter="3">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>📅 Décrocher un RDV (démo ou call)</h3>
+              <p class="quest-desc">Face à face avec un prospect</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+200 XP</span>
+              <span class="quest-type">🔥 Important</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="3-6" data-xp="100" data-chapter="3">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>🔄 Faire une relance J+3</h3>
+              <p class="quest-desc">La fortune est dans le suivi</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+100 XP</span>
+              <span class="quest-type">Prospection</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEMAINE 1 -->
+      <div class="quest-category">
+        <div class="quest-category-header">
+          <span>💎</span>
+          <h3>Chapitre 4 — L'Or (Semaine 1)</h3>
+          <span class="count" id="ch4Count">0/5</span>
+        </div>
+        <div class="quests-container">
+          <div class="quest-card" data-quest="4-1" data-xp="300" data-chapter="4">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>💵 Premier euro gagné</h3>
+              <p class="quest-desc">BOSS LÉGENDAIRE — Tu n'es plus amateur</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+300 XP</span>
+              <span class="quest-type">💎 LÉGENDAIRE</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="4-2" data-xp="150" data-chapter="4">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>📥 10 téléchargements itch.io</h3>
+              <p class="quest-desc">Tes premiers joueurs</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+150 XP</span>
+              <span class="quest-type">Milestone</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="4-3" data-xp="150" data-chapter="4">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>✉️ 10 inscrits newsletter</h3>
+              <p class="quest-desc">Ta communauté commence</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+150 XP</span>
+              <span class="quest-type">Milestone</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="4-4" data-xp="200" data-chapter="4">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>⭐ Premier avis/témoignage reçu</h3>
+              <p class="quest-desc">La preuve sociale</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+200 XP</span>
+              <span class="quest-type">Social Proof</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="4-5" data-xp="500" data-chapter="4">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>💰 Atteindre 100€ de revenus</h3>
+              <p class="quest-desc">BOSS DU CHAPITRE 4 — Ton premier billet</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+500 XP</span>
+              <span class="quest-type">💎 BOSS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MOIS 1 -->
+      <div class="quest-category">
+        <div class="quest-category-header">
+          <span>🏰</span>
+          <h3>Chapitre 5 — Le Royaume (Mois 1)</h3>
+          <span class="count" id="ch5Count">0/6</span>
+        </div>
+        <div class="quests-container">
+          <div class="quest-card" data-quest="5-1" data-xp="300" data-chapter="5">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>📥 100 téléchargements itch.io</h3>
+              <p class="quest-desc">Ton jeu fait son chemin</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+300 XP</span>
+              <span class="quest-type">Milestone</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="5-2" data-xp="250" data-chapter="5">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>🛒 5 ventes Gumroad</h3>
+              <p class="quest-desc">Le business model validé</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+250 XP</span>
+              <span class="quest-type">Revenue</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="5-3" data-xp="400" data-chapter="5">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>🤝 RDV avec FESEFA obtenu</h3>
+              <p class="quest-desc">Le gros deal se profile</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+400 XP</span>
+              <span class="quest-type">🔥 Principal</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="5-4" data-xp="300" data-chapter="5">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>🎓 Première formation/consulting vendu</h3>
+              <p class="quest-desc">KERN LAB opérationnel</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+300 XP</span>
+              <span class="quest-type">B2B</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="5-5" data-xp="500" data-chapter="5">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>💰 Atteindre 1 000€ de revenus cumulés</h3>
+              <p class="quest-desc">Tu peux payer quelques factures</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+500 XP</span>
+              <span class="quest-type">💎 Milestone</span>
+            </div>
+          </div>
+          <div class="quest-card" data-quest="5-6" data-xp="1000" data-chapter="5">
+            <div class="quest-checkbox" onclick="toggleQuest(this)"></div>
+            <div class="quest-info">
+              <h3>🏆 Signer le contrat FESEFA/VIVIER 329</h3>
+              <p class="quest-desc">BOSS FINAL CHAPITRE 5 — Game changer</p>
+            </div>
+            <div class="quest-reward">
+              <span class="quest-xp">+1000 XP</span>
+              <span class="quest-type">👑 ÉPIQUE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACHIEVEMENTS PANEL -->
+    <div class="panel" id="achievements">
+      <div class="achievements-grid">
+        <div class="achievement" data-achievement="first-step">
+          <div class="achievement-icon">👶</div>
+          <h4>Premier Pas</h4>
+          <p>Compléter ta première quête</p>
+        </div>
+        <div class="achievement" data-achievement="chapter-1">
+          <div class="achievement-icon">🎮</div>
+          <h4>Game On</h4>
+          <p>Terminer le Chapitre 1</p>
+        </div>
+        <div class="achievement" data-achievement="first-euro">
+          <div class="achievement-icon">💵</div>
+          <h4>Premier Sang</h4>
+          <p>Gagner ton premier euro</p>
+        </div>
+        <div class="achievement" data-achievement="social-butterfly">
+          <div class="achievement-icon">🦋</div>
+          <h4>Papillon Social</h4>
+          <p>Publier sur 3 réseaux différents</p>
+        </div>
+        <div class="achievement" data-achievement="hunter">
+          <div class="achievement-icon">🎯</div>
+          <h4>Chasseur</h4>
+          <p>Envoyer 10 emails de prospection</p>
+        </div>
+        <div class="achievement" data-achievement="connector">
+          <div class="achievement-icon">🔗</div>
+          <h4>Connecteur</h4>
+          <p>Décrocher 3 RDV</p>
+        </div>
+        <div class="achievement" data-achievement="streak-7">
+          <div class="achievement-icon">🔥</div>
+          <h4>En Feu</h4>
+          <p>7 jours de streak</p>
+        </div>
+        <div class="achievement" data-achievement="streak-30">
+          <div class="achievement-icon">🌟</div>
+          <h4>Inarrêtable</h4>
+          <p>30 jours de streak</p>
+        </div>
+        <div class="achievement" data-achievement="centurion">
+          <div class="achievement-icon">💯</div>
+          <h4>Centurion</h4>
+          <p>100 téléchargements</p>
+        </div>
+        <div class="achievement" data-achievement="millionaire">
+          <div class="achievement-icon">💎</div>
+          <h4>Millionnaire (en XP)</h4>
+          <p>Atteindre 10 000 XP</p>
+        </div>
+        <div class="achievement" data-achievement="thousand">
+          <div class="achievement-icon">🏆</div>
+          <h4>Le Premier K</h4>
+          <p>1 000€ de revenus</p>
+        </div>
+        <div class="achievement" data-achievement="fesefa">
+          <div class="achievement-icon">👑</div>
+          <h4>Kingmaker</h4>
+          <p>Signer avec FESEFA</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MILESTONES PANEL -->
+    <div class="panel" id="milestones">
+      <div class="milestones-container">
+        <div class="milestone-line"></div>
+        
+        <div class="milestone current" data-milestone="launch">
+          <div class="milestone-dot">🚀</div>
+          <div class="milestone-content">
+            <h3>Lancement</h3>
+            <p>POLiT!KA en ligne, premiers revenus possibles</p>
+            <div class="milestone-reward">🎁 Titre : "Entrepreneur"</div>
+          </div>
+        </div>
+
+        <div class="milestone" data-milestone="traction">
+          <div class="milestone-dot">📈</div>
+          <div class="milestone-content">
+            <h3>Traction (1 000€)</h3>
+            <p>Validation du marché, premières ventes récurrentes</p>
+            <div class="milestone-reward">🎁 Titre : "Indie Hacker"</div>
+          </div>
+        </div>
+
+        <div class="milestone" data-milestone="fesefa">
+          <div class="milestone-dot">🤝</div>
+          <div class="milestone-content">
+            <h3>Contrat FESEFA</h3>
+            <p>Premier gros client B2B, revenus significatifs</p>
+            <div class="milestone-reward">🎁 Titre : "Deal Maker"</div>
+          </div>
+        </div>
+
+        <div class="milestone" data-milestone="10k">
+          <div class="milestone-dot">💰</div>
+          <div class="milestone-content">
+            <h3>10 000€ de revenus</h3>
+            <p>Le business est réel, potentiel de vivre de ça</p>
+            <div class="milestone-reward">🎁 Titre : "Fondateur Confirmé"</div>
+          </div>
+        </div>
+
+        <div class="milestone" data-milestone="team">
+          <div class="milestone-dot">👥</div>
+          <div class="milestone-content">
+            <h3>Premier co-fondateur/employé</h3>
+            <p>Tu n'es plus seul, l'équipe se forme</p>
+            <div class="milestone-reward">🎁 Titre : "Leader"</div>
+          </div>
+        </div>
+
+        <div class="milestone" data-milestone="ecosystem">
+          <div class="milestone-dot">🏰</div>
+          <div class="milestone-content">
+            <h3>Écosystème lancé</h3>
+            <p>PRAGMA + SOCLE + VIVIER + KERN LAB opérationnels</p>
+            <div class="milestone-reward">🎁 Titre : "Architecte"</div>
+          </div>
+        </div>
+
+        <div class="milestone" data-milestone="freedom">
+          <div class="milestone-dot">👑</div>
+          <div class="milestone-content">
+            <h3>Liberté Financière</h3>
+            <p>4 personnes vivent de l'écosystème</p>
+            <div class="milestone-reward">🎁 Titre : "👑 LÉGENDE"</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD PANEL -->
+    <div class="panel" id="leaderboard">
+      <div class="leaderboard">
+        <div class="leaderboard-header">🏆 Hall of Fame des Fondateurs</div>
+        <div class="leaderboard-item">
+          <span class="leaderboard-rank">🥇</span>
+          <span class="leaderboard-avatar">🦄</span>
+          <span class="leaderboard-name">Elon M. (pour le meme)</span>
+          <span class="leaderboard-score">∞ XP</span>
+        </div>
+        <div class="leaderboard-item">
+          <span class="leaderboard-rank">🥈</span>
+          <span class="leaderboard-avatar">🎮</span>
+          <span class="leaderboard-name">Notch (Minecraft)</span>
+          <span class="leaderboard-score">999 999 XP</span>
+        </div>
+        <div class="leaderboard-item">
+          <span class="leaderboard-rank">🥉</span>
+          <span class="leaderboard-avatar">📱</span>
+          <span class="leaderboard-name">Pieter Levels (Nomad List)</span>
+          <span class="leaderboard-score">500 000 XP</span>
+        </div>
+        <div class="leaderboard-item">
+          <span class="leaderboard-rank">4</span>
+          <span class="leaderboard-avatar">🎯</span>
+          <span class="leaderboard-name">Marc Lou (ShipFast)</span>
+          <span class="leaderboard-score">250 000 XP</span>
+        </div>
+        <div class="leaderboard-item">
+          <span class="leaderboard-rank">5</span>
+          <span class="leaderboard-avatar">🔧</span>
+          <span class="leaderboard-name">Tony Dinh (TypingMind)</span>
+          <span class="leaderboard-score">100 000 XP</span>
+        </div>
+        <div class="leaderboard-item you">
+          <span class="leaderboard-rank" id="yourRank">?</span>
+          <span class="leaderboard-avatar">🦸</span>
+          <span class="leaderboard-name">TOI (en progression...)</span>
+          <span class="leaderboard-score" id="yourScore">0 XP</span>
+        </div>
+      </div>
+      <p style="text-align: center; margin-top: 2rem; color: var(--text-muted);">
+        💡 Objectif : Entrer dans le top 5. C'est possible.
+      </p>
+    </div>
+
+    <!-- REWARDS PANEL -->
+    <div class="panel" id="rewards">
+      <div class="rewards-grid">
+        <div class="reward-card">
+          <div class="reward-icon">☕</div>
+          <h4>Pause Café</h4>
+          <p>Tu as le droit de t'offrir un bon café</p>
+          <div class="reward-cost">🪙 100 XP</div>
+        </div>
+        <div class="reward-card">
+          <div class="reward-icon">🍕</div>
+          <h4>Pizza Victory</h4>
+          <p>Une pizza pour célébrer un milestone</p>
+          <div class="reward-cost">🪙 500 XP</div>
+        </div>
+        <div class="reward-card">
+          <div class="reward-icon">🎬</div>
+          <h4>Soirée Ciné</h4>
+          <p>Tu mérites une pause Netflix</p>
+          <div class="reward-cost">🪙 300 XP</div>
+        </div>
+        <div class="reward-card">
+          <div class="reward-icon">🎮</div>
+          <h4>Session Gaming</h4>
+          <p>2h de jeu vidéo sans culpabilité</p>
+          <div class="reward-cost">🪙 400 XP</div>
+        </div>
+        <div class="reward-card">
+          <div class="reward-icon">🛍️</div>
+          <h4>Shopping Plaisir</h4>
+          <p>Achète-toi un truc cool (budget 50€)</p>
+          <div class="reward-cost">🪙 2000 XP</div>
+        </div>
+        <div class="reward-card">
+          <div class="reward-icon">✈️</div>
+          <h4>Week-end Évasion</h4>
+          <p>Mini-vacances quand tu atteins 10K€</p>
+          <div class="reward-cost">🪙 10000 XP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <span class="toast-icon">🎉</span>
+    <span>Quête complétée ! <span class="toast-xp" id="toastXP">+50 XP</span></span>
+  </div>
+
+  <!-- LEVEL UP MODAL -->
+  <div class="modal-overlay" id="levelUpModal">
+    <div class="level-up-modal">
+      <h2>⬆️ LEVEL UP!</h2>
+      <div class="new-level" id="newLevel">2</div>
+      <div class="new-title" id="newTitle">Nouveau titre débloqué !</div>
+      <button onclick="closeLevelUp()">Continuer l'aventure</button>
+    </div>
+  </div>
+
+  <script>
+    // GAME STATE
+    let gameState = {
+      playerName: "Fondateur Anonyme",
+      level: 1,
+      xp: 0,
+      totalXP: 0,
+      goldCoins: 0,
+      streak: 0,
+      lastDaily: null,
+      completedQuests: [],
+      unlockedAchievements: [],
+      reachedMilestones: []
+    };
+
+    // LEVEL THRESHOLDS
+    const levels = [
+      { level: 1, xp: 0, title: "🌱 Graine de Startup" },
+      { level: 2, xp: 100, title: "🌿 Pousse Prometteuse" },
+      { level: 3, xp: 300, title: "🌳 Arbre en Croissance" },
+      { level: 4, xp: 600, title: "⚔️ Guerrier du Dimanche" },
+      { level: 5, xp: 1000, title: "🛡️ Entrepreneur Confirmé" },
+      { level: 6, xp: 1500, title: "🏹 Chasseur de Deals" },
+      { level: 7, xp: 2500, title: "🗡️ Indie Hacker" },
+      { level: 8, xp: 4000, title: "🔥 Fondateur en Feu" },
+      { level: 9, xp: 6000, title: "💎 Diamant Brut" },
+      { level: 10, xp: 10000, title: "👑 LÉGENDE" }
+    ];
+
+    // LOAD STATE
+    function loadState() {
+      const saved = localStorage.getItem('fondateurQuest');
+      if (saved) {
+        gameState = JSON.parse(saved);
+      }
+      updateUI();
+    }
+
+    // SAVE STATE
+    function saveState() {
+      localStorage.setItem('fondateurQuest', JSON.stringify(gameState));
+    }
+
+    // UPDATE UI
+    function updateUI() {
+      // Player info
+      document.getElementById('playerName').textContent = gameState.playerName;
+      document.getElementById('levelNum').textContent = gameState.level;
+      document.getElementById('totalXP').textContent = gameState.totalXP;
+      document.getElementById('goldCoins').textContent = gameState.totalXP; // Gold = XP
+      document.getElementById('streakDays').textContent = gameState.streak;
+      document.getElementById('questsCompleted').textContent = gameState.completedQuests.length;
+      document.getElementById('achievementsCount').textContent = gameState.unlockedAchievements.length;
+
+      // Title
+      const currentLevel = levels.find(l => l.level === gameState.level) || levels[0];
+      document.getElementById('playerTitle').textContent = currentLevel.title;
+
+      // XP Bar
+      const nextLevel = levels.find(l => l.level === gameState.level + 1);
+      const prevLevel = levels.find(l => l.level === gameState.level) || { xp: 0 };
+      
+      if (nextLevel) {
+        const xpInLevel = gameState.totalXP - prevLevel.xp;
+        const xpNeeded = nextLevel.xp - prevLevel.xp;
+        const percent = Math.min(100, (xpInLevel / xpNeeded) * 100);
+        document.getElementById('xpBar').style.width = percent + '%';
+        document.getElementById('xpText').textContent = `${xpInLevel} / ${xpNeeded} XP`;
+      } else {
+        document.getElementById('xpBar').style.width = '100%';
+        document.getElementById('xpText').textContent = 'MAX LEVEL';
+      }
+
+      // Leaderboard
+      document.getElementById('yourScore').textContent = gameState.totalXP + ' XP';
+      const rank = gameState.totalXP >= 250000 ? 4 : 
+                   gameState.totalXP >= 100000 ? 5 : 
+                   gameState.totalXP >= 10000 ? 6 : '?';
+      document.getElementById('yourRank').textContent = rank;
+
+      // Quests
+      document.querySelectorAll('.quest-card').forEach(card => {
+        const questId = card.dataset.quest;
+        if (gameState.completedQuests.includes(questId)) {
+          card.classList.add('completed');
+          card.querySelector('.quest-checkbox').textContent = '✓';
+        }
+      });
+
+      // Chapter counts
+      updateChapterCounts();
+
+      // Achievements
+      document.querySelectorAll('.achievement').forEach(ach => {
+        if (gameState.unlockedAchievements.includes(ach.dataset.achievement)) {
+          ach.classList.add('unlocked');
+        }
+      });
+
+      // Milestones
+      document.querySelectorAll('.milestone').forEach(m => {
+        if (gameState.reachedMilestones.includes(m.dataset.milestone)) {
+          m.classList.add('reached');
+          m.classList.remove('current');
+        }
+      });
+
+      // Streak display
+      updateStreakDisplay();
+    }
+
+    function updateChapterCounts() {
+      for (let ch = 1; ch <= 5; ch++) {
+        const total = document.querySelectorAll(`.quest-card[data-chapter="${ch}"]`).length;
+        const completed = gameState.completedQuests.filter(q => q.startsWith(`${ch}-`)).length;
+        const counter = document.getElementById(`ch${ch}Count`);
+        if (counter) counter.textContent = `${completed}/${total}`;
+      }
+    }
+
+    function updateStreakDisplay() {
+      const container = document.getElementById('streakContainer');
+      container.innerHTML = '';
+      const days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+      const today = new Date().getDay();
+      
+      for (let i = 0; i < 7; i++) {
+        const div = document.createElement('div');
+        div.className = 'streak-day';
+        if (i < gameState.streak % 7) div.classList.add('completed');
+        if (i === today) div.classList.add('today');
+        div.textContent = days[i];
+        container.appendChild(div);
+      }
+    }
+
+    // TOGGLE QUEST
+    function toggleQuest(checkbox) {
+      const card = checkbox.closest('.quest-card');
+      const questId = card.dataset.quest;
+      const xp = parseInt(card.dataset.xp);
+
+      if (card.classList.contains('completed')) {
+        // Uncomplete
+        card.classList.remove('completed');
+        checkbox.textContent = '';
+        gameState.completedQuests = gameState.completedQuests.filter(q => q !== questId);
+        gameState.totalXP -= xp;
+      } else {
+        // Complete
+        card.classList.add('completed');
+        checkbox.textContent = '✓';
+        gameState.completedQuests.push(questId);
+        gameState.totalXP += xp;
+        
+        showToast(xp);
+        checkLevelUp();
+        checkAchievements();
+      }
+
+      saveState();
+      updateUI();
+    }
+
+    // SHOW TOAST
+    function showToast(xp) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastXP').textContent = `+${xp} XP`;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // CHECK LEVEL UP
+    function checkLevelUp() {
+      const newLevel = levels.filter(l => gameState.totalXP >= l.xp).pop();
+      if (newLevel && newLevel.level > gameState.level) {
+        gameState.level = newLevel.level;
+        document.getElementById('newLevel').textContent = newLevel.level;
+        document.getElementById('newTitle').textContent = newLevel.title;
+        document.getElementById('levelUpModal').classList.add('show');
+      }
+    }
+
+    function closeLevelUp() {
+      document.getElementById('levelUpModal').classList.remove('show');
+    }
+
+    // CHECK ACHIEVEMENTS
+    function checkAchievements() {
+      const checks = {
+        'first-step': gameState.completedQuests.length >= 1,
+        'chapter-1': gameState.completedQuests.filter(q => q.startsWith('1-')).length >= 6,
+        'first-euro': gameState.completedQuests.includes('4-1'),
+        'hunter': gameState.completedQuests.includes('3-3'),
+        'centurion': gameState.completedQuests.includes('5-1'),
+        'thousand': gameState.completedQuests.includes('5-5'),
+        'fesefa': gameState.completedQuests.includes('5-6'),
+        'streak-7': gameState.streak >= 7,
+        'streak-30': gameState.streak >= 30,
+        'millionaire': gameState.totalXP >= 10000
+      };
+
+      Object.entries(checks).forEach(([id, unlocked]) => {
+        if (unlocked && !gameState.unlockedAchievements.includes(id)) {
+          gameState.unlockedAchievements.push(id);
+          // Could show achievement popup here
+        }
+      });
+    }
+
+    // DAILY BONUS
+    function claimDailyBonus() {
+      const today = new Date().toDateString();
+      if (gameState.lastDaily === today) {
+        alert('Déjà réclamé aujourd\'hui ! Reviens demain.');
+        return;
+      }
+
+      const yesterday = new Date(Date.now() - 86400000).toDateString();
+      if (gameState.lastDaily === yesterday) {
+        gameState.streak++;
+      } else if (gameState.lastDaily !== today) {
+        gameState.streak = 1;
+      }
+
+      gameState.lastDaily = today;
+      gameState.totalXP += 50;
+      
+      showToast(50);
+      checkLevelUp();
+      checkAchievements();
+      saveState();
+      updateUI();
+
+      document.getElementById('claimDaily').disabled = true;
+      document.getElementById('claimDaily').textContent = '✓ Réclamé';
+    }
+
+    // SHOW PANEL
+    function showPanel(panelId) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      
+      document.getElementById(panelId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // EDIT NAME
+    document.getElementById('playerName').addEventListener('click', function() {
+      const newName = prompt('Ton nom de fondateur :', gameState.playerName);
+      if (newName && newName.trim()) {
+        gameState.playerName = newName.trim();
+        saveState();
+        updateUI();
+      }
+    });
+
+    // INIT
+    loadState();
+
+    // Check if daily already claimed today
+    const today = new Date().toDateString();
+    if (gameState.lastDaily === today) {
+      document.getElementById('claimDaily').disabled = true;
+      document.getElementById('claimDaily').textContent = '✓ Réclamé';
+    }
+  </script>
+</body>
+</html>

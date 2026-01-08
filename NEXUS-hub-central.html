@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ NEXUS — Le Hub qui gouverne tous les modules</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Press+Start+2P&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #05050a;
+      --bg-card: #0a0a12;
+      --bg-accent: #12121f;
+      --bg-hover: #1a1a2f;
+      --text: #e8e8ed;
+      --text-muted: #6a6a80;
+      --gold: #ffd700;
+      --gold-dark: #b8960b;
+      --purple: #a78bfa;
+      --blue: #60a5fa;
+      --green: #34d399;
+      --orange: #fb923c;
+      --red: #f87171;
+      --pink: #f472b6;
+      --cyan: #22d3ee;
+      --ring-glow: 0 0 60px rgba(255, 215, 0, 0.4), 0 0 120px rgba(255, 215, 0, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ANIMATED BACKGROUND */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .bg-animation::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(167, 139, 250, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(96, 165, 250, 0.05) 0%, transparent 70%);
+      animation: bgRotate 60s linear infinite;
+    }
+
+    @keyframes bgRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* PARTICLES */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--gold);
+      border-radius: 50%;
+      opacity: 0;
+      animation: particleFloat 8s infinite;
+    }
+
+    @keyframes particleFloat {
+      0% { opacity: 0; transform: translateY(100vh) scale(0); }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { opacity: 0; transform: translateY(-100vh) scale(1); }
+    }
+
+    /* HEADER */
+    header {
+      text-align: center;
+      padding: 4rem 2rem 3rem;
+      position: relative;
+    }
+
+    .ring-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 2rem;
+    }
+
+    .ring {
+      width: 120px;
+      height: 120px;
+      border: 4px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      box-shadow: var(--ring-glow);
+      animation: ringPulse 3s ease-in-out infinite;
+      position: relative;
+    }
+
+    .ring::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      border-radius: 50%;
+      animation: ringRotate 10s linear infinite;
+    }
+
+    .ring::after {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: -20px;
+      right: -20px;
+      bottom: -20px;
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 50%;
+      animation: ringRotate 15s linear infinite reverse;
+    }
+
+    @keyframes ringPulse {
+      0%, 100% { box-shadow: var(--ring-glow); }
+      50% { box-shadow: 0 0 80px rgba(255, 215, 0, 0.6), 0 0 160px rgba(255, 215, 0, 0.3); }
+    }
+
+    @keyframes ringRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    h1 {
+      font-family: 'Press Start 2P', cursive;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      background: linear-gradient(135deg, var(--gold), #fff, var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
+    }
+
+    .tagline {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    .tagline em {
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    /* STATS BAR */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border-top: 1px solid rgba(255, 215, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 1.5rem;
+      color: var(--gold);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    /* SEARCH */
+    .search-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .search-box {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 100px;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .search-box:focus-within {
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    }
+
+    .search-input {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 1rem 1.5rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-btn {
+      background: var(--gold);
+      border: none;
+      padding: 1rem 1.5rem;
+      color: black;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .search-btn:hover {
+      background: #fff;
+    }
+
+    /* FILTERS */
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: 100px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--gold);
+      color: var(--text);
+    }
+
+    .filter-btn.active {
+      background: var(--gold);
+      color: black;
+      border-color: var(--gold);
+    }
+
+    /* MAIN CONTENT */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* CATEGORY SECTION */
+    .category-section {
+      margin-bottom: 3rem;
+    }
+
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .category-icon {
+      font-size: 1.5rem;
+    }
+
+    .category-title {
+      font-size: 1.25rem;
+      flex: 1;
+    }
+
+    .category-count {
+      background: var(--bg-accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* MODULE GRID */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* MODULE CARD */
+    .module-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--module-color, var(--gold));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .module-card:hover {
+      border-color: var(--module-color, var(--gold));
+      transform: translateY(-4px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .module-card:hover::before {
+      opacity: 1;
+    }
+
+    .module-card.featured {
+      border-color: var(--gold);
+      background: linear-gradient(135deg, var(--bg-card), rgba(255, 215, 0, 0.05));
+    }
+
+    .module-card.featured::before {
+      opacity: 1;
+      background: linear-gradient(90deg, var(--gold), var(--orange), var(--gold));
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .module-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .module-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--bg-accent);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .module-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .module-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .module-type {
+      font-size: 0.8rem;
+      color: var(--module-color, var(--text-muted));
+    }
+
+    .module-badge {
+      background: var(--gold);
+      color: black;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .module-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .module-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .module-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .module-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .module-btn {
+      flex: 1;
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .module-btn-primary {
+      background: var(--module-color, var(--gold));
+      color: black;
+    }
+
+    .module-btn-primary:hover {
+      filter: brightness(1.1);
+    }
+
+    .module-btn-secondary {
+      background: var(--bg-accent);
+      color: var(--text);
+    }
+
+    .module-btn-secondary:hover {
+      background: var(--bg-hover);
+    }
+
+    /* PROGRESS TRACKER */
+    .progress-section {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .progress-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-title {
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .progress-percentage {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 1.5rem;
+      color: var(--gold);
+    }
+
+    .progress-bar-container {
+      background: var(--bg-accent);
+      border-radius: 100px;
+      height: 24px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), var(--orange));
+      border-radius: 100px;
+      transition: width 0.5s ease;
+      position: relative;
+    }
+
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: progressShine 2s infinite;
+    }
+
+    @keyframes progressShine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .progress-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .progress-milestones {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .milestone {
+      background: var(--bg-accent);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.5;
+    }
+
+    .milestone.achieved {
+      opacity: 1;
+      border: 1px solid var(--gold);
+    }
+
+    /* QUICK ACTIONS */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .quick-action {
+      background: linear-gradient(135deg, var(--bg-card), var(--bg-accent));
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .quick-action:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .quick-action-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--bg);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+    }
+
+    .quick-action-info h3 {
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .quick-action-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ECOSYSTEM MAP */
+    .ecosystem-section {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .ecosystem-title {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .ecosystem-map {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      padding: 2rem;
+    }
+
+    .ecosystem-node {
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .ecosystem-node:hover {
+      transform: scale(1.1);
+    }
+
+    .ecosystem-node-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--bg-accent);
+      border: 2px solid var(--node-color, var(--purple));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 0.75rem;
+      transition: all 0.3s;
+    }
+
+    .ecosystem-node:hover .ecosystem-node-icon {
+      box-shadow: 0 0 30px var(--node-color, var(--purple));
+    }
+
+    .ecosystem-node-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .ecosystem-center {
+      position: relative;
+    }
+
+    .ecosystem-center .ecosystem-node-icon {
+      width: 100px;
+      height: 100px;
+      font-size: 2.5rem;
+      border-color: var(--gold);
+      box-shadow: var(--ring-glow);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+    }
+
+    .footer-quote {
+      font-style: italic;
+      margin-bottom: 1rem;
+      color: var(--gold);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--gold);
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 2rem;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid var(--gold);
+      border-radius: 24px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .modal-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--bg-accent);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+    }
+
+    .modal-title {
+      flex: 1;
+    }
+
+    .modal-title h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .modal-title p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-section h3 {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+      color: var(--gold);
+    }
+
+    .modal-section p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .modal-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .modal-feature {
+      background: var(--bg-accent);
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .modal-footer {
+      padding: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      gap: 1rem;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 1rem;
+      border-radius: 12px;
+      border: none;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .modal-btn-primary {
+      background: var(--gold);
+      color: black;
+    }
+
+    .modal-btn-primary:hover {
+      background: #fff;
+    }
+
+    .modal-btn-secondary {
+      background: var(--bg-accent);
+      color: var(--text);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .stats-bar {
+        gap: 1.5rem;
+      }
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
+      .ecosystem-map {
+        flex-direction: column;
+      }
+    }
+
+    /* LAUNCH ANIMATION */
+    .launch-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      transition: opacity 0.5s;
+    }
+
+    .launch-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .launch-content {
+      text-align: center;
+    }
+
+    .launch-ring {
+      width: 150px;
+      height: 150px;
+      border: 4px solid var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      margin: 0 auto 2rem;
+      animation: launchPulse 1s ease-in-out infinite;
+      box-shadow: var(--ring-glow);
+    }
+
+    @keyframes launchPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .launch-text {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 1rem;
+      color: var(--gold);
+      animation: launchBlink 0.5s infinite;
+    }
+
+    @keyframes launchBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <!-- LAUNCH ANIMATION -->
+  <div class="launch-overlay" id="launchOverlay">
+    <div class="launch-content">
+      <div class="launch-ring">⚡</div>
+      <div class="launch-text">INITIALISATION...</div>
+    </div>
+  </div>
+
+  <!-- BACKGROUND -->
+  <div class="bg-animation"></div>
+  <div class="particles" id="particles"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="ring-container">
+      <div class="ring">⚡</div>
+    </div>
+    <h1>NEXUS</h1>
+    <p class="tagline">
+      <em>Un hub pour les gouverner tous.</em><br>
+      50 modules. 1 écosystème. 0 limite.
+    </p>
+  </header>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-value">50</span>
+      <span class="stat-label">Modules</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">5</span>
+      <span class="stat-label">Catégories</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">∞</span>
+      <span class="stat-label">Possibilités</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">0€</span>
+      <span class="stat-label">Coût</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="completedCount">0</span>
+      <span class="stat-label">Explorés</span>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-container">
+    <div class="search-box">
+      <input type="text" class="search-input" id="searchInput" placeholder="Rechercher un module..." oninput="filterModules()">
+      <button class="search-btn">🔍</button>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <button class="filter-btn active" onclick="setFilter('all')">Tous</button>
+    <button class="filter-btn" onclick="setFilter('politika')">🗳️ POLiT!KA</button>
+    <button class="filter-btn" onclick="setFilter('kern')">⚙️ KERN</button>
+    <button class="filter-btn" onclick="setFilter('tools')">🔧 Outils</button>
+    <button class="filter-btn" onclick="setFilter('ecosystem')">🌍 Écosystème</button>
+    <button class="filter-btn" onclick="setFilter('gamification')">🎮 Gamification</button>
+  </div>
+
+  <div class="container">
+    <!-- PROGRESS TRACKER -->
+    <section class="progress-section">
+      <div class="progress-header">
+        <h2 class="progress-title">🏆 Ta progression</h2>
+        <span class="progress-percentage" id="progressPercent">0%</span>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+      </div>
+      <div class="progress-stats">
+        <span><span id="exploredCount">0</span> / 50 modules explorés</span>
+        <span>Prochain palier : <span id="nextMilestone">10 modules</span></span>
+      </div>
+      <div class="progress-milestones">
+        <div class="milestone" data-threshold="10">🌱 Curieux (10)</div>
+        <div class="milestone" data-threshold="25">🔥 Explorateur (25)</div>
+        <div class="milestone" data-threshold="40">💎 Expert (40)</div>
+        <div class="milestone" data-threshold="50">👑 Maître (50)</div>
+      </div>
+    </section>
+
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions">
+      <div class="quick-action" onclick="launchRandom()">
+        <div class="quick-action-icon">🎲</div>
+        <div class="quick-action-info">
+          <h3>Module aléatoire</h3>
+          <p>Découvre un module au hasard</p>
+        </div>
+      </div>
+      <div class="quick-action" onclick="showUnexplored()">
+        <div class="quick-action-icon">🔮</div>
+        <div class="quick-action-info">
+          <h3>Non explorés</h3>
+          <p>Voir les modules pas encore vus</p>
+        </div>
+      </div>
+      <div class="quick-action" onclick="showFavorites()">
+        <div class="quick-action-icon">⭐</div>
+        <div class="quick-action-info">
+          <h3>Favoris</h3>
+          <p>Tes modules préférés</p>
+        </div>
+      </div>
+      <div class="quick-action" onclick="exportProgress()">
+        <div class="quick-action-icon">💾</div>
+        <div class="quick-action-info">
+          <h3>Exporter</h3>
+          <p>Sauvegarder ta progression</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULES BY CATEGORY -->
+    <div id="modulesContainer">
+      <!-- Dynamically generated -->
+    </div>
+
+    <!-- ECOSYSTEM MAP -->
+    <section class="ecosystem-section">
+      <h2 class="ecosystem-title">🗺️ L'Écosystème</h2>
+      <div class="ecosystem-map">
+        <div class="ecosystem-node" style="--node-color: var(--purple)">
+          <div class="ecosystem-node-icon">🗳️</div>
+          <div class="ecosystem-node-label">PRAGMA</div>
+        </div>
+        <div class="ecosystem-node" style="--node-color: var(--red)">
+          <div class="ecosystem-node-icon">✊</div>
+          <div class="ecosystem-node-label">SOCLE</div>
+        </div>
+        <div class="ecosystem-center">
+          <div class="ecosystem-node">
+            <div class="ecosystem-node-icon">⚡</div>
+            <div class="ecosystem-node-label">NEXUS</div>
+          </div>
+        </div>
+        <div class="ecosystem-node" style="--node-color: var(--orange)">
+          <div class="ecosystem-node-icon">🎯</div>
+          <div class="ecosystem-node-label">VIVIER 329</div>
+        </div>
+        <div class="ecosystem-node" style="--node-color: var(--blue)">
+          <div class="ecosystem-node-icon">🧠</div>
+          <div class="ecosystem-node-label">KERN LAB</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="footer-quote">"Un anneau pour les gouverner tous, un anneau pour les trouver, un anneau pour les amener tous et dans les ténèbres les lier."</p>
+    <div class="footer-links">
+      <a href="#">Documentation</a>
+      <a href="#">GitHub</a>
+      <a href="#">Communauté</a>
+      <a href="#">Contact</a>
+    </div>
+    <p>NEXUS — Le hub qui unifie tout • v1.0</p>
+  </footer>
+
+  <!-- MODULE MODAL -->
+  <div class="modal-overlay" id="moduleModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-icon" id="modalIcon">📄</div>
+        <div class="modal-title">
+          <h2 id="modalTitle">Module</h2>
+          <p id="modalCategory">Catégorie</p>
+        </div>
+        <button class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-section">
+          <h3>📝 Description</h3>
+          <p id="modalDesc">Description du module...</p>
+        </div>
+        <div class="modal-section">
+          <h3>✨ Fonctionnalités</h3>
+          <div class="modal-features" id="modalFeatures">
+            <!-- Dynamic -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-secondary" onclick="toggleFavorite()">
+          <span id="favBtnText">⭐ Favoris</span>
+        </button>
+        <button class="modal-btn modal-btn-primary" onclick="launchModule()">
+          🚀 Lancer le module
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== DATA: ALL 50 MODULES =====
+    const modules = [
+      // POLiT!KA - Éducation civique
+      { id: 'politika-main', name: 'POLiT!KA', icon: '🗳️', category: 'politika', color: 'var(--purple)', featured: true,
+        desc: 'Le jeu narratif complet d\'éducation civique. 7 chapitres, 47 modules interactifs.',
+        features: ['7 chapitres narratifs', 'Quiz interactifs', 'Certificat de complétion', 'Mode hors-ligne'] },
+      { id: 'chap1-institutions', name: 'Institutions Belges', icon: '🏛️', category: 'politika', color: 'var(--purple)',
+        desc: 'Comprendre les 6 niveaux de pouvoir en Belgique.', features: ['Fédéral', 'Régions', 'Communautés', 'Provinces', 'Communes', 'Europe'] },
+      { id: 'chap2-partis', name: 'Partis Politiques', icon: '🎭', category: 'politika', color: 'var(--purple)',
+        desc: 'Décrypter l\'échiquier politique belge.', features: ['14 partis analysés', 'Axe gauche-droite', 'Quiz positionnement', 'Historique'] },
+      { id: 'chap3-elections', name: 'Élections', icon: '🗳️', category: 'politika', color: 'var(--purple)',
+        desc: 'Tout sur le processus électoral.', features: ['Vote obligatoire', 'Systèmes de scrutin', 'Simulateur', 'Calendrier'] },
+      { id: 'chap4-medias', name: 'Médias & Info', icon: '📰', category: 'politika', color: 'var(--purple)',
+        desc: 'Développer son esprit critique face aux médias.', features: ['Fake news', 'Fact-checking', 'Sources fiables', 'Biais cognitifs'] },
+      { id: 'chap5-participation', name: 'Participation', icon: '✊', category: 'politika', color: 'var(--purple)',
+        desc: 'Toutes les formes d\'engagement citoyen.', features: ['Pétitions', 'Manifestations', 'Associations', 'Conseils citoyens'] },
+      { id: 'chap6-europe', name: 'Europe', icon: '🇪🇺', category: 'politika', color: 'var(--purple)',
+        desc: 'L\'Union Européenne et ses institutions.', features: ['Commission', 'Parlement', 'Conseil', 'Impact local'] },
+      { id: 'chap7-avenir', name: 'Défis du Futur', icon: '🔮', category: 'politika', color: 'var(--purple)',
+        desc: 'Les grands enjeux de demain.', features: ['Climat', 'Numérique', 'Inégalités', 'Démocratie'] },
+      { id: 'flashcards', name: 'Flashcards Civiques', icon: '🃏', category: 'politika', color: 'var(--purple)',
+        desc: 'Révise tes connaissances avec des cartes mémo.', features: ['200+ cartes', 'Révision espacée', 'Stats de progression', 'Mode examen'] },
+      { id: 'diagnostic', name: 'Diagnostic Citoyen', icon: '📊', category: 'politika', color: 'var(--purple)',
+        desc: 'Évalue tes connaissances civiques.', features: ['40 questions', 'Score détaillé', 'Recommandations', 'Certificat'] },
+      
+      // KERN - Gestion ASBL
+      { id: 'kern-suite', name: 'KERN Suite', icon: '⚙️', category: 'kern', color: 'var(--blue)', featured: true,
+        desc: 'La suite complète de gestion pour associations.', features: ['Finance', 'Contacts', 'Projets', 'Documents'] },
+      { id: 'kern-finance', name: 'KERN Finance', icon: '💰', category: 'kern', color: 'var(--blue)',
+        desc: 'Comptabilité simplifiée pour ASBL.', features: ['Dépenses/Recettes', 'Catégories', 'Rapports', 'Export'] },
+      { id: 'kern-contacts', name: 'KERN Contacts', icon: '👥', category: 'kern', color: 'var(--blue)',
+        desc: 'Gestion des membres et contacts.', features: ['Fiches contact', 'Tags', 'Recherche', 'Import/Export'] },
+      { id: 'kern-projets', name: 'KERN Projets', icon: '📋', category: 'kern', color: 'var(--blue)',
+        desc: 'Suivi de projets et tâches.', features: ['Kanban', 'Timeline', 'Assignation', 'Deadlines'] },
+      { id: 'kern-agenda', name: 'KERN Agenda', icon: '📅', category: 'kern', color: 'var(--blue)',
+        desc: 'Calendrier partagé pour équipes.', features: ['Événements', 'Rappels', 'Partage', 'Sync'] },
+      { id: 'kern-docs', name: 'KERN Documents', icon: '📁', category: 'kern', color: 'var(--blue)',
+        desc: 'Gestion documentaire.', features: ['Upload', 'Classement', 'Recherche', 'Versions'] },
+      { id: 'kern-comm', name: 'KERN Communication', icon: '📧', category: 'kern', color: 'var(--blue)',
+        desc: 'Outils de communication interne.', features: ['Annonces', 'Messages', 'Templates', 'Historique'] },
+      { id: 'kern-rapports', name: 'KERN Rapports', icon: '📈', category: 'kern', color: 'var(--blue)',
+        desc: 'Génération de rapports automatisés.', features: ['Tableaux de bord', 'Graphiques', 'Export PDF', 'Personnalisation'] },
+      
+      // OUTILS - Productivité
+      { id: 'pdf-toolkit', name: 'PDF Toolkit', icon: '📄', category: 'tools', color: 'var(--orange)', featured: true,
+        desc: '10 outils PDF en un. Fusion, division, compression et plus.', features: ['Fusionner', 'Diviser', 'Compresser', 'Filigrane'] },
+      { id: 'metadata-stegano', name: 'Métadonnées & Stégano', icon: '🔍', category: 'tools', color: 'var(--orange)',
+        desc: 'Analyse les métadonnées et cache des messages dans les images.', features: ['Analyse EXIF', 'Stéganographie', 'Vie privée', 'Quiz'] },
+      { id: 'pomodoro', name: 'Pomodoro Timer', icon: '🍅', category: 'tools', color: 'var(--orange)',
+        desc: 'Timer de productivité avec technique Pomodoro.', features: ['25/5 cycles', 'Stats', 'Sons', 'Personnalisable'] },
+      { id: 'markdown-editor', name: 'Éditeur Markdown', icon: '✍️', category: 'tools', color: 'var(--orange)',
+        desc: 'Éditeur Markdown avec prévisualisation.', features: ['Syntaxe colorée', 'Preview', 'Export', 'Templates'] },
+      { id: 'json-formatter', name: 'JSON Formatter', icon: '{ }', category: 'tools', color: 'var(--orange)',
+        desc: 'Formatage et validation de JSON.', features: ['Beautify', 'Minify', 'Validation', 'Conversion'] },
+      { id: 'color-picker', name: 'Color Picker', icon: '🎨', category: 'tools', color: 'var(--orange)',
+        desc: 'Sélecteur de couleurs avancé.', features: ['HEX/RGB/HSL', 'Palettes', 'Contraste', 'Export'] },
+      { id: 'password-gen', name: 'Générateur MdP', icon: '🔐', category: 'tools', color: 'var(--orange)',
+        desc: 'Générateur de mots de passe sécurisés.', features: ['Personnalisable', 'Force', 'Copie rapide', 'Mémorisable'] },
+      { id: 'qr-generator', name: 'QR Generator', icon: '📱', category: 'tools', color: 'var(--orange)',
+        desc: 'Création de QR codes personnalisés.', features: ['URL/Texte/WiFi', 'Couleurs', 'Logo', 'Download'] },
+      { id: 'unit-converter', name: 'Convertisseur', icon: '🔄', category: 'tools', color: 'var(--orange)',
+        desc: 'Conversion d\'unités universelle.', features: ['Longueur', 'Poids', 'Température', 'Devises'] },
+      { id: 'text-tools', name: 'Text Tools', icon: '📝', category: 'tools', color: 'var(--orange)',
+        desc: 'Outils de manipulation de texte.', features: ['Compteur', 'Case', 'Nettoyage', 'Lorem ipsum'] },
+      { id: 'image-tools', name: 'Image Tools', icon: '🖼️', category: 'tools', color: 'var(--orange)',
+        desc: 'Outils basiques de traitement d\'image.', features: ['Redimensionner', 'Recadrer', 'Compresser', 'Convertir'] },
+      
+      // ÉCOSYSTÈME - Structures
+      { id: 'pragma-parti', name: 'PRAGMA', icon: '🏛️', category: 'ecosystem', color: 'var(--pink)',
+        desc: 'Documentation complète pour créer un parti politique transparent.', features: ['Statuts', 'Code éthique', 'Programme', 'Stratégie'] },
+      { id: 'socle-syndicat', name: 'SOCLE', icon: '✊', category: 'ecosystem', color: 'var(--red)',
+        desc: 'Kit de création d\'un syndicat nouvelle génération.', features: ['Statuts', 'Services', 'Cotisations', 'Plateforme'] },
+      { id: 'vivier-329', name: 'VIVIER 329', icon: '🎯', category: 'ecosystem', color: 'var(--orange)',
+        desc: 'Plateforme de recrutement éthique pour le non-marchand.', features: ['Matching', 'Profils', 'Missions', 'Formation'] },
+      { id: 'kern-lab', name: 'KERN LAB', icon: '🧠', category: 'ecosystem', color: 'var(--cyan)',
+        desc: 'Agence de consultance pour transformation des ASBL.', features: ['Audits', 'Formation', 'Déploiement', 'Support'] },
+      { id: 'communaute', name: 'Communauté Open Source', icon: '🌍', category: 'ecosystem', color: 'var(--green)',
+        desc: 'Documentation pour créer et animer la communauté.', features: ['GitHub', 'Contribution', 'Gouvernance', 'Licence'] },
+      { id: 'landing-monetisation', name: 'Landing Monétisation', icon: '💰', category: 'ecosystem', color: 'var(--yellow)',
+        desc: 'Page de vente prête à l\'emploi.', features: ['Hero', 'Pricing', 'FAQ', 'Capture email'] },
+      { id: 'pitch-deck', name: 'Pitch Deck', icon: '📊', category: 'ecosystem', color: 'var(--pink)',
+        desc: 'Présentation investisseurs 12 slides.', features: ['Problème', 'Solution', 'Marché', 'Projections'] },
+      { id: 'business-plan', name: 'Business Plan', icon: '📈', category: 'ecosystem', color: 'var(--blue)',
+        desc: 'Plan d\'affaires complet sur 5 ans.', features: ['Projections', 'Analyse marché', 'KPIs', 'Risques'] },
+      { id: 'emails-prospection', name: 'Templates Emails', icon: '📧', category: 'ecosystem', color: 'var(--purple)',
+        desc: '9 templates d\'emails de prospection B2B.', features: ['Premier contact', 'Relances', 'Conversion', 'Témoignages'] },
+      { id: 'devis-template', name: 'Template Devis', icon: '📋', category: 'ecosystem', color: 'var(--orange)',
+        desc: 'Modèle de proposition commerciale.', features: ['3 options', 'CGV', 'Planning', 'Bon de commande'] },
+      
+      // GAMIFICATION
+      { id: 'quest-network', name: 'QUEST Network', icon: '🌐', category: 'gamification', color: 'var(--green)', featured: true,
+        desc: 'Réseau social gamifié pour créateurs de projets.', features: ['Profils', 'Quêtes', 'Guildes', 'Classement'] },
+      { id: 'fondateur-quest', name: 'FONDATEUR QUEST', icon: '🦸', category: 'gamification', color: 'var(--purple)',
+        desc: 'Gamification personnelle du parcours entrepreneurial.', features: ['Chapitres', 'XP', 'Achievements', 'Récompenses'] },
+      { id: 'synergy-game', name: 'SYNERGY GAME', icon: '⚡', category: 'gamification', color: 'var(--yellow)',
+        desc: 'Plateforme de mobilisation gamifiée pour associations.', features: ['Missions', 'Points', 'Équipes', 'Récompenses'] },
+      { id: 'certificat', name: 'Certificat Citoyen', icon: '🎓', category: 'gamification', color: 'var(--gold)',
+        desc: 'Générateur de certificats personnalisés.', features: ['Design pro', 'QR code', 'Vérification', 'Print-ready'] },
+      { id: 'badge-maker', name: 'Badge Maker', icon: '🏅', category: 'gamification', color: 'var(--orange)',
+        desc: 'Créateur de badges et achievements.', features: ['Templates', 'Personnalisation', 'SVG', 'Collection'] },
+      { id: 'leaderboard', name: 'Leaderboard System', icon: '👑', category: 'gamification', color: 'var(--yellow)',
+        desc: 'Système de classement configurable.', features: ['Temps réel', 'Catégories', 'Périodes', 'Animations'] },
+      { id: 'xp-calculator', name: 'XP Calculator', icon: '📊', category: 'gamification', color: 'var(--blue)',
+        desc: 'Calculateur et visualiseur de progression.', features: ['Niveaux', 'Courbes', 'Projections', 'Comparaison'] },
+      { id: 'reward-shop', name: 'Reward Shop', icon: '🎁', category: 'gamification', color: 'var(--pink)',
+        desc: 'Système de récompenses échangeables.', features: ['Catalogue', 'Points', 'Historique', 'Notifications'] },
+      
+      // META
+      { id: 'nexus', name: 'NEXUS', icon: '⚡', category: 'meta', color: 'var(--gold)', featured: true,
+        desc: 'Ce hub. Le module qui gouverne tous les autres.', features: ['50 modules', 'Progression', 'Recherche', 'Favoris'] }
+    ];
+
+    const categories = {
+      politika: { name: 'POLiT!KA — Éducation Civique', icon: '🗳️', color: 'var(--purple)' },
+      kern: { name: 'KERN — Gestion ASBL', icon: '⚙️', color: 'var(--blue)' },
+      tools: { name: 'Outils — Productivité', icon: '🔧', color: 'var(--orange)' },
+      ecosystem: { name: 'Écosystème — Structures', icon: '🌍', color: 'var(--pink)' },
+      gamification: { name: 'Gamification', icon: '🎮', color: 'var(--green)' },
+      meta: { name: 'Meta', icon: '⚡', color: 'var(--gold)' }
+    };
+
+    // ===== STATE =====
+    let currentFilter = 'all';
+    let searchQuery = '';
+    let exploredModules = JSON.parse(localStorage.getItem('nexus_explored') || '[]');
+    let favoriteModules = JSON.parse(localStorage.getItem('nexus_favorites') || '[]');
+    let currentModule = null;
+
+    // ===== INIT =====
+    function init() {
+      createParticles();
+      renderModules();
+      updateProgress();
+      
+      // Launch animation
+      setTimeout(() => {
+        document.getElementById('launchOverlay').classList.add('hidden');
+      }, 1500);
+    }
+
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (5 + Math.random() * 5) + 's';
+        container.appendChild(particle);
+      }
+    }
+
+    // ===== RENDER =====
+    function renderModules() {
+      const container = document.getElementById('modulesContainer');
+      let filtered = modules;
+
+      // Apply filter
+      if (currentFilter !== 'all') {
+        filtered = modules.filter(m => m.category === currentFilter);
+      }
+
+      // Apply search
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(m => 
+          m.name.toLowerCase().includes(query) ||
+          m.desc.toLowerCase().includes(query) ||
+          m.features.some(f => f.toLowerCase().includes(query))
+        );
+      }
+
+      // Group by category
+      const grouped = {};
+      filtered.forEach(m => {
+        if (!grouped[m.category]) grouped[m.category] = [];
+        grouped[m.category].push(m);
+      });
+
+      // Render
+      container.innerHTML = Object.entries(grouped).map(([cat, mods]) => {
+        const catInfo = categories[cat];
+        return `
+          <section class="category-section">
+            <div class="category-header">
+              <span class="category-icon">${catInfo.icon}</span>
+              <h2 class="category-title">${catInfo.name}</h2>
+              <span class="category-count">${mods.length}</span>
+            </div>
+            <div class="modules-grid">
+              ${mods.map(m => renderModuleCard(m)).join('')}
+            </div>
+          </section>
+        `;
+      }).join('');
+    }
+
+    function renderModuleCard(m) {
+      const isExplored = exploredModules.includes(m.id);
+      const isFavorite = favoriteModules.includes(m.id);
+      
+      return `
+        <div class="module-card ${m.featured ? 'featured' : ''}" style="--module-color: ${m.color}" onclick="openModule('${m.id}')">
+          <div class="module-header">
+            <div class="module-icon">${m.icon}</div>
+            <div class="module-info">
+              <h3 class="module-name">${m.name}</h3>
+              <span class="module-type">${categories[m.category].name.split('—')[0].trim()}</span>
+            </div>
+            ${m.featured ? '<span class="module-badge">⭐ TOP</span>' : ''}
+          </div>
+          <p class="module-desc">${m.desc}</p>
+          <div class="module-meta">
+            <span>${isExplored ? '✅ Exploré' : '🔮 À découvrir'}</span>
+            <span>${isFavorite ? '⭐ Favori' : ''}</span>
+          </div>
+          <div class="module-actions">
+            <button class="module-btn module-btn-primary" onclick="event.stopPropagation(); launchModuleById('${m.id}')">
+              🚀 Lancer
+            </button>
+            <button class="module-btn module-btn-secondary" onclick="event.stopPropagation(); openModule('${m.id}')">
+              ℹ️ Info
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ===== FILTERS =====
+    function setFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      renderModules();
+    }
+
+    function filterModules() {
+      searchQuery = document.getElementById('searchInput').value;
+      renderModules();
+    }
+
+    // ===== PROGRESS =====
+    function updateProgress() {
+      const explored = exploredModules.length;
+      const total = modules.length;
+      const percent = Math.round((explored / total) * 100);
+
+      document.getElementById('exploredCount').textContent = explored;
+      document.getElementById('completedCount').textContent = explored;
+      document.getElementById('progressPercent').textContent = percent + '%';
+      document.getElementById('progressBar').style.width = percent + '%';
+
+      // Milestones
+      const thresholds = [10, 25, 40, 50];
+      const next = thresholds.find(t => t > explored) || 50;
+      document.getElementById('nextMilestone').textContent = next + ' modules';
+
+      document.querySelectorAll('.milestone').forEach(m => {
+        if (explored >= parseInt(m.dataset.threshold)) {
+          m.classList.add('achieved');
+        } else {
+          m.classList.remove('achieved');
+        }
+      });
+    }
+
+    function markExplored(moduleId) {
+      if (!exploredModules.includes(moduleId)) {
+        exploredModules.push(moduleId);
+        localStorage.setItem('nexus_explored', JSON.stringify(exploredModules));
+        updateProgress();
+        renderModules();
+      }
+    }
+
+    // ===== MODAL =====
+    function openModule(moduleId) {
+      currentModule = modules.find(m => m.id === moduleId);
+      if (!currentModule) return;
+
+      document.getElementById('modalIcon').textContent = currentModule.icon;
+      document.getElementById('modalTitle').textContent = currentModule.name;
+      document.getElementById('modalCategory').textContent = categories[currentModule.category].name;
+      document.getElementById('modalDesc').textContent = currentModule.desc;
+      
+      document.getElementById('modalFeatures').innerHTML = currentModule.features.map(f => `
+        <div class="modal-feature">✓ ${f}</div>
+      `).join('');
+
+      const isFav = favoriteModules.includes(moduleId);
+      document.getElementById('favBtnText').textContent = isFav ? '⭐ Retirer des favoris' : '☆ Ajouter aux favoris';
+
+      document.getElementById('moduleModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('moduleModal').classList.remove('active');
+      currentModule = null;
+    }
+
+    function toggleFavorite() {
+      if (!currentModule) return;
+      const idx = favoriteModules.indexOf(currentModule.id);
+      if (idx > -1) {
+        favoriteModules.splice(idx, 1);
+      } else {
+        favoriteModules.push(currentModule.id);
+      }
+      localStorage.setItem('nexus_favorites', JSON.stringify(favoriteModules));
+      
+      const isFav = favoriteModules.includes(currentModule.id);
+      document.getElementById('favBtnText').textContent = isFav ? '⭐ Retirer des favoris' : '☆ Ajouter aux favoris';
+      renderModules();
+    }
+
+    function launchModule() {
+      if (!currentModule) return;
+      markExplored(currentModule.id);
+      closeModal();
+      // In real app, would navigate to module
+      alert(`🚀 Lancement de ${currentModule.name}...\n\n(Dans la version complète, ceci ouvrirait le module)`);
+    }
+
+    function launchModuleById(moduleId) {
+      markExplored(moduleId);
+      const m = modules.find(mod => mod.id === moduleId);
+      alert(`🚀 Lancement de ${m.name}...\n\n(Dans la version complète, ceci ouvrirait le module)`);
+    }
+
+    // ===== QUICK ACTIONS =====
+    function launchRandom() {
+      const unexplored = modules.filter(m => !exploredModules.includes(m.id));
+      const pool = unexplored.length > 0 ? unexplored : modules;
+      const random = pool[Math.floor(Math.random() * pool.length)];
+      openModule(random.id);
+    }
+
+    function showUnexplored() {
+      currentFilter = 'all';
+      searchQuery = '';
+      document.getElementById('searchInput').value = '';
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector('.filter-btn').classList.add('active');
+      
+      const container = document.getElementById('modulesContainer');
+      const unexplored = modules.filter(m => !exploredModules.includes(m.id));
+      
+      container.innerHTML = `
+        <section class="category-section">
+          <div class="category-header">
+            <span class="category-icon">🔮</span>
+            <h2 class="category-title">Modules à découvrir</h2>
+            <span class="category-count">${unexplored.length}</span>
+          </div>
+          <div class="modules-grid">
+            ${unexplored.map(m => renderModuleCard(m)).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    function showFavorites() {
+      const favs = modules.filter(m => favoriteModules.includes(m.id));
+      
+      if (favs.length === 0) {
+        alert('Aucun favori pour l\'instant !\n\nClique sur ☆ dans un module pour l\'ajouter.');
+        return;
+      }
+
+      const container = document.getElementById('modulesContainer');
+      container.innerHTML = `
+        <section class="category-section">
+          <div class="category-header">
+            <span class="category-icon">⭐</span>
+            <h2 class="category-title">Mes favoris</h2>
+            <span class="category-count">${favs.length}</span>
+          </div>
+          <div class="modules-grid">
+            ${favs.map(m => renderModuleCard(m)).join('')}
+          </div>
+        </section>
+      `;
+    }
+
+    function exportProgress() {
+      const data = {
+        explored: exploredModules,
+        favorites: favoriteModules,
+        exportedAt: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'nexus-progress.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // ===== INIT =====
+    init();
+  </script>
+</body>
+</html>

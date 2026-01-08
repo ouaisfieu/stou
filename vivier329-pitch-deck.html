@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIVIER 329 — Pitch FESEFA</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        :root {
+            --bg: #0f0f1a;
+            --card: #1a1a2e;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #f1f5f9;
+            --text-dim: #94a3b8;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+        
+        .slide-content {
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        .slide-number {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+        
+        .logo {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .logo span { color: var(--accent); }
+        
+        /* Slide 1: Title */
+        .slide-title {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+        }
+        
+        .slide-title .slide-content {
+            text-align: center;
+        }
+        
+        .main-title {
+            font-size: clamp(4rem, 12vw, 8rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent) 0%, #a855f7 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--text-dim);
+            margin-bottom: 3rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--accent-light);
+        }
+        
+        /* Common styles */
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+        
+        h2 .highlight {
+            color: var(--accent);
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+        
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .stat-card {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--danger);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value.success { color: var(--success); }
+        .stat-value.accent { color: var(--accent); }
+        .stat-value.warning { color: var(--warning); }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-dim);
+        }
+        
+        .list {
+            list-style: none;
+        }
+        
+        .list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .list li:last-child { border-bottom: none; }
+        
+        .list-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .list-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .list-content p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+        
+        /* Slide specific */
+        .problem-quote {
+            font-size: 1.8rem;
+            font-style: italic;
+            text-align: center;
+            padding: 3rem;
+            background: var(--card);
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .problem-quote::before {
+            content: '"';
+            position: absolute;
+            top: 1rem;
+            left: 2rem;
+            font-size: 5rem;
+            color: var(--accent);
+            opacity: 0.3;
+        }
+        
+        .quote-source {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            font-style: normal;
+            margin-top: 1rem;
+        }
+        
+        .pillar {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .pillar-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .pillar h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pillar p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+        
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 3rem 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+            opacity: 0.3;
+        }
+        
+        .timeline-item {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .timeline-dot {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+        
+        .timeline-label {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+        
+        .timeline-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+            border-radius: 16px;
+            border: 1px solid var(--accent);
+        }
+        
+        .cta-section h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-section p {
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .synergy-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .synergy-box {
+            padding: 1.5rem 2rem;
+            background: var(--card);
+            border-radius: 12px;
+            text-align: center;
+            min-width: 200px;
+        }
+        
+        .synergy-box h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .synergy-box p {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+        
+        .synergy-arrow {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+        
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+        
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .nav-dot:hover, .nav-dot.active {
+            background: var(--accent);
+            transform: scale(1.2);
+        }
+        
+        @media (max-width: 768px) {
+            .nav-dots { display: none; }
+            .main-title { font-size: 3rem; }
+            h2 { font-size: 1.8rem; }
+            .problem-quote { font-size: 1.2rem; padding: 2rem; }
+            .timeline { flex-wrap: wrap; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation dots -->
+    <div class="nav-dots">
+        <div class="nav-dot active" data-slide="1"></div>
+        <div class="nav-dot" data-slide="2"></div>
+        <div class="nav-dot" data-slide="3"></div>
+        <div class="nav-dot" data-slide="4"></div>
+        <div class="nav-dot" data-slide="5"></div>
+        <div class="nav-dot" data-slide="6"></div>
+        <div class="nav-dot" data-slide="7"></div>
+        <div class="nav-dot" data-slide="8"></div>
+        <div class="nav-dot" data-slide="9"></div>
+        <div class="nav-dot" data-slide="10"></div>
+    </div>
+
+    <!-- Slide 1: Title -->
+    <section class="slide slide-title" id="slide-1">
+        <div class="logo">VIVIER<span>329</span></div>
+        <div class="slide-content">
+            <div class="badge">Proposition de partenariat</div>
+            <h1 class="main-title">VIVIER 329</h1>
+            <p class="subtitle">La réserve de talents du socioculturel</p>
+            <p style="color: var(--text-dim); font-size: 1.1rem;">
+                Première réserve de recrutement mutualisée<br>
+                pour le secteur SCP 329.02
+            </p>
+        </div>
+        <div class="slide-number">1/10</div>
+    </section>
+
+    <!-- Slide 2: Problem -->
+    <section class="slide" id="slide-2">
+        <div class="logo">VIVIER<span>329</span></div>
+        <div class="slide-content">
+            <h2>Le <span class="highlight">problème</span></h2>
+            
+            <div class="problem-quote">
+                83% des employeurs du non-marchand éprouvent les plus grosses difficultés à remplir leurs postes vacants.
+                <div class="quote-source">— ManpowerGroup, T1 2024</div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card stat-card">
+                    <div class="stat-value">83%</div>
+                    <div class="stat-label">Difficultés de recrutement</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value warning">↑</div>
+                    <div class="stat-label">Turnover en hausse</div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">2/10</div>
+    </section>
+
+    <!-- Slide 3: Root causes -->
+    <section class="slide" id="slide-3">
+        <div class="logo">VIVIER<span>329</span></div>
+        <div class="slide-content">
+            <h2>Les <span class="highlight">causes</span></h2>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <ul class="list">
+                        <li>
+                            <div class="list-icon">📢</div>
+                            <div class="list-content">
+                                <h4>Offres dispersées</h4>
+                                <p>Chaque association recrute seule sur des canaux différents</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="list-icon">🎓</div>
+                            <div class="list-content">
+                                <h4>Candidats non formés</h4>
+                                <p>Méconnaissance du secteur, de ses spécificités, de ses barèmes</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="list-icon">🔄</div>
+                            <div class="list-content">
+                                <h4>Pas de mutualisation</h4>
+                                <p>Duplication des efforts, pas de vivier partagé</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <ul class="list">
+                        <li>
+                            <div class="list-icon">💰</div>
+                            <div class="list-content">
+                                <h4>Sous-financement</h4>
+                                <p>Barèmes inférieurs au privé, difficultés à rivaliser</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="list-icon">😓</div>
+                            <div class="list-content">
+                                <h4>Conditions difficiles</h4>
+                                <p>Charge administrative, publics complexes, burn-out</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="list-icon">👻</div>
+                            <div class="list-content">
+                                <h4>Invisibilité</h4>
+                                <p>Le secteur est mal connu des candidats potentiels</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">3/10</div>
+    </section>
+
+    <!-- Slide 4: Solution -->
+    <section class="slide" id="slide-4">
+        <div class="logo">VIVIER<span>329</span></div>
+        <div class="slide-content">
+            <h2>La <span class="highlight">solution</span></h2>
+            
+            <p style="text-align: center; color: var(--text-dim); font-size: 1.1rem; margin-bottom: 3rem;">
+                Une réserve de recrutement mutualisée pour les 417+ associations de l'écosystème FESEFA
+            </p>
+            
+            <div class="grid-2" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="card pillar">
+                    <div class="pillar-icon">🎓</div>
+                    <h3>Formation</h3>
+                    <p>Modules de préparation au secteur EP/ISP avec certification</p>
+                </div>
+                <div class="card pillar">
+                    <div class="pillar-icon">🎯</div>
+                    <h3>Matching</h3>
+                    <p>Plateforme de mise en relation candidats/associations</p>
+                </div>
+                <div class="card pillar">
+                    <div class="pillar-icon">🤝</div>
+                    <h3>Accompagnement</h3>
+                    <p>Coaching, mentorat et suivi post-recrutement</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">4/10</div>
+    </section>
+
+    <!-- Slide 5: For whom -->
+    <section class="slide" id="slide-5">
+        <div class="logo">VIVIER<span>329</span></div>
+        <div class="slide-content">
+            <h2>Pour <span class="highlight">qui</span> ?</h2>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h3 style="margin-bottom: 1.5rem;">🏢 Pour les associations</h3>
+                    <ul class="list">
+                        <li>
+                            <div class="list-icon">✓</div>
+                            <div class="list-content">
+                                <h4>Vivier qualifié</h4>
+                                <p>Accès à des candidats formés au secteur</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="list-icon">✓</div>
+                            <div class="list-content">
+                                <h4>Gain de temps</h4>
+                                <p>Pré-sélection et matching intelligent</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="list-icon">✓</div>
+                            <div class="list-content">
+                                <h4>Économies</h4>
+                                <p>Moins de coûts d'annonces et d'entretiens ratés</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 1.5rem;">👤 Pour les candidats</h3>
+                    <ul class="list">
+                        <li>
+                            <div class="list-icon">✓</div>
+                            <div class="list-content">
+                                <h4>Formation gratuite</h4>
+                                <p>Préparation aux spécificités du secteur</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="list-icon">✓</div>
+                            <div class="list-content">
+                                <h4>Certification</h4>
+                                <p>Valorisation des compétences acquises</p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="list-icon">✓</div>
+                            <div class="list-content">
+                                <h4>417 employeurs</h4>
+                                <p>Accès privilégié au réseau FESEFA</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">5/10</div>
+    </section>
+
+    <!-- Slide 6: Business model -->
+    <section class="slide" id="slide-6">
+        <div class="logo">VIVIER<span>329</span></div>
+        <div class="slide-content">
+            <h2>Modèle <span class="highlight">économique</span></h2>
+            
+            <div class="grid-2" style="grid-template-columns: repeat(4, 1fr); gap: 1rem;">
+                <div class="card stat-card">
+                    <div class="stat-value accent" style="font-size: 2rem;">299€</div>
+                    <div class="stat-label">Abonnement Standard /an</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value accent" style="font-size: 2rem;">49€</div>
+                    <div class="stat-label">Formation certifiante</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value accent" style="font-size: 2rem;">1,5k€</div>
+                    <div class="stat-label">Chasse de tête</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value success" style="font-size: 2rem;">+</div>
+                    <div class="stat-label">Subventions (Fonds 4S, FWB...)</div>
+                </div>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot">Y1</div>
+                    <div class="timeline-value">85K€</div>
+                    <div class="timeline-label">50 associations</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot">Y2</div>
+                    <div class="timeline-value">165K€</div>
+                    <div class="timeline-label">100 associations</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot">Y3</div>
+                    <div class="timeline-value">250K€</div>
+                    <div class="timeline-label">200 associations</div>
+                </div>
+            </div>
+        </div>
+        <div class="slide-number">6/10</div>
+    </section>
+
+    <!-- Slide 7: Synergy with POLiT!KA -->
+    <section class="slide" id="slide-7">
+        <div class="logo">VIVIER<span>329</span></div>
+        <div class="slide-content">
+            <h2>Synergie avec <span class="highlight">POLiT!KA</span></h2>
+            
+            <div class="synergy-diagram">
+                <div class="synergy-box">
+                    <h4>🎮 POLiT!KA</h4>
+                    <p>Comprendre la démocratie</p>
+                </div>
+                <div class="synergy-arrow">→</div>
+                <div class="synergy-box">
+                    <h4>🎯 VIVIER 329</h4>
+                    <p>Agir dans le secteur</p>
+                </div>
+            </div>
+            
+            <div class="card" style="text-align: center; margin-top: 2rem;">
+                <p style="font-size: 1.3rem; margin-bottom: 1rem;">
+                    🎮 Jouez. Comprenez. Agissez. <span style="color: var(--accent);">Travaillez.</span>
+                </p>
+                <p style="color: var(--text-dim);">
+                    Réutilisation des technologies POLiT!KA (gamification, progression, certification)<br>
+                    pour la formation des candidats VIVIER 329
+                </p>
+            </div>
+        </div>
+        <div class="slide-number">7/10</div>
+    </section>
+
+    <!-- Slide 8: Why FESEFA -->
+    <section class="slide" id="slide-8">
+        <div class="logo">VIVIER<span>329</span></div>
+        <div class="slide-content">
+            <h2>Pourquoi la <span class="highlight">FESEFA</span> ?</h2>
+            
+            <div class="grid-2">
+                <div class="card stat-card">
+                    <div class="stat-value accent">417</div>
+                    <div class="stat-label">Associations membres</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value accent">7000+</div>
+                    <div class="stat-label">Travailleurs ETP</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value accent">71%</div>
+                    <div class="stat-label">Des associations EP affiliées</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value accent">#1</div>
+                    <div class="stat-label">Plus grande fédération CP 329</div>
+                </div>
+            </div>
+            
+            <p style="text-align: center; margin-top: 2rem; color: var(--text-dim); font-size: 1.1rem;">
+                La FESEFA est l'acteur <strong style="color: var(--text)">légitime et naturel</strong> pour porter cette initiative sectorielle.
+            </p>
+        </div>
+        <div class="slide-number">8/10</div>
+    </section>
+
+    <!-- Slide 9: Why me -->
+    <section class="slide" id="slide-9">
+        <div class="logo">VIVIER<span>329</span></div>
+        <div class="slide-content">
+            <h2>Pourquoi <span class="highlight">moi</span> ?</h2>
+            
+            <div class="card">
+                <ul class="list">
+                    <li>
+                        <div class="list-icon">🎮</div>
+                        <div class="list-content">
+                            <h4>Créateur de POLiT!KA</h4>
+                            <p>Plateforme de gamification civique — expertise en formation engageante</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="list-icon">🏛️</div>
+                        <div class="list-content">
+                            <h4>Connaissance de l'écosystème</h4>
+                            <p>Recherche approfondie sur les institutions belges, les acteurs, les enjeux</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="list-icon">💡</div>
+                        <div class="list-content">
+                            <h4>Compétences techniques</h4>
+                            <p>Développement web, design, IA — capacité à livrer rapidement</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="list-icon">❤️</div>
+                        <div class="list-content">
+                            <h4>Motivation personnelle</h4>
+                            <p>Parcours de vie qui donne du sens à ce projet — besoin vital de contribution</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="slide-number">9/10</div>
+    </section>
+
+    <!-- Slide 10: CTA -->
+    <section class="slide" id="slide-10">
+        <div class="logo">VIVIER<span>329</span></div>
+        <div class="slide-content">
+            <div class="cta-section">
+                <h3>Construisons ensemble</h3>
+                <p>
+                    Rencontre de présentation • Groupe de travail exploratoire • Prototype et test
+                </p>
+                
+                <div style="margin: 2rem 0;">
+                    <div style="font-size: 1.3rem; margin-bottom: 1rem;">📧 Contact</div>
+                    <p style="color: var(--text-dim);">
+                        <strong>Farah ISMAÏLI</strong> — Directrice FESEFA<br>
+                        direction@fesefa.be • 02 315 96 26
+                    </p>
+                </div>
+                
+                <a href="mailto:direction@fesefa.be" class="btn">
+                    Prendre rendez-vous →
+                </a>
+            </div>
+            
+            <p style="text-align: center; margin-top: 3rem; font-size: 2rem; font-weight: 700;">
+                VIVIER<span style="color: var(--accent);">329</span>
+            </p>
+            <p style="text-align: center; color: var(--text-dim);">
+                La réserve de talents du socioculturel
+            </p>
+        </div>
+        <div class="slide-number">10/10</div>
+    </section>
+
+    <script>
+        // Navigation dots
+        const dots = document.querySelectorAll('.nav-dot');
+        const slides = document.querySelectorAll('.slide');
+        
+        // Update active dot on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const slideNum = entry.target.id.replace('slide-', '');
+                    dots.forEach(dot => dot.classList.remove('active'));
+                    document.querySelector(`[data-slide="${slideNum}"]`).classList.add('active');
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        slides.forEach(slide => observer.observe(slide));
+        
+        // Click on dots to navigate
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const slideNum = dot.dataset.slide;
+                document.getElementById(`slide-${slideNum}`).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

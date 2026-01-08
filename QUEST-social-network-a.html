@@ -1,0 +1,2013 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QUEST — Transforme tes rêves en missions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-accent: #1a1a25;
+      --bg-hover: #22222f;
+      --text: #e8e8ed;
+      --text-muted: #8888a0;
+      --purple: #a78bfa;
+      --blue: #60a5fa;
+      --green: #34d399;
+      --orange: #fb923c;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --pink: #f472b6;
+      --cyan: #22d3ee;
+      --gradient: linear-gradient(135deg, var(--purple), var(--blue));
+      --gradient-gold: linear-gradient(135deg, var(--yellow), var(--orange));
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* LAYOUT */
+    .app-container {
+      display: none;
+      grid-template-columns: 280px 1fr 320px;
+      min-height: 100vh;
+    }
+
+    .app-container.active { display: grid; }
+
+    /* SIDEBAR LEFT */
+    .sidebar-left {
+      background: var(--bg-card);
+      border-right: 1px solid rgba(255,255,255,0.1);
+      padding: 1.5rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .logo {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 1.5rem;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .nav-menu {
+      list-style: none;
+    }
+
+    .nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.875rem 1rem;
+      border-radius: 12px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-link:hover {
+      background: var(--bg-accent);
+      color: var(--text);
+    }
+
+    .nav-link.active {
+      background: var(--purple);
+      color: white;
+    }
+
+    .nav-link .icon { font-size: 1.2rem; }
+
+    .user-card {
+      background: var(--bg-accent);
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-top: 2rem;
+    }
+
+    .user-card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      background: var(--gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .user-info h4 { font-size: 0.95rem; }
+    .user-info p { font-size: 0.8rem; color: var(--text-muted); }
+
+    .user-xp-bar {
+      background: var(--bg);
+      border-radius: 100px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .user-xp-fill {
+      height: 100%;
+      background: var(--gradient);
+      border-radius: 100px;
+    }
+
+    .user-xp-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      padding: 2rem;
+      max-width: 100%;
+      overflow-y: auto;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      color: var(--text-muted);
+    }
+
+    /* SIDEBAR RIGHT */
+    .sidebar-right {
+      background: var(--bg-card);
+      border-left: 1px solid rgba(255,255,255,0.1);
+      padding: 1.5rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .widget {
+      background: var(--bg-accent);
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .widget-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.2s;
+    }
+
+    .card:hover {
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    /* POST CARD */
+    .post-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .post-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .post-meta h4 { font-size: 1rem; }
+    .post-meta p { font-size: 0.85rem; color: var(--text-muted); }
+
+    .post-content {
+      margin-bottom: 1rem;
+    }
+
+    .post-achievement {
+      background: var(--bg-accent);
+      border: 1px solid var(--yellow);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .post-achievement-icon {
+      font-size: 2.5rem;
+    }
+
+    .post-achievement-info h5 {
+      color: var(--yellow);
+      margin-bottom: 0.25rem;
+    }
+
+    .post-achievement-info p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .post-action {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.2s;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .post-action:hover {
+      background: var(--bg-accent);
+      color: var(--text);
+    }
+
+    .post-action.liked { color: var(--red); }
+
+    /* QUEST CARD */
+    .quest-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quest-card:hover {
+      border-color: var(--purple);
+      transform: translateX(5px);
+    }
+
+    .quest-card.completed {
+      opacity: 0.6;
+      border-color: var(--green);
+    }
+
+    .quest-checkbox {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--purple);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .quest-card.completed .quest-checkbox {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .quest-info { flex: 1; }
+    .quest-info h4 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .quest-info p { font-size: 0.8rem; color: var(--text-muted); }
+
+    .quest-xp {
+      background: var(--bg-accent);
+      padding: 0.4rem 0.8rem;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--yellow);
+    }
+
+    /* PROJECT CARD */
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s;
+    }
+
+    .project-card:hover {
+      border-color: var(--purple);
+      transform: translateY(-3px);
+    }
+
+    .project-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .project-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+    }
+
+    .project-title { font-size: 1.2rem; }
+    .project-category { font-size: 0.85rem; color: var(--text-muted); }
+
+    .project-progress {
+      margin: 1rem 0;
+    }
+
+    .project-progress-bar {
+      background: var(--bg-accent);
+      border-radius: 100px;
+      height: 10px;
+      overflow: hidden;
+    }
+
+    .project-progress-fill {
+      height: 100%;
+      background: var(--gradient);
+      border-radius: 100px;
+      transition: width 0.5s;
+    }
+
+    .project-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .project-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .project-tag {
+      background: var(--bg-accent);
+      padding: 0.35rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* LEADERBOARD */
+    .leaderboard-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.75rem;
+      border-radius: 12px;
+      margin-bottom: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .leaderboard-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .leaderboard-rank {
+      font-weight: 700;
+      width: 24px;
+    }
+
+    .leaderboard-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .leaderboard-info { flex: 1; }
+    .leaderboard-info h5 { font-size: 0.9rem; }
+    .leaderboard-info p { font-size: 0.75rem; color: var(--text-muted); }
+
+    .leaderboard-xp {
+      font-size: 0.85rem;
+      color: var(--yellow);
+      font-weight: 600;
+    }
+
+    /* GUILD CARD */
+    .guild-card {
+      background: var(--bg-accent);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .guild-card:hover {
+      background: var(--bg-hover);
+    }
+
+    .guild-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .guild-info { flex: 1; }
+    .guild-info h5 { font-size: 0.9rem; }
+    .guild-info p { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* BUTTONS */
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      font-size: 0.95rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(167, 139, 250, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--bg-accent);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-hover);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--purple);
+      color: var(--text);
+    }
+
+    /* FORMS */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      background: var(--bg-accent);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--purple);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    textarea.form-input {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238888a0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 3rem;
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 0.5rem;
+    }
+
+    .tab {
+      padding: 0.75rem 1.25rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .tab:hover { background: var(--bg-accent); color: var(--text); }
+    .tab.active { background: var(--purple); color: white; }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 2rem;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-title { font-size: 1.3rem; }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* EMOJI PICKER */
+    .emoji-picker {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 0.5rem;
+      padding: 1rem;
+      background: var(--bg-accent);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .emoji-btn {
+      font-size: 1.5rem;
+      padding: 0.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .emoji-btn:hover {
+      background: var(--bg-hover);
+    }
+
+    .emoji-btn.selected {
+      background: var(--purple);
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--bg-card);
+      border: 2px solid var(--green);
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 1001;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* LANDING PAGE */
+    .landing {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .landing-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .landing-logo {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 1.3rem;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .landing-hero {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .landing-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 30%, rgba(167, 139, 250, 0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 70%, rgba(96, 165, 250, 0.1) 0%, transparent 50%);
+    }
+
+    .landing-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+    }
+
+    .landing-title {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .landing-title span {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .landing-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      margin-bottom: 3rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .landing-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .landing-features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      padding: 4rem 3rem;
+      background: var(--bg-card);
+    }
+
+    .landing-feature {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .landing-feature-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .landing-feature h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .landing-feature p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* PAGE SECTIONS */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* STATS GRID */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .stat-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .stat-value { font-size: 2rem; font-weight: 700; color: var(--purple); }
+    .stat-label { font-size: 0.85rem; color: var(--text-muted); }
+
+    /* CATEGORIES */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .category-btn {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .category-btn:hover {
+      border-color: var(--purple);
+      transform: translateY(-3px);
+    }
+
+    .category-btn.selected {
+      background: var(--purple);
+      border-color: var(--purple);
+    }
+
+    .category-btn .icon { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
+
+    /* GRID LAYOUTS */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .guilds-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    /* PROFILE */
+    .profile-header {
+      background: var(--bg-card);
+      border-radius: 24px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      border: 4px solid var(--purple);
+    }
+
+    .profile-info { flex: 1; }
+    .profile-name { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    .profile-title { color: var(--yellow); margin-bottom: 0.5rem; }
+    .profile-bio { color: var(--text-muted); margin-bottom: 1rem; }
+
+    .profile-stats {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .profile-stat {
+      text-align: center;
+    }
+
+    .profile-stat-value { font-size: 1.5rem; font-weight: 700; }
+    .profile-stat-label { font-size: 0.85rem; color: var(--text-muted); }
+
+    /* QUEST TEMPLATES */
+    .quest-templates {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .quest-template {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quest-template:hover {
+      border-color: var(--purple);
+    }
+
+    .quest-template h4 {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .quest-template p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1200px) {
+      .app-container { grid-template-columns: 280px 1fr; }
+      .sidebar-right { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .app-container { grid-template-columns: 1fr; }
+      .sidebar-left {
+        position: fixed;
+        left: -100%;
+        z-index: 100;
+        transition: left 0.3s;
+      }
+      .sidebar-left.open { left: 0; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .landing-features { grid-template-columns: repeat(2, 1fr); }
+      .profile-header { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LANDING PAGE -->
+  <div class="landing" id="landingPage">
+    <nav class="landing-nav">
+      <div class="landing-logo">QUEST</div>
+      <div>
+        <button class="btn btn-ghost" onclick="showLogin()">Connexion</button>
+        <button class="btn btn-primary" onclick="showSignup()">Commencer</button>
+      </div>
+    </nav>
+
+    <section class="landing-hero">
+      <div class="landing-content">
+        <h1 class="landing-title">Transforme tes rêves<br>en <span>missions</span></h1>
+        <p class="landing-subtitle">
+          Le réseau social qui gamifie tes projets. Crée des quêtes, gagne de l'XP, rejoins des guildes et réalise tes objectifs avec une communauté de créateurs.
+        </p>
+        <div class="landing-cta">
+          <button class="btn btn-primary" onclick="showSignup()">🚀 Créer mon compte</button>
+          <button class="btn btn-secondary" onclick="showDemo()">👀 Voir la démo</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-features">
+      <div class="landing-feature">
+        <div class="landing-feature-icon">🎯</div>
+        <h3>Quêtes personnalisées</h3>
+        <p>Crée tes propres missions adaptées à ton projet, ou utilise nos templates.</p>
+      </div>
+      <div class="landing-feature">
+        <div class="landing-feature-icon">⚔️</div>
+        <h3>Guildes & Communauté</h3>
+        <p>Rejoins des groupes de créateurs partageant les mêmes objectifs.</p>
+      </div>
+      <div class="landing-feature">
+        <div class="landing-feature-icon">🏆</div>
+        <h3>Classements & Achievements</h3>
+        <p>Monte en niveau, débloque des badges et compare ta progression.</p>
+      </div>
+      <div class="landing-feature">
+        <div class="landing-feature-icon">🌍</div>
+        <h3>Feed inspirant</h3>
+        <p>Célèbre tes victoires et inspire-toi des accomplissements des autres.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- APP CONTAINER -->
+  <div class="app-container" id="appContainer">
+    <!-- SIDEBAR LEFT -->
+    <aside class="sidebar-left">
+      <div class="logo">QUEST</div>
+      
+      <nav>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a class="nav-link active" onclick="showPage('feed')">
+              <span class="icon">🏠</span> Fil d'actualité
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" onclick="showPage('projects')">
+              <span class="icon">🎯</span> Mes Projets
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" onclick="showPage('quests')">
+              <span class="icon">⚔️</span> Quêtes
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" onclick="showPage('guilds')">
+              <span class="icon">🏰</span> Guildes
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" onclick="showPage('leaderboard')">
+              <span class="icon">👑</span> Classement
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" onclick="showPage('profile')">
+              <span class="icon">👤</span> Mon Profil
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="user-card">
+        <div class="user-card-header">
+          <div class="user-avatar" id="sidebarAvatar">🦸</div>
+          <div class="user-info">
+            <h4 id="sidebarName">Nouveau Héros</h4>
+            <p id="sidebarTitle">🌱 Niveau 1</p>
+          </div>
+        </div>
+        <div class="user-xp-bar">
+          <div class="user-xp-fill" id="sidebarXpBar" style="width: 0%"></div>
+        </div>
+        <p class="user-xp-text" id="sidebarXpText">0 / 100 XP</p>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      
+      <!-- PAGE: FEED -->
+      <div class="page active" id="page-feed">
+        <div class="page-header">
+          <h1 class="page-title">🏠 Fil d'actualité</h1>
+          <p class="page-subtitle">Les dernières victoires de la communauté</p>
+        </div>
+
+        <div id="feedPosts">
+          <!-- Posts dynamiques -->
+        </div>
+      </div>
+
+      <!-- PAGE: PROJECTS -->
+      <div class="page" id="page-projects">
+        <div class="page-header">
+          <h1 class="page-title">🎯 Mes Projets</h1>
+          <p class="page-subtitle">Tous tes projets gamifiés en un seul endroit</p>
+        </div>
+
+        <button class="btn btn-primary" onclick="openNewProjectModal()" style="margin-bottom: 2rem;">
+          ➕ Nouveau Projet
+        </button>
+
+        <div class="projects-grid" id="projectsList">
+          <!-- Projets dynamiques -->
+        </div>
+      </div>
+
+      <!-- PAGE: QUESTS -->
+      <div class="page" id="page-quests">
+        <div class="page-header">
+          <h1 class="page-title">⚔️ Mes Quêtes</h1>
+          <p class="page-subtitle">Tes missions en cours</p>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" onclick="filterQuests('all')">Toutes</button>
+          <button class="tab" onclick="filterQuests('active')">En cours</button>
+          <button class="tab" onclick="filterQuests('completed')">Terminées</button>
+        </div>
+
+        <button class="btn btn-primary" onclick="openNewQuestModal()" style="margin-bottom: 1.5rem;">
+          ➕ Nouvelle Quête
+        </button>
+
+        <div id="questsList">
+          <!-- Quêtes dynamiques -->
+        </div>
+      </div>
+
+      <!-- PAGE: GUILDS -->
+      <div class="page" id="page-guilds">
+        <div class="page-header">
+          <h1 class="page-title">🏰 Guildes</h1>
+          <p class="page-subtitle">Rejoins une communauté de créateurs</p>
+        </div>
+
+        <div class="categories-grid">
+          <div class="category-btn" onclick="filterGuilds('all')">
+            <span class="icon">🌍</span>
+            Toutes
+          </div>
+          <div class="category-btn" onclick="filterGuilds('startup')">
+            <span class="icon">🚀</span>
+            Startups
+          </div>
+          <div class="category-btn" onclick="filterGuilds('creative')">
+            <span class="icon">🎨</span>
+            Créatifs
+          </div>
+          <div class="category-btn" onclick="filterGuilds('tech')">
+            <span class="icon">💻</span>
+            Tech
+          </div>
+          <div class="category-btn" onclick="filterGuilds('fitness')">
+            <span class="icon">💪</span>
+            Fitness
+          </div>
+          <div class="category-btn" onclick="filterGuilds('learning')">
+            <span class="icon">📚</span>
+            Apprentissage
+          </div>
+        </div>
+
+        <div class="guilds-grid" id="guildsList">
+          <!-- Guildes dynamiques -->
+        </div>
+      </div>
+
+      <!-- PAGE: LEADERBOARD -->
+      <div class="page" id="page-leaderboard">
+        <div class="page-header">
+          <h1 class="page-title">👑 Classement</h1>
+          <p class="page-subtitle">Les héros les plus actifs de la communauté</p>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" onclick="filterLeaderboard('week')">Cette semaine</button>
+          <button class="tab" onclick="filterLeaderboard('month')">Ce mois</button>
+          <button class="tab" onclick="filterLeaderboard('all')">Tout temps</button>
+        </div>
+
+        <div class="card" id="leaderboardList">
+          <!-- Classement dynamique -->
+        </div>
+      </div>
+
+      <!-- PAGE: PROFILE -->
+      <div class="page" id="page-profile">
+        <div class="profile-header">
+          <div class="profile-avatar" id="profileAvatar">🦸</div>
+          <div class="profile-info">
+            <h1 class="profile-name" id="profileName">Nouveau Héros</h1>
+            <p class="profile-title" id="profileTitle">🌱 Graine de Startup</p>
+            <p class="profile-bio" id="profileBio">Prêt à conquérir le monde, une quête à la fois.</p>
+            <div class="profile-stats">
+              <div class="profile-stat">
+                <div class="profile-stat-value" id="profileLevel">1</div>
+                <div class="profile-stat-label">Niveau</div>
+              </div>
+              <div class="profile-stat">
+                <div class="profile-stat-value" id="profileXP">0</div>
+                <div class="profile-stat-label">XP Total</div>
+              </div>
+              <div class="profile-stat">
+                <div class="profile-stat-value" id="profileQuests">0</div>
+                <div class="profile-stat-label">Quêtes</div>
+              </div>
+              <div class="profile-stat">
+                <div class="profile-stat-value" id="profileStreak">0</div>
+                <div class="profile-stat-label">Jours de streak</div>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-secondary" onclick="openEditProfileModal()">✏️ Modifier</button>
+        </div>
+
+        <h2 style="margin-bottom: 1rem;">🏆 Achievements</h2>
+        <div class="achievements-grid" id="profileAchievements" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;">
+          <!-- Achievements dynamiques -->
+        </div>
+      </div>
+
+    </main>
+
+    <!-- SIDEBAR RIGHT -->
+    <aside class="sidebar-right">
+      <!-- Daily Streak -->
+      <div class="widget" style="background: linear-gradient(135deg, var(--purple), var(--blue));">
+        <div class="widget-title" style="color: white;">🔥 Streak quotidien</div>
+        <div style="text-align: center;">
+          <div style="font-size: 2.5rem; font-weight: 700;" id="streakCount">0</div>
+          <div style="font-size: 0.85rem; opacity: 0.9;">jours consécutifs</div>
+          <button class="btn" style="background: white; color: var(--purple); margin-top: 1rem; width: 100%;" onclick="claimDaily()" id="dailyBtn">
+            Réclamer +50 XP
+          </button>
+        </div>
+      </div>
+
+      <!-- Leaderboard Widget -->
+      <div class="widget">
+        <div class="widget-title">👑 Top Créateurs</div>
+        <div id="topCreators">
+          <!-- Top créateurs dynamiques -->
+        </div>
+      </div>
+
+      <!-- Trending Guilds -->
+      <div class="widget">
+        <div class="widget-title">🔥 Guildes populaires</div>
+        <div id="trendingGuilds">
+          <!-- Guildes tendances -->
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="widget">
+        <div class="widget-title">⚡ Actions rapides</div>
+        <button class="btn btn-secondary" style="width: 100%; margin-bottom: 0.5rem;" onclick="openNewQuestModal()">
+          ➕ Nouvelle Quête
+        </button>
+        <button class="btn btn-ghost" style="width: 100%;" onclick="openNewProjectModal()">
+          🎯 Nouveau Projet
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- MODALS -->
+  <!-- Signup Modal -->
+  <div class="modal-overlay" id="signupModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">🚀 Créer ton compte</h2>
+        <button class="modal-close" onclick="closeModal('signupModal')">&times;</button>
+      </div>
+      <form onsubmit="handleSignup(event)">
+        <div class="form-group">
+          <label class="form-label">Ton nom de héros</label>
+          <input type="text" class="form-input" id="signupName" placeholder="Ex: Sarah la Créatrice" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Choisis ton avatar</label>
+          <div class="emoji-picker" id="avatarPicker">
+            <button type="button" class="emoji-btn" onclick="selectAvatar('🦸')">🦸</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('🧙')">🧙</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('🦊')">🦊</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('🐉')">🐉</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('🦄')">🦄</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('🚀')">🚀</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('💎')">💎</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('⚡')">⚡</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('🎯')">🎯</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('🔥')">🔥</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('🌟')">🌟</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('🎮')">🎮</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('🎨')">🎨</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('📚')">📚</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('💪')">💪</button>
+            <button type="button" class="emoji-btn" onclick="selectAvatar('🧠')">🧠</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Qu'est-ce qui t'amène ici ?</label>
+          <select class="form-input form-select" id="signupGoal">
+            <option value="startup">🚀 Lancer une startup / business</option>
+            <option value="creative">🎨 Projet créatif (art, musique, écriture...)</option>
+            <option value="tech">💻 Projet tech / développement</option>
+            <option value="fitness">💪 Objectif fitness / santé</option>
+            <option value="learning">📚 Apprendre une compétence</option>
+            <option value="other">🌟 Autre projet personnel</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          Commencer l'aventure →
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- New Project Modal -->
+  <div class="modal-overlay" id="newProjectModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">🎯 Nouveau Projet</h2>
+        <button class="modal-close" onclick="closeModal('newProjectModal')">&times;</button>
+      </div>
+      <form onsubmit="handleNewProject(event)">
+        <div class="form-group">
+          <label class="form-label">Nom du projet</label>
+          <input type="text" class="form-input" id="projectName" placeholder="Ex: Mon app révolutionnaire" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Icône</label>
+          <div class="emoji-picker" id="projectIconPicker">
+            <button type="button" class="emoji-btn" onclick="selectProjectIcon('🚀')">🚀</button>
+            <button type="button" class="emoji-btn" onclick="selectProjectIcon('💡')">💡</button>
+            <button type="button" class="emoji-btn" onclick="selectProjectIcon('🎮')">🎮</button>
+            <button type="button" class="emoji-btn" onclick="selectProjectIcon('📱')">📱</button>
+            <button type="button" class="emoji-btn" onclick="selectProjectIcon('🎨')">🎨</button>
+            <button type="button" class="emoji-btn" onclick="selectProjectIcon('📚')">📚</button>
+            <button type="button" class="emoji-btn" onclick="selectProjectIcon('💪')">💪</button>
+            <button type="button" class="emoji-btn" onclick="selectProjectIcon('🎵')">🎵</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Catégorie</label>
+          <select class="form-input form-select" id="projectCategory">
+            <option value="startup">🚀 Startup / Business</option>
+            <option value="creative">🎨 Créatif</option>
+            <option value="tech">💻 Tech</option>
+            <option value="fitness">💪 Fitness / Santé</option>
+            <option value="learning">📚 Apprentissage</option>
+            <option value="other">🌟 Autre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description (optionnel)</label>
+          <textarea class="form-input" id="projectDesc" placeholder="Décris ton projet en quelques mots..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ajouter des quêtes de démarrage ?</label>
+          <select class="form-input form-select" id="projectTemplate">
+            <option value="none">Non, je créerai mes quêtes moi-même</option>
+            <option value="startup">Oui - Template Startup (10 quêtes)</option>
+            <option value="creative">Oui - Template Créatif (8 quêtes)</option>
+            <option value="learning">Oui - Template Apprentissage (6 quêtes)</option>
+            <option value="fitness">Oui - Template Fitness (7 quêtes)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          Créer le projet →
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- New Quest Modal -->
+  <div class="modal-overlay" id="newQuestModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">⚔️ Nouvelle Quête</h2>
+        <button class="modal-close" onclick="closeModal('newQuestModal')">&times;</button>
+      </div>
+      <form onsubmit="handleNewQuest(event)">
+        <div class="form-group">
+          <label class="form-label">Titre de la quête</label>
+          <input type="text" class="form-input" id="questTitle" placeholder="Ex: Publier mon premier post LinkedIn" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description (optionnel)</label>
+          <input type="text" class="form-input" id="questDesc" placeholder="Plus de détails...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Projet associé</label>
+          <select class="form-input form-select" id="questProject">
+            <option value="">Aucun projet spécifique</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Difficulté (XP)</label>
+          <select class="form-input form-select" id="questXP">
+            <option value="25">🟢 Facile (+25 XP)</option>
+            <option value="50" selected>🟡 Normal (+50 XP)</option>
+            <option value="100">🟠 Difficile (+100 XP)</option>
+            <option value="200">🔴 Épique (+200 XP)</option>
+            <option value="500">💎 Légendaire (+500 XP)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          Ajouter la quête →
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <span id="toastIcon">🎉</span>
+    <span id="toastMessage">Quête complétée ! +50 XP</span>
+  </div>
+
+  <script>
+    // ===== DATA =====
+    let userData = {
+      name: 'Nouveau Héros',
+      avatar: '🦸',
+      level: 1,
+      xp: 0,
+      totalXP: 0,
+      streak: 0,
+      lastDaily: null,
+      projects: [],
+      quests: [],
+      completedQuests: [],
+      achievements: [],
+      guilds: []
+    };
+
+    let selectedAvatar = '🦸';
+    let selectedProjectIcon = '🚀';
+
+    const levels = [
+      { level: 1, xp: 0, title: '🌱 Graine de Startup' },
+      { level: 2, xp: 100, title: '🌿 Pousse Prometteuse' },
+      { level: 3, xp: 300, title: '🌳 Arbre en Croissance' },
+      { level: 4, xp: 600, title: '⚔️ Aventurier' },
+      { level: 5, xp: 1000, title: '🛡️ Chevalier' },
+      { level: 6, xp: 1500, title: '🏹 Chasseur' },
+      { level: 7, xp: 2500, title: '🗡️ Champion' },
+      { level: 8, xp: 4000, title: '🔥 Héros' },
+      { level: 9, xp: 6000, title: '💎 Maître' },
+      { level: 10, xp: 10000, title: '👑 LÉGENDE' }
+    ];
+
+    const questTemplates = {
+      startup: [
+        { title: '📝 Définir mon idée en une phrase', xp: 25 },
+        { title: '🎯 Identifier mon client idéal', xp: 50 },
+        { title: '🔍 Analyser 3 concurrents', xp: 75 },
+        { title: '📊 Créer un business model canvas', xp: 100 },
+        { title: '🌐 Acheter un nom de domaine', xp: 50 },
+        { title: '💼 Créer ma page LinkedIn', xp: 50 },
+        { title: '📣 Publier mon premier post', xp: 75 },
+        { title: '🤝 Contacter 10 prospects', xp: 100 },
+        { title: '💰 Première vente / Premier client', xp: 500 },
+        { title: '⭐ Premier témoignage client', xp: 200 }
+      ],
+      creative: [
+        { title: '💡 Brainstormer 10 idées', xp: 25 },
+        { title: '📐 Créer un moodboard', xp: 50 },
+        { title: '✏️ Premier brouillon / sketch', xp: 75 },
+        { title: '🔄 Itérer sur le feedback', xp: 100 },
+        { title: '✨ Version finale complète', xp: 200 },
+        { title: '📱 Partager sur les réseaux', xp: 75 },
+        { title: '💬 Recevoir 10 feedbacks', xp: 100 },
+        { title: '🎉 Lancement officiel', xp: 300 }
+      ],
+      learning: [
+        { title: '📚 Choisir ma ressource principale', xp: 25 },
+        { title: '📅 Créer un planning d\'étude', xp: 50 },
+        { title: '✅ Compléter le premier module', xp: 75 },
+        { title: '📝 Prendre des notes structurées', xp: 50 },
+        { title: '🧪 Premier projet pratique', xp: 150 },
+        { title: '🎓 Certification ou évaluation', xp: 300 }
+      ],
+      fitness: [
+        { title: '📊 Mesurer mon point de départ', xp: 25 },
+        { title: '🎯 Définir un objectif SMART', xp: 50 },
+        { title: '📅 Planifier ma première semaine', xp: 50 },
+        { title: '💪 Compléter 7 jours d\'entraînement', xp: 150 },
+        { title: '🍎 Suivre mon alimentation 7 jours', xp: 100 },
+        { title: '📈 Premier bilan de progression', xp: 75 },
+        { title: '🏆 Atteindre mon premier objectif', xp: 300 }
+      ]
+    };
+
+    const sampleGuilds = [
+      { id: 1, name: 'Indie Hackers FR', icon: '🚀', members: 1247, category: 'startup', color: 'var(--purple)' },
+      { id: 2, name: 'Artistes Digitaux', icon: '🎨', members: 892, category: 'creative', color: 'var(--pink)' },
+      { id: 3, name: 'Dev No-Code', icon: '💻', members: 634, category: 'tech', color: 'var(--blue)' },
+      { id: 4, name: 'Morning Routine', icon: '☀️', members: 2103, category: 'fitness', color: 'var(--orange)' },
+      { id: 5, name: 'Polyglots', icon: '🌍', members: 456, category: 'learning', color: 'var(--green)' },
+      { id: 6, name: 'Side Projects', icon: '🔧', members: 1578, category: 'startup', color: 'var(--cyan)' },
+      { id: 7, name: 'Writers Guild', icon: '✍️', members: 723, category: 'creative', color: 'var(--yellow)' },
+      { id: 8, name: 'Fitness Quest', icon: '💪', members: 1892, category: 'fitness', color: 'var(--red)' }
+    ];
+
+    const sampleUsers = [
+      { name: 'Sarah L.', avatar: '🦊', xp: 12450, title: '👑 LÉGENDE' },
+      { name: 'Marc D.', avatar: '🚀', xp: 8920, title: '🔥 Héros' },
+      { name: 'Julie M.', avatar: '🎨', xp: 7340, title: '🔥 Héros' },
+      { name: 'Thomas R.', avatar: '💎', xp: 5670, title: '🗡️ Champion' },
+      { name: 'Emma B.', avatar: '⚡', xp: 4230, title: '🏹 Chasseur' }
+    ];
+
+    // ===== STORAGE =====
+    function saveData() {
+      localStorage.setItem('questUserData', JSON.stringify(userData));
+    }
+
+    function loadData() {
+      const saved = localStorage.getItem('questUserData');
+      if (saved) {
+        userData = JSON.parse(saved);
+        return true;
+      }
+      return false;
+    }
+
+    // ===== UI UPDATES =====
+    function updateUI() {
+      // Calculate level
+      const currentLevel = levels.filter(l => userData.totalXP >= l.xp).pop() || levels[0];
+      const nextLevel = levels.find(l => l.level === currentLevel.level + 1);
+      userData.level = currentLevel.level;
+
+      // Sidebar
+      document.getElementById('sidebarAvatar').textContent = userData.avatar;
+      document.getElementById('sidebarName').textContent = userData.name;
+      document.getElementById('sidebarTitle').textContent = `${currentLevel.title}`;
+
+      if (nextLevel) {
+        const xpInLevel = userData.totalXP - currentLevel.xp;
+        const xpNeeded = nextLevel.xp - currentLevel.xp;
+        const percent = Math.min(100, (xpInLevel / xpNeeded) * 100);
+        document.getElementById('sidebarXpBar').style.width = percent + '%';
+        document.getElementById('sidebarXpText').textContent = `${xpInLevel} / ${xpNeeded} XP`;
+      } else {
+        document.getElementById('sidebarXpBar').style.width = '100%';
+        document.getElementById('sidebarXpText').textContent = 'MAX LEVEL';
+      }
+
+      // Profile
+      document.getElementById('profileAvatar').textContent = userData.avatar;
+      document.getElementById('profileName').textContent = userData.name;
+      document.getElementById('profileTitle').textContent = currentLevel.title;
+      document.getElementById('profileLevel').textContent = userData.level;
+      document.getElementById('profileXP').textContent = userData.totalXP;
+      document.getElementById('profileQuests').textContent = userData.completedQuests.length;
+      document.getElementById('profileStreak').textContent = userData.streak;
+
+      // Streak
+      document.getElementById('streakCount').textContent = userData.streak;
+      
+      const today = new Date().toDateString();
+      if (userData.lastDaily === today) {
+        document.getElementById('dailyBtn').textContent = '✓ Réclamé';
+        document.getElementById('dailyBtn').disabled = true;
+      } else {
+        document.getElementById('dailyBtn').textContent = 'Réclamer +50 XP';
+        document.getElementById('dailyBtn').disabled = false;
+      }
+
+      // Render lists
+      renderProjects();
+      renderQuests();
+      renderFeed();
+      renderGuilds();
+      renderLeaderboard();
+      renderTopCreators();
+      updateQuestProjectSelect();
+    }
+
+    // ===== RENDER FUNCTIONS =====
+    function renderProjects() {
+      const container = document.getElementById('projectsList');
+      if (userData.projects.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="text-align: center; padding: 3rem;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">🎯</div>
+            <h3>Aucun projet pour l'instant</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Crée ton premier projet pour commencer l'aventure !</p>
+            <button class="btn btn-primary" onclick="openNewProjectModal()">➕ Créer un projet</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = userData.projects.map(project => {
+        const projectQuests = userData.quests.filter(q => q.projectId === project.id);
+        const completedCount = projectQuests.filter(q => userData.completedQuests.includes(q.id)).length;
+        const progress = projectQuests.length > 0 ? (completedCount / projectQuests.length) * 100 : 0;
+
+        return `
+          <div class="project-card">
+            <div class="project-header">
+              <div class="project-icon" style="background: ${getCategoryColor(project.category)}">${project.icon}</div>
+              <div>
+                <h3 class="project-title">${project.name}</h3>
+                <p class="project-category">${getCategoryLabel(project.category)}</p>
+              </div>
+            </div>
+            ${project.description ? `<p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">${project.description}</p>` : ''}
+            <div class="project-progress">
+              <div class="project-progress-bar">
+                <div class="project-progress-fill" style="width: ${progress}%"></div>
+              </div>
+              <div class="project-stats">
+                <span>${completedCount}/${projectQuests.length} quêtes</span>
+                <span>${Math.round(progress)}%</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderQuests() {
+      const container = document.getElementById('questsList');
+      const quests = userData.quests;
+
+      if (quests.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="text-align: center; padding: 3rem;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">⚔️</div>
+            <h3>Aucune quête pour l'instant</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Crée ta première quête ou ajoute un projet avec des quêtes template !</p>
+            <button class="btn btn-primary" onclick="openNewQuestModal()">➕ Nouvelle quête</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = quests.map(quest => {
+        const isCompleted = userData.completedQuests.includes(quest.id);
+        return `
+          <div class="quest-card ${isCompleted ? 'completed' : ''}" onclick="toggleQuest('${quest.id}')">
+            <div class="quest-checkbox">${isCompleted ? '✓' : ''}</div>
+            <div class="quest-info">
+              <h4>${quest.title}</h4>
+              <p>${quest.description || 'Pas de description'}</p>
+            </div>
+            <span class="quest-xp">+${quest.xp} XP</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderFeed() {
+      const container = document.getElementById('feedPosts');
+      
+      // Combine user achievements with sample posts
+      const posts = [
+        ...sampleUsers.map((user, i) => ({
+          type: 'achievement',
+          user: user,
+          achievement: {
+            icon: ['🏆', '⚔️', '🔥', '💎', '🎯'][i % 5],
+            title: ['A atteint le niveau 10 !', 'A complété 50 quêtes', '30 jours de streak !', 'A lancé son projet', 'Première vente !'][i % 5],
+            desc: 'Il y a ' + (i + 1) + ' heure' + (i > 0 ? 's' : '')
+          },
+          likes: Math.floor(Math.random() * 50) + 10,
+          comments: Math.floor(Math.random() * 15)
+        }))
+      ];
+
+      container.innerHTML = posts.map(post => `
+        <div class="post-card">
+          <div class="post-header">
+            <div class="post-avatar" style="background: ${getCategoryColor('startup')}">${post.user.avatar}</div>
+            <div class="post-meta">
+              <h4>${post.user.name}</h4>
+              <p>${post.user.title} • ${post.achievement.desc}</p>
+            </div>
+          </div>
+          <div class="post-achievement">
+            <div class="post-achievement-icon">${post.achievement.icon}</div>
+            <div class="post-achievement-info">
+              <h5>${post.achievement.title}</h5>
+              <p>${post.user.name} a débloqué un nouvel accomplissement !</p>
+            </div>
+          </div>
+          <div class="post-actions">
+            <button class="post-action" onclick="this.classList.toggle('liked')">
+              ❤️ ${post.likes}
+            </button>
+            <button class="post-action">
+              💬 ${post.comments}
+            </button>
+            <button class="post-action">
+              🔗 Partager
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderGuilds() {
+      const container = document.getElementById('guildsList');
+      container.innerHTML = sampleGuilds.map(guild => `
+        <div class="guild-card">
+          <div class="guild-icon" style="background: ${guild.color}">${guild.icon}</div>
+          <div class="guild-info">
+            <h5>${guild.name}</h5>
+            <p>${guild.members.toLocaleString()} membres</p>
+          </div>
+          <button class="btn btn-ghost" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Rejoindre</button>
+        </div>
+      `).join('');
+    }
+
+    function renderLeaderboard() {
+      const container = document.getElementById('leaderboardList');
+      const allUsers = [...sampleUsers, { name: userData.name, avatar: userData.avatar, xp: userData.totalXP }]
+        .sort((a, b) => b.xp - a.xp);
+
+      container.innerHTML = allUsers.map((user, i) => `
+        <div class="leaderboard-item ${user.name === userData.name ? 'you' : ''}" style="${user.name === userData.name ? 'background: rgba(167, 139, 250, 0.1);' : ''}">
+          <span class="leaderboard-rank">${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</span>
+          <div class="leaderboard-avatar" style="background: var(--bg-accent)">${user.avatar}</div>
+          <div class="leaderboard-info">
+            <h5>${user.name} ${user.name === userData.name ? '(toi)' : ''}</h5>
+            <p>${user.title || getLevelTitle(user.xp)}</p>
+          </div>
+          <span class="leaderboard-xp">${user.xp.toLocaleString()} XP</span>
+        </div>
+      `).join('');
+    }
+
+    function renderTopCreators() {
+      const container = document.getElementById('topCreators');
+      container.innerHTML = sampleUsers.slice(0, 3).map((user, i) => `
+        <div class="leaderboard-item">
+          <span class="leaderboard-rank">${['🥇', '🥈', '🥉'][i]}</span>
+          <div class="leaderboard-avatar" style="background: var(--bg)">${user.avatar}</div>
+          <div class="leaderboard-info">
+            <h5>${user.name}</h5>
+          </div>
+          <span class="leaderboard-xp">${(user.xp / 1000).toFixed(1)}k</span>
+        </div>
+      `).join('');
+
+      // Trending guilds
+      document.getElementById('trendingGuilds').innerHTML = sampleGuilds.slice(0, 3).map(guild => `
+        <div class="guild-card" style="padding: 0.75rem;">
+          <div class="guild-icon" style="background: ${guild.color}; width: 36px; height: 36px; font-size: 1.2rem;">${guild.icon}</div>
+          <div class="guild-info">
+            <h5 style="font-size: 0.85rem;">${guild.name}</h5>
+            <p>${guild.members} membres</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateQuestProjectSelect() {
+      const select = document.getElementById('questProject');
+      select.innerHTML = '<option value="">Aucun projet spécifique</option>' +
+        userData.projects.map(p => `<option value="${p.id}">${p.icon} ${p.name}</option>`).join('');
+    }
+
+    // ===== HELPERS =====
+    function getCategoryColor(category) {
+      const colors = {
+        startup: 'var(--purple)',
+        creative: 'var(--pink)',
+        tech: 'var(--blue)',
+        fitness: 'var(--orange)',
+        learning: 'var(--green)',
+        other: 'var(--cyan)'
+      };
+      return colors[category] || 'var(--purple)';
+    }
+
+    function getCategoryLabel(category) {
+      const labels = {
+        startup: '🚀 Startup / Business',
+        creative: '🎨 Créatif',
+        tech: '💻 Tech',
+        fitness: '💪 Fitness / Santé',
+        learning: '📚 Apprentissage',
+        other: '🌟 Autre'
+      };
+      return labels[category] || '🌟 Projet';
+    }
+
+    function getLevelTitle(xp) {
+      const level = levels.filter(l => xp >= l.xp).pop() || levels[0];
+      return level.title;
+    }
+
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    // ===== ACTIONS =====
+    function toggleQuest(questId) {
+      const quest = userData.quests.find(q => q.id === questId);
+      if (!quest) return;
+
+      if (userData.completedQuests.includes(questId)) {
+        userData.completedQuests = userData.completedQuests.filter(id => id !== questId);
+        userData.totalXP -= quest.xp;
+      } else {
+        userData.completedQuests.push(questId);
+        userData.totalXP += quest.xp;
+        showToast('🎉', `Quête complétée ! +${quest.xp} XP`);
+      }
+
+      saveData();
+      updateUI();
+    }
+
+    function claimDaily() {
+      const today = new Date().toDateString();
+      if (userData.lastDaily === today) return;
+
+      const yesterday = new Date(Date.now() - 86400000).toDateString();
+      if (userData.lastDaily === yesterday) {
+        userData.streak++;
+      } else {
+        userData.streak = 1;
+      }
+
+      userData.lastDaily = today;
+      userData.totalXP += 50;
+
+      showToast('🔥', `Streak de ${userData.streak} jours ! +50 XP`);
+      saveData();
+      updateUI();
+    }
+
+    function showToast(icon, message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastIcon').textContent = icon;
+      document.getElementById('toastMessage').textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // ===== NAVIGATION =====
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      
+      document.getElementById('page-' + pageId).classList.add('active');
+      document.querySelector(`.nav-link[onclick="showPage('${pageId}')"]`).classList.add('active');
+    }
+
+    function showSignup() {
+      document.getElementById('signupModal').classList.add('active');
+    }
+
+    function showLogin() {
+      if (loadData()) {
+        document.getElementById('landingPage').style.display = 'none';
+        document.getElementById('appContainer').classList.add('active');
+        updateUI();
+      } else {
+        showSignup();
+      }
+    }
+
+    function showDemo() {
+      // Create demo data
+      userData = {
+        name: 'Héros Demo',
+        avatar: '🦸',
+        level: 3,
+        xp: 0,
+        totalXP: 450,
+        streak: 5,
+        lastDaily: new Date().toDateString(),
+        projects: [
+          { id: 'demo1', name: 'Ma Startup', icon: '🚀', category: 'startup', description: 'Le projet qui va tout changer !' }
+        ],
+        quests: [
+          { id: 'q1', title: '📝 Définir mon idée', projectId: 'demo1', xp: 25 },
+          { id: 'q2', title: '🎯 Identifier mon client idéal', projectId: 'demo1', xp: 50 },
+          { id: 'q3', title: '💼 Créer ma page LinkedIn', projectId: 'demo1', xp: 50 },
+          { id: 'q4', title: '📣 Premier post publié', projectId: 'demo1', xp: 75 }
+        ],
+        completedQuests: ['q1', 'q2'],
+        achievements: [],
+        guilds: []
+      };
+
+      document.getElementById('landingPage').style.display = 'none';
+      document.getElementById('appContainer').classList.add('active');
+      updateUI();
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function openNewProjectModal() {
+      document.getElementById('newProjectModal').classList.add('active');
+    }
+
+    function openNewQuestModal() {
+      updateQuestProjectSelect();
+      document.getElementById('newQuestModal').classList.add('active');
+    }
+
+    // ===== FORMS =====
+    function selectAvatar(emoji) {
+      selectedAvatar = emoji;
+      document.querySelectorAll('#avatarPicker .emoji-btn').forEach(btn => btn.classList.remove('selected'));
+      event.target.classList.add('selected');
+    }
+
+    function selectProjectIcon(emoji) {
+      selectedProjectIcon = emoji;
+      document.querySelectorAll('#projectIconPicker .emoji-btn').forEach(btn => btn.classList.remove('selected'));
+      event.target.classList.add('selected');
+    }
+
+    function handleSignup(e) {
+      e.preventDefault();
+      
+      userData.name = document.getElementById('signupName').value;
+      userData.avatar = selectedAvatar;
+      
+      saveData();
+      closeModal('signupModal');
+      document.getElementById('landingPage').style.display = 'none';
+      document.getElementById('appContainer').classList.add('active');
+      updateUI();
+      
+      showToast('🎉', 'Bienvenue dans l\'aventure !');
+    }
+
+    function handleNewProject(e) {
+      e.preventDefault();
+
+      const project = {
+        id: generateId(),
+        name: document.getElementById('projectName').value,
+        icon: selectedProjectIcon,
+        category: document.getElementById('projectCategory').value,
+        description: document.getElementById('projectDesc').value
+      };
+
+      userData.projects.push(project);
+
+      // Add template quests if selected
+      const template = document.getElementById('projectTemplate').value;
+      if (template !== 'none' && questTemplates[template]) {
+        questTemplates[template].forEach(q => {
+          userData.quests.push({
+            id: generateId(),
+            title: q.title,
+            description: '',
+            projectId: project.id,
+            xp: q.xp
+          });
+        });
+      }
+
+      saveData();
+      closeModal('newProjectModal');
+      updateUI();
+      showToast('🎯', 'Projet créé !');
+
+      // Reset form
+      document.getElementById('projectName').value = '';
+      document.getElementById('projectDesc').value = '';
+      selectedProjectIcon = '🚀';
+    }
+
+    function handleNewQuest(e) {
+      e.preventDefault();
+
+      const quest = {
+        id: generateId(),
+        title: document.getElementById('questTitle').value,
+        description: document.getElementById('questDesc').value,
+        projectId: document.getElementById('questProject').value || null,
+        xp: parseInt(document.getElementById('questXP').value)
+      };
+
+      userData.quests.push(quest);
+      saveData();
+      closeModal('newQuestModal');
+      updateUI();
+      showToast('⚔️', 'Quête ajoutée !');
+
+      // Reset form
+      document.getElementById('questTitle').value = '';
+      document.getElementById('questDesc').value = '';
+    }
+
+    // ===== INIT =====
+    if (loadData()) {
+      document.getElementById('landingPage').style.display = 'none';
+      document.getElementById('appContainer').classList.add('active');
+      updateUI();
+    }
+  </script>
+</body>
+</html>

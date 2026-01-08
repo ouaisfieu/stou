@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⚡ NEXUS — Le Centre de Commande</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Press+Start+2P&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050508;
+      --bg-card: #0a0a10;
+      --bg-accent: #101018;
+      --bg-hover: #16161f;
+      --text: #e8e8ed;
+      --text-muted: #6b6b80;
+      --gold: #fbbf24;
+      --gold-glow: rgba(251, 191, 36, 0.3);
+      --purple: #a78bfa;
+      --blue: #60a5fa;
+      --green: #34d399;
+      --orange: #fb923c;
+      --red: #f87171;
+      --pink: #f472b6;
+      --cyan: #22d3ee;
+      --ring-gradient: conic-gradient(from 0deg, var(--gold), var(--orange), var(--red), var(--pink), var(--purple), var(--blue), var(--cyan), var(--green), var(--gold));
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ANIMATED BACKGROUND */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(96, 165, 250, 0.03) 0%, transparent 70%);
+    }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--gold);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float 20s infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.3; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* HEADER */
+    header {
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .logo-container {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .logo-ring {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--ring-gradient);
+      padding: 4px;
+      animation: rotate 10s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .logo-inner {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+
+    .logo-text {
+      font-family: 'Press Start 2P', cursive;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      background: linear-gradient(135deg, var(--gold), var(--orange));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-top: 1rem;
+      text-shadow: 0 0 30px var(--gold-glow);
+    }
+
+    .tagline {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+    }
+
+    /* SEARCH */
+    .search-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1.25rem 1.5rem 1.25rem 3.5rem;
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 100px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 30px var(--gold-glow);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.25rem;
+      color: var(--text-muted);
+    }
+
+    .search-shortcut {
+      position: absolute;
+      right: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--bg-accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* STATS BAR */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 2rem;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold), var(--orange));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* MAIN CONTAINER */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+    }
+
+    /* UNIVERSE SECTIONS */
+    .universe-section {
+      margin-bottom: 4rem;
+    }
+
+    .universe-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .universe-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .universe-title {
+      font-size: 1.5rem;
+    }
+
+    .universe-count {
+      background: var(--bg-accent);
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* MODULE GRID */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    /* MODULE CARD */
+    .module-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .module-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--module-color, var(--purple));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .module-card:hover {
+      border-color: var(--module-color, var(--purple));
+      transform: translateY(-4px);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .module-card:hover::before {
+      opacity: 1;
+    }
+
+    .module-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .module-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--bg-accent);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .module-info { flex: 1; }
+
+    .module-name {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .module-category {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .module-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    .module-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .module-tag {
+      background: var(--bg-accent);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .module-tag.featured {
+      background: linear-gradient(135deg, var(--gold), var(--orange));
+      color: black;
+      font-weight: 600;
+    }
+
+    /* STATUS BADGES */
+    .module-status {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .module-status.beta {
+      background: var(--orange);
+    }
+
+    .module-status.coming {
+      background: var(--text-muted);
+    }
+
+    /* FEATURED CARD */
+    .featured-card {
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 146, 60, 0.05));
+      border-color: rgba(251, 191, 36, 0.3);
+    }
+
+    .featured-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 10px 40px var(--gold-glow);
+    }
+
+    /* QUICK ACTIONS */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .quick-action {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .quick-action:hover {
+      border-color: var(--purple);
+      transform: translateX(5px);
+    }
+
+    .quick-action-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .quick-action-info h4 {
+      margin-bottom: 0.25rem;
+    }
+
+    .quick-action-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ECOSYSTEM MAP */
+    .ecosystem-map {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .ecosystem-title {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .ecosystem-title h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .ecosystem-title p {
+      color: var(--text-muted);
+    }
+
+    .ecosystem-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      padding: 2rem;
+    }
+
+    .eco-node {
+      text-align: center;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .eco-node:hover {
+      transform: scale(1.1);
+    }
+
+    .eco-node-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 0.75rem;
+      position: relative;
+    }
+
+    .eco-node-icon::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: var(--ring-gradient);
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .eco-node:hover .eco-node-icon::before {
+      opacity: 1;
+    }
+
+    .eco-node-name {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .eco-node-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .eco-center {
+      width: 120px;
+      height: 120px;
+      background: var(--ring-gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      animation: pulse 3s infinite;
+      margin: 0 2rem;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 var(--gold-glow); }
+      50% { box-shadow: 0 0 30px 10px var(--gold-glow); }
+    }
+
+    /* COMMAND PALETTE */
+    .command-palette {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 1000;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 15vh;
+    }
+
+    .command-palette.active {
+      display: flex;
+    }
+
+    .command-box {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 70vh;
+      overflow: hidden;
+    }
+
+    .command-input-container {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .command-input {
+      width: 100%;
+      padding: 1rem;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1.25rem;
+    }
+
+    .command-input:focus {
+      outline: none;
+    }
+
+    .command-results {
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+
+    .command-result {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .command-result:hover,
+    .command-result.selected {
+      background: var(--bg-accent);
+    }
+
+    .command-result-icon {
+      font-size: 1.5rem;
+    }
+
+    .command-result-info { flex: 1; }
+    .command-result-name { font-weight: 500; }
+    .command-result-path { font-size: 0.8rem; color: var(--text-muted); }
+
+    .command-result-shortcut {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .footer-quote {
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover {
+      color: var(--gold);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .stats-bar {
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+      .ecosystem-visual {
+        flex-direction: column;
+      }
+      .eco-center {
+        margin: 1rem 0;
+      }
+      .search-shortcut {
+        display: none;
+      }
+    }
+
+    /* SCROLL */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--bg-accent);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--bg-hover);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation"></div>
+  <div class="particles" id="particles"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-container">
+      <div class="logo-ring">
+        <div class="logo-inner">⚡</div>
+      </div>
+    </div>
+    <div class="logo-text">NEXUS</div>
+    <p class="tagline">Un anneau pour les gouverner tous</p>
+
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Rechercher un module, une fonctionnalité..." onkeyup="handleSearch(event)">
+      <span class="search-shortcut">⌘K</span>
+    </div>
+  </header>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-value">50</div>
+      <div class="stat-label">Modules</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">5</div>
+      <div class="stat-label">Univers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">0€</div>
+      <div class="stat-label">Coût serveur</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">∞</div>
+      <div class="stat-label">Possibilités</div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions">
+      <div class="quick-action" onclick="openModule('fondateur-quest')">
+        <div class="quick-action-icon" style="background: linear-gradient(135deg, var(--purple), var(--blue));">🎮</div>
+        <div class="quick-action-info">
+          <h4>Ma progression</h4>
+          <p>Voir mes quêtes et mon niveau</p>
+        </div>
+      </div>
+      <div class="quick-action" onclick="openModule('politika')">
+        <div class="quick-action-icon" style="background: linear-gradient(135deg, var(--orange), var(--red));">🏛️</div>
+        <div class="quick-action-info">
+          <h4>Jouer à POLiT!KA</h4>
+          <p>Continuer l'aventure citoyenne</p>
+        </div>
+      </div>
+      <div class="quick-action" onclick="openModule('quest')">
+        <div class="quick-action-icon" style="background: linear-gradient(135deg, var(--green), var(--cyan));">🌍</div>
+        <div class="quick-action-info">
+          <h4>Communauté QUEST</h4>
+          <p>Voir le fil d'actualité</p>
+        </div>
+      </div>
+      <div class="quick-action" onclick="openModule('pdf-toolkit')">
+        <div class="quick-action-icon" style="background: linear-gradient(135deg, var(--red), var(--orange));">📄</div>
+        <div class="quick-action-info">
+          <h4>Outils PDF</h4>
+          <p>Manipuler des fichiers PDF</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ECOSYSTEM MAP -->
+    <div class="ecosystem-map">
+      <div class="ecosystem-title">
+        <h2>🌌 L'Écosystème</h2>
+        <p>5 structures interconnectées, alimentées par les mêmes outils libres</p>
+      </div>
+      <div class="ecosystem-visual">
+        <div class="eco-node" onclick="filterByUniverse('pragma')">
+          <div class="eco-node-icon" style="background: var(--purple);">🗳️</div>
+          <div class="eco-node-name">PRAGMA</div>
+          <div class="eco-node-desc">Parti politique</div>
+        </div>
+        <div class="eco-node" onclick="filterByUniverse('socle')">
+          <div class="eco-node-icon" style="background: var(--red);">✊</div>
+          <div class="eco-node-name">SOCLE</div>
+          <div class="eco-node-desc">Syndicat</div>
+        </div>
+        <div class="eco-center">⚡</div>
+        <div class="eco-node" onclick="filterByUniverse('vivier')">
+          <div class="eco-node-icon" style="background: var(--orange);">🎯</div>
+          <div class="eco-node-name">VIVIER 329</div>
+          <div class="eco-node-desc">Recrutement</div>
+        </div>
+        <div class="eco-node" onclick="filterByUniverse('kern')">
+          <div class="eco-node-icon" style="background: var(--blue);">🧠</div>
+          <div class="eco-node-name">KERN LAB</div>
+          <div class="eco-node-desc">Consultance</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNIVERSE: POLITIKA -->
+    <section class="universe-section" id="universe-politika">
+      <div class="universe-header">
+        <div class="universe-icon" style="background: linear-gradient(135deg, var(--orange), var(--red));">🏛️</div>
+        <h2 class="universe-title">POLiT!KA</h2>
+        <span class="universe-count">12 modules</span>
+      </div>
+      <div class="module-grid">
+        <div class="module-card featured-card" style="--module-color: var(--gold);" onclick="openModule('politika-hub')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🎮</div>
+            <div class="module-info">
+              <div class="module-name">Hub Central POLiT!KA</div>
+              <div class="module-category">Jeu narratif</div>
+            </div>
+          </div>
+          <div class="module-desc">Le système de jeu narratif complet avec les 7 chapitres de l'aventure citoyenne.</div>
+          <div class="module-tags">
+            <span class="module-tag featured">⭐ Flagship</span>
+            <span class="module-tag">Gamification</span>
+            <span class="module-tag">Éducation civique</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--purple);" onclick="openModule('institutions')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🏛️</div>
+            <div class="module-info">
+              <div class="module-name">Institutions Belges</div>
+              <div class="module-category">Chapitre 1</div>
+            </div>
+          </div>
+          <div class="module-desc">Comprendre les 6 niveaux de pouvoir en Belgique de façon interactive.</div>
+          <div class="module-tags">
+            <span class="module-tag">Quiz</span>
+            <span class="module-tag">Interactif</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--blue);" onclick="openModule('europe')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🇪🇺</div>
+            <div class="module-info">
+              <div class="module-name">Union Européenne</div>
+              <div class="module-category">Chapitre 2</div>
+            </div>
+          </div>
+          <div class="module-desc">Comment l'UE fonctionne et impacte ton quotidien.</div>
+          <div class="module-tags">
+            <span class="module-tag">Carte interactive</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--green);" onclick="openModule('fiscalite')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">💰</div>
+            <div class="module-info">
+              <div class="module-name">Fiscalité & Budget</div>
+              <div class="module-category">Chapitre 3</div>
+            </div>
+          </div>
+          <div class="module-desc">D'où vient l'argent public et où va-t-il ?</div>
+          <div class="module-tags">
+            <span class="module-tag">Simulation</span>
+            <span class="module-tag">Calculateur</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--orange);" onclick="openModule('medias')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📰</div>
+            <div class="module-info">
+              <div class="module-name">Médias & Information</div>
+              <div class="module-category">Chapitre 4</div>
+            </div>
+          </div>
+          <div class="module-desc">Décoder les médias, détecter les fake news.</div>
+          <div class="module-tags">
+            <span class="module-tag">Fact-checking</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--pink);" onclick="openModule('engagement')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">✊</div>
+            <div class="module-info">
+              <div class="module-name">Engagement Citoyen</div>
+              <div class="module-category">Chapitre 5</div>
+            </div>
+          </div>
+          <div class="module-desc">Comment agir concrètement dans sa commune et au-delà.</div>
+          <div class="module-tags">
+            <span class="module-tag">Actions</span>
+            <span class="module-tag">Toolkit</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--cyan);" onclick="openModule('droits')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">⚖️</div>
+            <div class="module-info">
+              <div class="module-name">Droits & Justice</div>
+              <div class="module-category">Chapitre 6</div>
+            </div>
+          </div>
+          <div class="module-desc">Connaître ses droits et le système judiciaire.</div>
+          <div class="module-tags">
+            <span class="module-tag">Guide pratique</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--red);" onclick="openModule('democratie')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🗳️</div>
+            <div class="module-info">
+              <div class="module-name">Démocratie & Vote</div>
+              <div class="module-category">Chapitre 7</div>
+            </div>
+          </div>
+          <div class="module-desc">Comprendre les élections et participer activement.</div>
+          <div class="module-tags">
+            <span class="module-tag">Simulateur</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--purple);" onclick="openModule('diagnostic')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🎯</div>
+            <div class="module-info">
+              <div class="module-name">Diagnostic Citoyen</div>
+              <div class="module-category">Évaluation</div>
+            </div>
+          </div>
+          <div class="module-desc">Évalue tes connaissances et obtiens ton profil citoyen.</div>
+          <div class="module-tags">
+            <span class="module-tag">Assessment</span>
+            <span class="module-tag">Certificat</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--yellow);" onclick="openModule('flashcards')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🃏</div>
+            <div class="module-info">
+              <div class="module-name">Flashcards</div>
+              <div class="module-category">Révision</div>
+            </div>
+          </div>
+          <div class="module-desc">300+ cartes pour réviser efficacement.</div>
+          <div class="module-tags">
+            <span class="module-tag">Spaced repetition</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--green);" onclick="openModule('timeline')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📅</div>
+            <div class="module-info">
+              <div class="module-name">Timeline Belgique</div>
+              <div class="module-category">Histoire</div>
+            </div>
+          </div>
+          <div class="module-desc">200 ans d'histoire politique belge interactive.</div>
+          <div class="module-tags">
+            <span class="module-tag">Chronologie</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--gold);" onclick="openModule('certificat')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🏆</div>
+            <div class="module-info">
+              <div class="module-name">Certificat Citoyen</div>
+              <div class="module-category">Récompense</div>
+            </div>
+          </div>
+          <div class="module-desc">Génère ton certificat officiel de citoyen informé.</div>
+          <div class="module-tags">
+            <span class="module-tag">PDF</span>
+            <span class="module-tag">Partage</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- UNIVERSE: KERN -->
+    <section class="universe-section" id="universe-kern">
+      <div class="universe-header">
+        <div class="universe-icon" style="background: linear-gradient(135deg, var(--blue), var(--cyan));">🧠</div>
+        <h2 class="universe-title">KERN Suite</h2>
+        <span class="universe-count">15 modules</span>
+      </div>
+      <div class="module-grid">
+        <div class="module-card" style="--module-color: var(--blue);" onclick="openModule('kern-finance')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">💶</div>
+            <div class="module-info">
+              <div class="module-name">KERN Finance</div>
+              <div class="module-category">Comptabilité ASBL</div>
+            </div>
+          </div>
+          <div class="module-desc">Gestion budgétaire simplifiée pour associations.</div>
+          <div class="module-tags">
+            <span class="module-tag">Budget</span>
+            <span class="module-tag">Subsides</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--green);" onclick="openModule('kern-contacts')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">👥</div>
+            <div class="module-info">
+              <div class="module-name">KERN Contacts</div>
+              <div class="module-category">CRM</div>
+            </div>
+          </div>
+          <div class="module-desc">Gestion des membres, bénévoles, partenaires.</div>
+          <div class="module-tags">
+            <span class="module-tag">Base de données</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--orange);" onclick="openModule('kern-agenda')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📅</div>
+            <div class="module-info">
+              <div class="module-name">KERN Agenda</div>
+              <div class="module-category">Planning</div>
+            </div>
+          </div>
+          <div class="module-desc">Calendrier partagé et gestion d'événements.</div>
+          <div class="module-tags">
+            <span class="module-tag">Événements</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--purple);" onclick="openModule('kern-docs')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📁</div>
+            <div class="module-info">
+              <div class="module-name">KERN Docs</div>
+              <div class="module-category">GED</div>
+            </div>
+          </div>
+          <div class="module-desc">Gestion documentaire et modèles.</div>
+          <div class="module-tags">
+            <span class="module-tag">Templates</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--pink);" onclick="openModule('kern-projets')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🎯</div>
+            <div class="module-info">
+              <div class="module-name">KERN Projets</div>
+              <div class="module-category">Gestion de projet</div>
+            </div>
+          </div>
+          <div class="module-desc">Kanban, tâches, suivi des projets.</div>
+          <div class="module-tags">
+            <span class="module-tag">Kanban</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--cyan);" onclick="openModule('kern-com')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📣</div>
+            <div class="module-info">
+              <div class="module-name">KERN Communication</div>
+              <div class="module-category">Marketing</div>
+            </div>
+          </div>
+          <div class="module-desc">Newsletters, réseaux sociaux, campagnes.</div>
+          <div class="module-tags">
+            <span class="module-tag">Email</span>
+            <span class="module-tag">Social</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--red);" onclick="openModule('kern-rh')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">👔</div>
+            <div class="module-info">
+              <div class="module-name">KERN RH</div>
+              <div class="module-category">Ressources humaines</div>
+            </div>
+          </div>
+          <div class="module-desc">Gestion des équipes et bénévoles.</div>
+          <div class="module-tags">
+            <span class="module-tag">Équipe</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--yellow);" onclick="openModule('kern-impact')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📊</div>
+            <div class="module-info">
+              <div class="module-name">KERN Impact</div>
+              <div class="module-category">Reporting</div>
+            </div>
+          </div>
+          <div class="module-desc">Mesure d'impact et rapports d'activité.</div>
+          <div class="module-tags">
+            <span class="module-tag">Analytics</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--green);" onclick="openModule('synergy')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🎮</div>
+            <div class="module-info">
+              <div class="module-name">SYNERGY GAME</div>
+              <div class="module-category">Mobilisation</div>
+            </div>
+          </div>
+          <div class="module-desc">Plateforme de mobilisation gamifiée.</div>
+          <div class="module-tags">
+            <span class="module-tag">Gamification</span>
+            <span class="module-tag">Campagnes</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--purple);" onclick="openModule('panopticon')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">👁️</div>
+            <div class="module-info">
+              <div class="module-name">PANOPTICON</div>
+              <div class="module-category">Transparence</div>
+            </div>
+          </div>
+          <div class="module-desc">Dashboard de transparence publique.</div>
+          <div class="module-tags">
+            <span class="module-tag">Open data</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--orange);" onclick="openModule('vivier')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🎯</div>
+            <div class="module-info">
+              <div class="module-name">VIVIER 329</div>
+              <div class="module-category">Recrutement</div>
+            </div>
+          </div>
+          <div class="module-desc">Plateforme de recrutement éthique.</div>
+          <div class="module-tags">
+            <span class="module-tag">Emploi</span>
+            <span class="module-tag">Matching</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--blue);" onclick="openModule('kern-legal')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">⚖️</div>
+            <div class="module-info">
+              <div class="module-name">KERN Legal</div>
+              <div class="module-category">Juridique</div>
+            </div>
+          </div>
+          <div class="module-desc">Modèles juridiques et conformité ASBL.</div>
+          <div class="module-tags">
+            <span class="module-tag">Statuts</span>
+            <span class="module-tag">RGPD</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--pink);" onclick="openModule('kern-formations')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🎓</div>
+            <div class="module-info">
+              <div class="module-name">KERN Formations</div>
+              <div class="module-category">E-learning</div>
+            </div>
+          </div>
+          <div class="module-desc">Catalogue de formations pour le secteur.</div>
+          <div class="module-tags">
+            <span class="module-tag">Cours</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--cyan);" onclick="openModule('kern-subventions')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">💰</div>
+            <div class="module-info">
+              <div class="module-name">KERN Subventions</div>
+              <div class="module-category">Financement</div>
+            </div>
+          </div>
+          <div class="module-desc">Trouver et gérer les appels à projets.</div>
+          <div class="module-tags">
+            <span class="module-tag">Subsides</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--gold);" onclick="openModule('kern-board')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🏛️</div>
+            <div class="module-info">
+              <div class="module-name">KERN Board</div>
+              <div class="module-category">Gouvernance</div>
+            </div>
+          </div>
+          <div class="module-desc">Gestion du CA, AG, PV, décisions.</div>
+          <div class="module-tags">
+            <span class="module-tag">Gouvernance</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- UNIVERSE: TOOLS -->
+    <section class="universe-section" id="universe-tools">
+      <div class="universe-header">
+        <div class="universe-icon" style="background: linear-gradient(135deg, var(--red), var(--orange));">🛠️</div>
+        <h2 class="universe-title">Outils</h2>
+        <span class="universe-count">10 modules</span>
+      </div>
+      <div class="module-grid">
+        <div class="module-card featured-card" style="--module-color: var(--gold);" onclick="openModule('pdf-toolkit')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📄</div>
+            <div class="module-info">
+              <div class="module-name">PDF Toolkit</div>
+              <div class="module-category">Multi-outils</div>
+            </div>
+          </div>
+          <div class="module-desc">Fusionner, diviser, compresser, watermark, et plus.</div>
+          <div class="module-tags">
+            <span class="module-tag featured">⭐ 10 outils</span>
+            <span class="module-tag">100% local</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--red);" onclick="openModule('metadata-stegano')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🔍</div>
+            <div class="module-info">
+              <div class="module-name">Métadonnées & Stégano</div>
+              <div class="module-category">Sécurité</div>
+            </div>
+          </div>
+          <div class="module-desc">Analyse de métadonnées et stéganographie.</div>
+          <div class="module-tags">
+            <span class="module-tag">Vie privée</span>
+            <span class="module-tag">Éducatif</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--purple);" onclick="openModule('qr-generator')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📱</div>
+            <div class="module-info">
+              <div class="module-name">QR Generator</div>
+              <div class="module-category">Utilitaire</div>
+            </div>
+          </div>
+          <div class="module-desc">Créer des QR codes personnalisés.</div>
+          <div class="module-tags">
+            <span class="module-tag">QR Code</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--green);" onclick="openModule('password-gen')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🔐</div>
+            <div class="module-info">
+              <div class="module-name">Password Generator</div>
+              <div class="module-category">Sécurité</div>
+            </div>
+          </div>
+          <div class="module-desc">Générateur de mots de passe sécurisés.</div>
+          <div class="module-tags">
+            <span class="module-tag">Sécurité</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--blue);" onclick="openModule('markdown-editor')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">✍️</div>
+            <div class="module-info">
+              <div class="module-name">Markdown Editor</div>
+              <div class="module-category">Rédaction</div>
+            </div>
+          </div>
+          <div class="module-desc">Éditeur Markdown avec preview live.</div>
+          <div class="module-tags">
+            <span class="module-tag">Écriture</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--orange);" onclick="openModule('color-picker')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🎨</div>
+            <div class="module-info">
+              <div class="module-name">Color Palette</div>
+              <div class="module-category">Design</div>
+            </div>
+          </div>
+          <div class="module-desc">Générateur de palettes de couleurs.</div>
+          <div class="module-tags">
+            <span class="module-tag">Design</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--cyan);" onclick="openModule('json-formatter')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">{ }</div>
+            <div class="module-info">
+              <div class="module-name">JSON Formatter</div>
+              <div class="module-category">Dev</div>
+            </div>
+          </div>
+          <div class="module-desc">Formater et valider du JSON.</div>
+          <div class="module-tags">
+            <span class="module-tag">Développeur</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--pink);" onclick="openModule('timer')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">⏱️</div>
+            <div class="module-info">
+              <div class="module-name">Pomodoro Timer</div>
+              <div class="module-category">Productivité</div>
+            </div>
+          </div>
+          <div class="module-desc">Timer Pomodoro pour la concentration.</div>
+          <div class="module-tags">
+            <span class="module-tag">Focus</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--yellow);" onclick="openModule('unit-converter')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📐</div>
+            <div class="module-info">
+              <div class="module-name">Unit Converter</div>
+              <div class="module-category">Calcul</div>
+            </div>
+          </div>
+          <div class="module-desc">Convertisseur d'unités universel.</div>
+          <div class="module-tags">
+            <span class="module-tag">Conversion</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--red);" onclick="openModule('text-tools')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📝</div>
+            <div class="module-info">
+              <div class="module-name">Text Tools</div>
+              <div class="module-category">Texte</div>
+            </div>
+          </div>
+          <div class="module-desc">Compteur de mots, case converter, etc.</div>
+          <div class="module-tags">
+            <span class="module-tag">Texte</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- UNIVERSE: QUEST -->
+    <section class="universe-section" id="universe-quest">
+      <div class="universe-header">
+        <div class="universe-icon" style="background: linear-gradient(135deg, var(--green), var(--cyan));">🌍</div>
+        <h2 class="universe-title">QUEST</h2>
+        <span class="universe-count">5 modules</span>
+      </div>
+      <div class="module-grid">
+        <div class="module-card featured-card" style="--module-color: var(--gold);" onclick="openModule('quest-app')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🌍</div>
+            <div class="module-info">
+              <div class="module-name">QUEST Social</div>
+              <div class="module-category">Réseau social</div>
+            </div>
+          </div>
+          <div class="module-desc">Le réseau social qui gamifie tes projets.</div>
+          <div class="module-tags">
+            <span class="module-tag featured">⭐ App complète</span>
+            <span class="module-tag">Communauté</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--purple);" onclick="openModule('fondateur-quest')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🎮</div>
+            <div class="module-info">
+              <div class="module-name">Fondateur Quest</div>
+              <div class="module-category">Gamification perso</div>
+            </div>
+          </div>
+          <div class="module-desc">Ta progression personnelle gamifiée.</div>
+          <div class="module-tags">
+            <span class="module-tag">Quêtes</span>
+            <span class="module-tag">XP</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--orange);" onclick="openModule('guilds')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🏰</div>
+            <div class="module-info">
+              <div class="module-name">Guildes</div>
+              <div class="module-category">Communautés</div>
+            </div>
+          </div>
+          <div class="module-desc">Rejoins des communautés thématiques.</div>
+          <div class="module-tags">
+            <span class="module-tag">Groupes</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--yellow);" onclick="openModule('leaderboard')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">👑</div>
+            <div class="module-info">
+              <div class="module-name">Classement</div>
+              <div class="module-category">Compétition</div>
+            </div>
+          </div>
+          <div class="module-desc">Compare ta progression aux autres.</div>
+          <div class="module-tags">
+            <span class="module-tag">Leaderboard</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--green);" onclick="openModule('achievements')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🏆</div>
+            <div class="module-info">
+              <div class="module-name">Achievements</div>
+              <div class="module-category">Récompenses</div>
+            </div>
+          </div>
+          <div class="module-desc">Débloque des badges et trophées.</div>
+          <div class="module-tags">
+            <span class="module-tag">Badges</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- UNIVERSE: BUSINESS -->
+    <section class="universe-section" id="universe-business">
+      <div class="universe-header">
+        <div class="universe-icon" style="background: linear-gradient(135deg, var(--gold), var(--orange));">💼</div>
+        <h2 class="universe-title">Business</h2>
+        <span class="universe-count">8 modules</span>
+      </div>
+      <div class="module-grid">
+        <div class="module-card" style="--module-color: var(--gold);" onclick="openModule('landing')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🚀</div>
+            <div class="module-info">
+              <div class="module-name">Landing Page</div>
+              <div class="module-category">Marketing</div>
+            </div>
+          </div>
+          <div class="module-desc">Page de vente POLiT!KA Pro.</div>
+          <div class="module-tags">
+            <span class="module-tag">Conversion</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--purple);" onclick="openModule('pitch-deck')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📊</div>
+            <div class="module-info">
+              <div class="module-name">Pitch Deck</div>
+              <div class="module-category">Présentation</div>
+            </div>
+          </div>
+          <div class="module-desc">Présentation investisseurs.</div>
+          <div class="module-tags">
+            <span class="module-tag">Slides</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--blue);" onclick="openModule('business-plan')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📋</div>
+            <div class="module-info">
+              <div class="module-name">Business Plan</div>
+              <div class="module-category">Stratégie</div>
+            </div>
+          </div>
+          <div class="module-desc">Plan d'affaires 5 ans.</div>
+          <div class="module-tags">
+            <span class="module-tag">Projections</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--green);" onclick="openModule('emails')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📧</div>
+            <div class="module-info">
+              <div class="module-name">Email Templates</div>
+              <div class="module-category">Prospection</div>
+            </div>
+          </div>
+          <div class="module-desc">9 templates d'emails prêts.</div>
+          <div class="module-tags">
+            <span class="module-tag">B2B</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--orange);" onclick="openModule('devis')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📝</div>
+            <div class="module-info">
+              <div class="module-name">Générateur de devis</div>
+              <div class="module-category">Commercial</div>
+            </div>
+          </div>
+          <div class="module-desc">Créer des devis professionnels.</div>
+          <div class="module-tags">
+            <span class="module-tag">Devis</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--red);" onclick="openModule('ecosystem-site')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">🌐</div>
+            <div class="module-info">
+              <div class="module-name">Site Écosystème</div>
+              <div class="module-category">Vitrine</div>
+            </div>
+          </div>
+          <div class="module-desc">Page des 5 structures.</div>
+          <div class="module-tags">
+            <span class="module-tag">Web</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--pink);" onclick="openModule('checklist')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">✅</div>
+            <div class="module-info">
+              <div class="module-name">Checklist Déploiement</div>
+              <div class="module-category">Exécution</div>
+            </div>
+          </div>
+          <div class="module-desc">Plan d'action jour par jour.</div>
+          <div class="module-tags">
+            <span class="module-tag">To-do</span>
+          </div>
+        </div>
+
+        <div class="module-card" style="--module-color: var(--cyan);" onclick="openModule('social-kit')">
+          <div class="module-status"></div>
+          <div class="module-header">
+            <div class="module-icon">📱</div>
+            <div class="module-info">
+              <div class="module-name">Kit Réseaux Sociaux</div>
+              <div class="module-category">Marketing</div>
+            </div>
+          </div>
+          <div class="module-desc">Posts LinkedIn, Twitter, Facebook.</div>
+          <div class="module-tags">
+            <span class="module-tag">Social</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- COMMAND PALETTE -->
+  <div class="command-palette" id="commandPalette">
+    <div class="command-box">
+      <div class="command-input-container">
+        <input type="text" class="command-input" id="commandInput" placeholder="Rechercher un module..." oninput="filterModules(this.value)">
+      </div>
+      <div class="command-results" id="commandResults"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="footer-quote">"Un anneau pour les gouverner tous, un anneau pour les trouver, un anneau pour les amener tous et dans les ténèbres les lier."</p>
+    <div class="footer-links">
+      <a href="#" class="footer-link">Documentation</a>
+      <a href="#" class="footer-link">GitHub</a>
+      <a href="#" class="footer-link">Discord</a>
+      <a href="#" class="footer-link">Contact</a>
+    </div>
+  </footer>
+
+  <script>
+    // ===== MODULES DATABASE =====
+    const modules = [
+      // POLiT!KA
+      { id: 'politika-hub', name: 'Hub Central POLiT!KA', icon: '🎮', category: 'POLiT!KA', tags: ['flagship', 'jeu', 'éducation civique'], universe: 'politika' },
+      { id: 'institutions', name: 'Institutions Belges', icon: '🏛️', category: 'POLiT!KA', tags: ['belgique', 'pouvoir', 'gouvernement'], universe: 'politika' },
+      { id: 'europe', name: 'Union Européenne', icon: '🇪🇺', category: 'POLiT!KA', tags: ['europe', 'ue', 'parlement'], universe: 'politika' },
+      { id: 'fiscalite', name: 'Fiscalité & Budget', icon: '💰', category: 'POLiT!KA', tags: ['impôts', 'taxes', 'budget'], universe: 'politika' },
+      { id: 'medias', name: 'Médias & Information', icon: '📰', category: 'POLiT!KA', tags: ['médias', 'fake news', 'fact-checking'], universe: 'politika' },
+      { id: 'engagement', name: 'Engagement Citoyen', icon: '✊', category: 'POLiT!KA', tags: ['action', 'participation', 'citoyenneté'], universe: 'politika' },
+      { id: 'droits', name: 'Droits & Justice', icon: '⚖️', category: 'POLiT!KA', tags: ['droits', 'justice', 'tribunal'], universe: 'politika' },
+      { id: 'democratie', name: 'Démocratie & Vote', icon: '🗳️', category: 'POLiT!KA', tags: ['vote', 'élections', 'démocratie'], universe: 'politika' },
+      { id: 'diagnostic', name: 'Diagnostic Citoyen', icon: '🎯', category: 'POLiT!KA', tags: ['test', 'évaluation', 'quiz'], universe: 'politika' },
+      { id: 'flashcards', name: 'Flashcards', icon: '🃏', category: 'POLiT!KA', tags: ['révision', 'mémoire', 'cartes'], universe: 'politika' },
+      { id: 'timeline', name: 'Timeline Belgique', icon: '📅', category: 'POLiT!KA', tags: ['histoire', 'chronologie', 'belgique'], universe: 'politika' },
+      { id: 'certificat', name: 'Certificat Citoyen', icon: '🏆', category: 'POLiT!KA', tags: ['certificat', 'diplôme', 'récompense'], universe: 'politika' },
+
+      // KERN
+      { id: 'kern-finance', name: 'KERN Finance', icon: '💶', category: 'KERN', tags: ['comptabilité', 'budget', 'asbl'], universe: 'kern' },
+      { id: 'kern-contacts', name: 'KERN Contacts', icon: '👥', category: 'KERN', tags: ['crm', 'membres', 'contacts'], universe: 'kern' },
+      { id: 'kern-agenda', name: 'KERN Agenda', icon: '📅', category: 'KERN', tags: ['calendrier', 'événements', 'planning'], universe: 'kern' },
+      { id: 'kern-docs', name: 'KERN Docs', icon: '📁', category: 'KERN', tags: ['documents', 'ged', 'templates'], universe: 'kern' },
+      { id: 'kern-projets', name: 'KERN Projets', icon: '🎯', category: 'KERN', tags: ['projet', 'kanban', 'tâches'], universe: 'kern' },
+      { id: 'kern-com', name: 'KERN Communication', icon: '📣', category: 'KERN', tags: ['newsletter', 'email', 'marketing'], universe: 'kern' },
+      { id: 'kern-rh', name: 'KERN RH', icon: '👔', category: 'KERN', tags: ['rh', 'équipe', 'bénévoles'], universe: 'kern' },
+      { id: 'kern-impact', name: 'KERN Impact', icon: '📊', category: 'KERN', tags: ['impact', 'reporting', 'analytics'], universe: 'kern' },
+      { id: 'synergy', name: 'SYNERGY GAME', icon: '🎮', category: 'KERN', tags: ['mobilisation', 'gamification', 'campagne'], universe: 'kern' },
+      { id: 'panopticon', name: 'PANOPTICON', icon: '👁️', category: 'KERN', tags: ['transparence', 'open data', 'public'], universe: 'kern' },
+      { id: 'vivier', name: 'VIVIER 329', icon: '🎯', category: 'KERN', tags: ['recrutement', 'emploi', 'rh'], universe: 'kern' },
+      { id: 'kern-legal', name: 'KERN Legal', icon: '⚖️', category: 'KERN', tags: ['juridique', 'statuts', 'rgpd'], universe: 'kern' },
+      { id: 'kern-formations', name: 'KERN Formations', icon: '🎓', category: 'KERN', tags: ['formation', 'e-learning', 'cours'], universe: 'kern' },
+      { id: 'kern-subventions', name: 'KERN Subventions', icon: '💰', category: 'KERN', tags: ['subsides', 'financement', 'appels'], universe: 'kern' },
+      { id: 'kern-board', name: 'KERN Board', icon: '🏛️', category: 'KERN', tags: ['gouvernance', 'ca', 'ag', 'pv'], universe: 'kern' },
+
+      // Tools
+      { id: 'pdf-toolkit', name: 'PDF Toolkit', icon: '📄', category: 'Outils', tags: ['pdf', 'fusion', 'compression'], universe: 'tools' },
+      { id: 'metadata-stegano', name: 'Métadonnées & Stégano', icon: '🔍', category: 'Outils', tags: ['métadonnées', 'stéganographie', 'sécurité'], universe: 'tools' },
+      { id: 'qr-generator', name: 'QR Generator', icon: '📱', category: 'Outils', tags: ['qr', 'code', 'générateur'], universe: 'tools' },
+      { id: 'password-gen', name: 'Password Generator', icon: '🔐', category: 'Outils', tags: ['mot de passe', 'sécurité', 'générateur'], universe: 'tools' },
+      { id: 'markdown-editor', name: 'Markdown Editor', icon: '✍️', category: 'Outils', tags: ['markdown', 'éditeur', 'texte'], universe: 'tools' },
+      { id: 'color-picker', name: 'Color Palette', icon: '🎨', category: 'Outils', tags: ['couleur', 'palette', 'design'], universe: 'tools' },
+      { id: 'json-formatter', name: 'JSON Formatter', icon: '{ }', category: 'Outils', tags: ['json', 'formater', 'dev'], universe: 'tools' },
+      { id: 'timer', name: 'Pomodoro Timer', icon: '⏱️', category: 'Outils', tags: ['pomodoro', 'timer', 'productivité'], universe: 'tools' },
+      { id: 'unit-converter', name: 'Unit Converter', icon: '📐', category: 'Outils', tags: ['conversion', 'unités', 'calcul'], universe: 'tools' },
+      { id: 'text-tools', name: 'Text Tools', icon: '📝', category: 'Outils', tags: ['texte', 'compteur', 'mots'], universe: 'tools' },
+
+      // QUEST
+      { id: 'quest-app', name: 'QUEST Social', icon: '🌍', category: 'QUEST', tags: ['réseau social', 'communauté', 'projets'], universe: 'quest' },
+      { id: 'fondateur-quest', name: 'Fondateur Quest', icon: '🎮', category: 'QUEST', tags: ['gamification', 'quêtes', 'xp'], universe: 'quest' },
+      { id: 'guilds', name: 'Guildes', icon: '🏰', category: 'QUEST', tags: ['groupes', 'communautés', 'équipes'], universe: 'quest' },
+      { id: 'leaderboard', name: 'Classement', icon: '👑', category: 'QUEST', tags: ['classement', 'leaderboard', 'compétition'], universe: 'quest' },
+      { id: 'achievements', name: 'Achievements', icon: '🏆', category: 'QUEST', tags: ['badges', 'trophées', 'récompenses'], universe: 'quest' },
+
+      // Business
+      { id: 'landing', name: 'Landing Page', icon: '🚀', category: 'Business', tags: ['landing', 'vente', 'conversion'], universe: 'business' },
+      { id: 'pitch-deck', name: 'Pitch Deck', icon: '📊', category: 'Business', tags: ['pitch', 'présentation', 'investisseurs'], universe: 'business' },
+      { id: 'business-plan', name: 'Business Plan', icon: '📋', category: 'Business', tags: ['business plan', 'stratégie', 'projections'], universe: 'business' },
+      { id: 'emails', name: 'Email Templates', icon: '📧', category: 'Business', tags: ['email', 'prospection', 'templates'], universe: 'business' },
+      { id: 'devis', name: 'Générateur de devis', icon: '📝', category: 'Business', tags: ['devis', 'facturation', 'commercial'], universe: 'business' },
+      { id: 'ecosystem-site', name: 'Site Écosystème', icon: '🌐', category: 'Business', tags: ['site', 'vitrine', 'écosystème'], universe: 'business' },
+      { id: 'checklist', name: 'Checklist Déploiement', icon: '✅', category: 'Business', tags: ['checklist', 'plan', 'action'], universe: 'business' },
+      { id: 'social-kit', name: 'Kit Réseaux Sociaux', icon: '📱', category: 'Business', tags: ['social', 'linkedin', 'twitter'], universe: 'business' },
+    ];
+
+    // ===== PARTICLES =====
+    function createParticles() {
+      const container = document.getElementById('particles');
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 20 + 's';
+        particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+        container.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    // ===== SEARCH =====
+    function handleSearch(event) {
+      if (event.key === 'Enter') {
+        const query = event.target.value;
+        filterModulesGlobal(query);
+      }
+    }
+
+    function filterModulesGlobal(query) {
+      const cards = document.querySelectorAll('.module-card');
+      const q = query.toLowerCase();
+
+      cards.forEach(card => {
+        const name = card.querySelector('.module-name').textContent.toLowerCase();
+        const desc = card.querySelector('.module-desc').textContent.toLowerCase();
+        const tags = card.querySelector('.module-tags').textContent.toLowerCase();
+
+        if (name.includes(q) || desc.includes(q) || tags.includes(q) || q === '') {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // ===== COMMAND PALETTE =====
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        toggleCommandPalette();
+      }
+      if (e.key === 'Escape') {
+        closeCommandPalette();
+      }
+    });
+
+    function toggleCommandPalette() {
+      const palette = document.getElementById('commandPalette');
+      palette.classList.toggle('active');
+      if (palette.classList.contains('active')) {
+        document.getElementById('commandInput').focus();
+        renderCommandResults('');
+      }
+    }
+
+    function closeCommandPalette() {
+      document.getElementById('commandPalette').classList.remove('active');
+    }
+
+    function filterModules(query) {
+      renderCommandResults(query);
+    }
+
+    function renderCommandResults(query) {
+      const container = document.getElementById('commandResults');
+      const q = query.toLowerCase();
+
+      const filtered = modules.filter(m => 
+        m.name.toLowerCase().includes(q) || 
+        m.category.toLowerCase().includes(q) ||
+        m.tags.some(t => t.includes(q))
+      ).slice(0, 10);
+
+      container.innerHTML = filtered.map(m => `
+        <div class="command-result" onclick="openModule('${m.id}'); closeCommandPalette();">
+          <span class="command-result-icon">${m.icon}</span>
+          <div class="command-result-info">
+            <div class="command-result-name">${m.name}</div>
+            <div class="command-result-path">${m.category}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ===== NAVIGATION =====
+    function openModule(moduleId) {
+      // In real app, this would navigate or open the module
+      console.log('Opening module:', moduleId);
+      alert(`Module "${moduleId}" sera ouvert.\n\nDans la version finale, cela naviguera vers le module.`);
+    }
+
+    function filterByUniverse(universe) {
+      const sections = document.querySelectorAll('.universe-section');
+      sections.forEach(s => {
+        if (s.id === 'universe-' + universe || universe === 'all') {
+          s.style.display = 'block';
+        } else {
+          s.style.display = 'none';
+        }
+      });
+
+      // Scroll to section
+      const target = document.getElementById('universe-' + universe);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  </script>
+</body>
+</html>

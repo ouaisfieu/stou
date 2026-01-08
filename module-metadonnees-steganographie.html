@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔍 MÉTADONNÉES & STÉGANOGRAPHIE — Ce que tes fichiers révèlent</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-accent: #1a1a25;
+      --text: #e8e8ed;
+      --text-muted: #8888a0;
+      --purple: #a78bfa;
+      --blue: #60a5fa;
+      --green: #34d399;
+      --orange: #fb923c;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --pink: #f472b6;
+      --cyan: #22d3ee;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+
+    /* HEADER */
+    header {
+      text-align: center;
+      padding: 4rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 3rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--purple);
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, var(--red), var(--orange));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* SECTIONS */
+    section {
+      margin-bottom: 4rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      color: var(--purple);
+    }
+
+    p { margin-bottom: 1rem; }
+
+    /* CARDS */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--purple);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h4 {
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* DANGER BOX */
+    .danger-box {
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid var(--red);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .danger-box h4 {
+      color: var(--red);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* INFO BOX */
+    .info-box {
+      background: rgba(96, 165, 250, 0.1);
+      border: 1px solid var(--blue);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .info-box h4 {
+      color: var(--blue);
+      margin-bottom: 0.5rem;
+    }
+
+    /* SUCCESS BOX */
+    .success-box {
+      background: rgba(52, 211, 153, 0.1);
+      border: 1px solid var(--green);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .success-box h4 {
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+
+    /* INTERACTIVE SECTIONS */
+    .demo-zone {
+      background: var(--bg-accent);
+      border: 2px dashed rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .drop-zone {
+      background: var(--bg-card);
+      border: 2px dashed var(--purple);
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 1.5rem;
+    }
+
+    .drop-zone:hover {
+      background: var(--bg-accent);
+      border-color: var(--blue);
+    }
+
+    .drop-zone.dragover {
+      background: rgba(167, 139, 250, 0.1);
+      border-color: var(--green);
+    }
+
+    .drop-zone-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .drop-zone p {
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    input[type="file"] { display: none; }
+
+    /* METADATA DISPLAY */
+    .metadata-display {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      display: none;
+      text-align: left;
+    }
+
+    .metadata-display.visible { display: block; }
+
+    .metadata-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .metadata-table th,
+    .metadata-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .metadata-table th {
+      color: var(--purple);
+      font-weight: 600;
+      width: 40%;
+    }
+
+    .metadata-table td {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .sensitive {
+      color: var(--red) !important;
+      font-weight: 600;
+    }
+
+    .metadata-warning {
+      background: rgba(248, 113, 113, 0.1);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .metadata-warning.safe {
+      background: rgba(52, 211, 153, 0.1);
+    }
+
+    /* STEGANO SECTION */
+    .stegano-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stegano-tab {
+      padding: 0.75rem 1.5rem;
+      background: var(--bg-accent);
+      border: none;
+      border-radius: 8px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .stegano-tab:hover { color: var(--text); }
+    .stegano-tab.active { background: var(--purple); color: white; }
+
+    .stegano-panel { display: none; }
+    .stegano-panel.active { display: block; }
+
+    .stegano-form {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .form-group { margin-bottom: 1rem; }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      background: var(--bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--purple);
+    }
+
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .btn {
+      padding: 0.875rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(167, 139, 250, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--bg-accent);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card);
+    }
+
+    /* CANVAS */
+    .canvas-container {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 1rem;
+      margin: 1rem 0;
+      text-align: center;
+    }
+
+    canvas {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+
+    /* RESULT */
+    .result-box {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      display: none;
+    }
+
+    .result-box.visible { display: block; }
+
+    .result-message {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-accent);
+      padding: 1rem;
+      border-radius: 8px;
+      word-break: break-all;
+    }
+
+    /* COMPARISON */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .comparison-item {
+      background: var(--bg-accent);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .comparison-item img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+
+    .comparison-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* BINARY VISUALIZER */
+    .binary-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      background: var(--bg);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .bit-0 { color: var(--text-muted); }
+    .bit-1 { color: var(--green); }
+    .bit-hidden { color: var(--red); background: rgba(248, 113, 113, 0.2); }
+
+    /* TIMELINE */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+      margin: 2rem 0;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--bg-accent);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+      padding-left: 1.5rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: 0.5rem;
+      width: 12px;
+      height: 12px;
+      background: var(--purple);
+      border-radius: 50%;
+      transform: translateX(-5px);
+    }
+
+    .timeline-year {
+      font-size: 0.85rem;
+      color: var(--purple);
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    /* QUIZ */
+    .quiz-question {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .quiz-question h4 {
+      margin-bottom: 1rem;
+    }
+
+    .quiz-options {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .quiz-option {
+      display: block;
+      padding: 1rem;
+      background: var(--bg-accent);
+      border: 1px solid transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--purple);
+    }
+
+    .quiz-option.correct {
+      background: rgba(52, 211, 153, 0.2);
+      border-color: var(--green);
+    }
+
+    .quiz-option.wrong {
+      background: rgba(248, 113, 113, 0.2);
+      border-color: var(--red);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 3rem 2rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .comparison-grid { grid-template-columns: 1fr; }
+      .stegano-tabs { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="badge">🔐 Module Sécurité Numérique</span>
+    <h1>Métadonnées & <span>Stéganographie</span></h1>
+    <p class="subtitle">
+      Tes fichiers parlent dans ton dos. Apprends ce qu'ils révèlent sur toi — et comment cacher des messages là où personne ne regarde.
+    </p>
+  </header>
+
+  <div class="container">
+    <!-- INTRO -->
+    <section>
+      <h2>🎭 L'invisible qui te trahit</h2>
+      <p>
+        Chaque photo que tu prends, chaque document que tu crées, chaque fichier que tu partages contient des <strong>informations cachées</strong> que tu ne vois pas. Ces données invisibles peuvent révéler :
+      </p>
+
+      <div class="card-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📍</div>
+          <h4>Ta localisation exacte</h4>
+          <p>Coordonnées GPS au mètre près dans tes photos</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h4>Ton appareil</h4>
+          <p>Marque, modèle, numéro de série unique</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🕐</div>
+          <h4>Date & heure exactes</h4>
+          <p>Quand tu as créé, modifié, ouvert le fichier</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">👤</div>
+          <h4>Ton identité</h4>
+          <p>Nom d'utilisateur, logiciels utilisés, historique</p>
+        </div>
+      </div>
+
+      <div class="danger-box">
+        <h4>⚠️ Cas réel : John McAfee</h4>
+        <p>Le fondateur de l'antivirus McAfee, en fuite, a été localisé au Guatemala en 2012 après qu'un journaliste ait publié une photo avec lui. Les métadonnées EXIF contenaient les coordonnées GPS exactes. Il a été arrêté quelques heures plus tard.</p>
+      </div>
+    </section>
+
+    <!-- MÉTADONNÉES -->
+    <section>
+      <h2>📊 Partie 1 : Les Métadonnées</h2>
+      
+      <h3>Qu'est-ce qu'une métadonnée ?</h3>
+      <p>
+        Une <strong>métadonnée</strong> est une "donnée sur la donnée". C'est l'information <em>à propos</em> d'un fichier, pas le fichier lui-même. Comme l'étiquette sur une boîte qui décrit son contenu sans l'ouvrir.
+      </p>
+
+      <div class="info-box">
+        <h4>📦 Analogie : Le colis postal</h4>
+        <p>
+          Ta photo = le contenu du colis<br>
+          Les métadonnées = l'étiquette avec l'expéditeur, le destinataire, le poids, la date d'envoi, le chemin parcouru...
+        </p>
+      </div>
+
+      <h3>Types de métadonnées</h3>
+
+      <div class="card">
+        <h4>📸 EXIF (photos)</h4>
+        <table class="metadata-table">
+          <tr><th>Donnée</th><th>Exemple</th></tr>
+          <tr><td>Appareil</td><td>iPhone 14 Pro Max</td></tr>
+          <tr><td>GPS Latitude</td><td class="sensitive">50.8503° N</td></tr>
+          <tr><td>GPS Longitude</td><td class="sensitive">4.3517° E</td></tr>
+          <tr><td>Date/Heure</td><td>2024-01-15 14:32:07</td></tr>
+          <tr><td>Ouverture</td><td>f/1.8</td></tr>
+          <tr><td>Orientation</td><td>Rotation 90°</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h4>📄 Documents (Word, PDF)</h4>
+        <table class="metadata-table">
+          <tr><th>Donnée</th><th>Exemple</th></tr>
+          <tr><td>Auteur</td><td class="sensitive">jean.dupont@entreprise.be</td></tr>
+          <tr><td>Créé le</td><td>2024-01-10 09:15:00</td></tr>
+          <tr><td>Modifié le</td><td>2024-01-15 16:42:33</td></tr>
+          <tr><td>Logiciel</td><td>Microsoft Word 365</td></tr>
+          <tr><td>Temps d'édition</td><td>4 heures 23 minutes</td></tr>
+          <tr><td>Révisions</td><td class="sensitive">47 (avec historique)</td></tr>
+        </table>
+      </div>
+
+      <div class="card">
+        <h4>🎵 Audio/Vidéo</h4>
+        <table class="metadata-table">
+          <tr><th>Donnée</th><th>Exemple</th></tr>
+          <tr><td>Appareil</td><td>Canon EOS R5</td></tr>
+          <tr><td>Codec</td><td>H.265 HEVC</td></tr>
+          <tr><td>Logiciel montage</td><td class="sensitive">Adobe Premiere Pro 2024</td></tr>
+          <tr><td>GPS</td><td class="sensitive">Coordonnées intégrées</td></tr>
+          <tr><td>Numéro série</td><td class="sensitive">XK7392847</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- DEMO MÉTADONNÉES -->
+    <section>
+      <h2>🔬 Démo : Analyse tes fichiers</h2>
+      <p>Dépose une image pour voir ses métadonnées cachées. <strong>Tout reste dans ton navigateur</strong> — rien n'est envoyé sur internet.</p>
+
+      <div class="demo-zone">
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+          <div class="drop-zone-icon">📁</div>
+          <p><strong>Clique ou dépose une image ici</strong><br>JPG, PNG, HEIC supportés</p>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" onchange="analyzeFile(this.files[0])">
+
+        <div class="metadata-display" id="metadataDisplay">
+          <h4 style="margin-bottom: 1rem;">📊 Métadonnées détectées</h4>
+          <table class="metadata-table" id="metadataTable">
+            <!-- Rempli par JS -->
+          </table>
+          <div class="metadata-warning" id="metadataWarning">
+            <span>⚠️</span>
+            <span id="warningText">Attention : des données sensibles ont été détectées !</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="success-box">
+        <h4>💡 Comment supprimer les métadonnées ?</h4>
+        <p><strong>Sur iPhone :</strong> Réglages > Confidentialité > Service de localisation > Appareil photo > Jamais</p>
+        <p><strong>Sur Android :</strong> Appareil photo > Paramètres > Désactiver "Enregistrer le lieu"</p>
+        <p><strong>Sur PC :</strong> Clic droit > Propriétés > Détails > "Supprimer les propriétés"</p>
+        <p><strong>Outils en ligne :</strong> exifremove.com, imgonline.com.ua (attention : upload = copie sur leurs serveurs)</p>
+      </div>
+    </section>
+
+    <!-- STÉGANOGRAPHIE -->
+    <section>
+      <h2>🎨 Partie 2 : La Stéganographie</h2>
+
+      <h3>L'art de cacher en pleine vue</h3>
+      <p>
+        La <strong>stéganographie</strong> (du grec "écriture couverte") est l'art de cacher un message <em>dans</em> un autre contenu, de sorte que personne ne soupçonne son existence. Contrairement au chiffrement qui rend un message illisible, la stéganographie le rend <strong>invisible</strong>.
+      </p>
+
+      <div class="comparison-grid">
+        <div class="comparison-item">
+          <h4 style="color: var(--blue);">🔐 Chiffrement</h4>
+          <p style="font-family: monospace; font-size: 0.9rem;">Kh9#xP2@mQ7!wL4$</p>
+          <p class="comparison-label">On VOIT qu'il y a un message secret</p>
+        </div>
+        <div class="comparison-item">
+          <h4 style="color: var(--green);">🎨 Stéganographie</h4>
+          <p>🖼️ Une simple photo de chat</p>
+          <p class="comparison-label">On ne SOUPÇONNE RIEN</p>
+        </div>
+      </div>
+
+      <h3>Comment ça marche ?</h3>
+      <p>
+        Une image numérique est composée de millions de pixels. Chaque pixel a une couleur définie par 3 valeurs (Rouge, Vert, Bleu) de 0 à 255. Chaque valeur s'écrit en binaire sur 8 bits.
+      </p>
+
+      <div class="card">
+        <h4>Exemple : Un pixel rouge</h4>
+        <p><strong>RGB :</strong> (255, 0, 0)</p>
+        <p><strong>Binaire :</strong></p>
+        <div class="binary-display">
+          Rouge : <span class="bit-1">1111111</span><span class="bit-hidden">1</span> = 255<br>
+          Vert  : <span class="bit-0">0000000</span><span class="bit-hidden">0</span> = 0<br>
+          Bleu  : <span class="bit-0">0000000</span><span class="bit-hidden">0</span> = 0
+        </div>
+        <p style="margin-top: 1rem;">
+          Le <strong>dernier bit</strong> (en rouge) est le "bit de poids faible" (LSB). Le modifier change la couleur de façon <strong>imperceptible à l'œil</strong> (255 → 254).
+        </p>
+        <p>
+          En modifiant le LSB de chaque composante de chaque pixel, on peut cacher <strong>3 bits par pixel</strong>. Une image 1000×1000 pixels peut ainsi cacher <strong>375 000 caractères</strong> — un roman entier !
+        </p>
+      </div>
+
+      <div class="info-box">
+        <h4>🔢 Calcul</h4>
+        <p>
+          Image 1000×1000 = 1 000 000 pixels<br>
+          × 3 couleurs = 3 000 000 bits modifiables<br>
+          ÷ 8 bits/caractère = <strong>375 000 caractères cachables</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- DÉMO STÉGANOGRAPHIE -->
+    <section>
+      <h2>🔮 Démo : Cache ton message</h2>
+      <p>Expérimente la stéganographie toi-même. Tout se passe dans ton navigateur — aucune donnée n'est envoyée.</p>
+
+      <div class="demo-zone" style="text-align: left;">
+        <div class="stegano-tabs">
+          <button class="stegano-tab active" onclick="showSteganoPanel('encode')">🔒 Cacher un message</button>
+          <button class="stegano-tab" onclick="showSteganoPanel('decode')">🔓 Révéler un message</button>
+        </div>
+
+        <!-- ENCODE -->
+        <div class="stegano-panel active" id="panel-encode">
+          <div class="form-group">
+            <label class="form-label">1. Choisis une image "couverture"</label>
+            <div class="drop-zone" onclick="document.getElementById('coverInput').click()" style="padding: 1.5rem;">
+              <p id="coverLabel">📁 Clique pour choisir une image</p>
+            </div>
+            <input type="file" id="coverInput" accept="image/*" onchange="loadCoverImage(this.files[0])">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">2. Écris ton message secret</label>
+            <textarea class="form-textarea" id="secretMessage" placeholder="Ton message sera caché dans l'image..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">3. (Optionnel) Mot de passe</label>
+            <input type="password" class="form-input" id="encodePassword" placeholder="Protège ton message avec un mot de passe">
+          </div>
+
+          <button class="btn btn-primary" onclick="encodeMessage()">
+            🔒 Cacher le message dans l'image
+          </button>
+
+          <div class="canvas-container" style="display: none;" id="encodeResult">
+            <h4 style="margin-bottom: 1rem;">✅ Image avec message caché</h4>
+            <canvas id="outputCanvas"></canvas>
+            <p style="margin-top: 1rem; color: var(--text-muted);">Clic droit → "Enregistrer l'image" pour la télécharger</p>
+            <div class="comparison-grid" style="margin-top: 1rem;">
+              <div class="comparison-item">
+                <p><strong>Original</strong></p>
+                <canvas id="compareOriginal" width="200" height="150"></canvas>
+              </div>
+              <div class="comparison-item">
+                <p><strong>Avec message caché</strong></p>
+                <canvas id="compareEncoded" width="200" height="150"></canvas>
+              </div>
+            </div>
+            <p style="color: var(--green); margin-top: 1rem;">👁️ Identiques à l'œil nu, mais l'une contient ton secret !</p>
+          </div>
+        </div>
+
+        <!-- DECODE -->
+        <div class="stegano-panel" id="panel-decode">
+          <div class="form-group">
+            <label class="form-label">1. Charge une image avec message caché</label>
+            <div class="drop-zone" onclick="document.getElementById('decodeInput').click()" style="padding: 1.5rem;">
+              <p id="decodeLabel">📁 Clique pour choisir l'image à analyser</p>
+            </div>
+            <input type="file" id="decodeInput" accept="image/*" onchange="loadDecodeImage(this.files[0])">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">2. Mot de passe (si utilisé)</label>
+            <input type="password" class="form-input" id="decodePassword" placeholder="Laisse vide si pas de mot de passe">
+          </div>
+
+          <button class="btn btn-primary" onclick="decodeMessage()">
+            🔓 Révéler le message caché
+          </button>
+
+          <div class="result-box" id="decodeResult">
+            <h4 style="margin-bottom: 1rem;">💬 Message découvert</h4>
+            <div class="result-message" id="decodedMessage"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTOIRE -->
+    <section>
+      <h2>📜 Histoire de la stéganographie</h2>
+      <p>Cacher des messages est une pratique millénaire...</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-year">~440 av. J.-C.</div>
+          <div class="timeline-title">Histiée et le crâne rasé</div>
+          <div class="timeline-desc">Pour envoyer un message secret, Histiée rase la tête de son esclave, tatoue le message sur son crâne, attend que les cheveux repoussent, puis l'envoie. Le destinataire rase à nouveau pour lire.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">1er siècle</div>
+          <div class="timeline-title">Encre invisible</div>
+          <div class="timeline-desc">Les Romains utilisent du jus de citron comme encre invisible. Le texte n'apparaît qu'en chauffant le papier.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">Moyen-Âge</div>
+          <div class="timeline-title">Acrostiche</div>
+          <div class="timeline-desc">Messages cachés dans les premières lettres de chaque vers d'un poème.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">1945</div>
+          <div class="timeline-title">Micropoints nazis</div>
+          <div class="timeline-desc">Les espions allemands cachent des pages entières de texte dans un point typographique de la taille d'un point final.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2001</div>
+          <div class="timeline-title">Al-Qaïda ?</div>
+          <div class="timeline-desc">Des rumeurs (non confirmées) suggèrent que des terroristes auraient utilisé la stéganographie dans des images sur eBay pour communiquer.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">Aujourd'hui</div>
+          <div class="timeline-title">Watermarking & DRM</div>
+          <div class="timeline-desc">Netflix et Spotify cachent ton identifiant dans le flux audio/vidéo pour tracer les fuites. Ton identité est invisible mais présente.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- USAGES -->
+    <section>
+      <h2>⚖️ Usages légitimes vs malveillants</h2>
+
+      <div class="comparison-grid">
+        <div class="card">
+          <h3 style="color: var(--green);">✅ Usages légitimes</h3>
+          <ul style="list-style: none; padding: 0;">
+            <li style="padding: 0.5rem 0;">🔐 <strong>Protection des sources</strong> — Journalistes protégeant leurs informateurs</li>
+            <li style="padding: 0.5rem 0;">🎨 <strong>Watermarking</strong> — Photographes marquant leurs œuvres</li>
+            <li style="padding: 0.5rem 0;">🏛️ <strong>Dissidence</strong> — Activistes dans des régimes autoritaires</li>
+            <li style="padding: 0.5rem 0;">🔬 <strong>Recherche</strong> — Études sur la sécurité informatique</li>
+            <li style="padding: 0.5rem 0;">🎮 <strong>Easter eggs</strong> — Messages cachés dans les jeux/films</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="color: var(--red);">❌ Usages malveillants</h3>
+          <ul style="list-style: none; padding: 0;">
+            <li style="padding: 0.5rem 0;">🦠 <strong>Malware</strong> — Code malveillant caché dans des images</li>
+            <li style="padding: 0.5rem 0;">🕵️ <strong>Espionnage</strong> — Exfiltration de données d'entreprise</li>
+            <li style="padding: 0.5rem 0;">💰 <strong>Crime organisé</strong> — Communication entre criminels</li>
+            <li style="padding: 0.5rem 0;">🚫 <strong>Contenu illégal</strong> — Dissimulation de contenus interdits</li>
+            <li style="padding: 0.5rem 0;">📊 <strong>Manipulation</strong> — Faux documents avec preuves cachées</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="info-box">
+        <h4>⚖️ Et légalement ?</h4>
+        <p>En Belgique et en France, la stéganographie elle-même n'est pas illégale. C'est l'usage qui peut l'être. Cacher un message d'amour = légal. Cacher des plans terroristes = illégal (évidemment).</p>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section>
+      <h2>🧠 Quiz : Teste tes connaissances</h2>
+
+      <div class="quiz-question" data-correct="2">
+        <h4>1. Quelle donnée n'est PAS typiquement dans les métadonnées EXIF d'une photo ?</h4>
+        <div class="quiz-options">
+          <label class="quiz-option" onclick="checkQuiz(this, false)">📍 Coordonnées GPS</label>
+          <label class="quiz-option" onclick="checkQuiz(this, false)">📱 Modèle de téléphone</label>
+          <label class="quiz-option" onclick="checkQuiz(this, true)">🔑 Tes mots de passe WiFi</label>
+          <label class="quiz-option" onclick="checkQuiz(this, false)">🕐 Date et heure de prise</label>
+        </div>
+      </div>
+
+      <div class="quiz-question" data-correct="1">
+        <h4>2. La stéganographie sert à :</h4>
+        <div class="quiz-options">
+          <label class="quiz-option" onclick="checkQuiz(this, false)">Rendre un message illisible sans clé</label>
+          <label class="quiz-option" onclick="checkQuiz(this, true)">Cacher l'existence même d'un message</label>
+          <label class="quiz-option" onclick="checkQuiz(this, false)">Compresser les fichiers</label>
+          <label class="quiz-option" onclick="checkQuiz(this, false)">Supprimer les métadonnées</label>
+        </div>
+      </div>
+
+      <div class="quiz-question" data-correct="3">
+        <h4>3. Combien de bits peut-on cacher par pixel avec la méthode LSB basique ?</h4>
+        <div class="quiz-options">
+          <label class="quiz-option" onclick="checkQuiz(this, false)">1 bit</label>
+          <label class="quiz-option" onclick="checkQuiz(this, false)">2 bits</label>
+          <label class="quiz-option" onclick="checkQuiz(this, true)">3 bits (1 par canal R, G, B)</label>
+          <label class="quiz-option" onclick="checkQuiz(this, false)">8 bits</label>
+        </div>
+      </div>
+
+      <div class="quiz-question">
+        <h4>4. Quel service utilise la stéganographie pour tracer les fuites ?</h4>
+        <div class="quiz-options">
+          <label class="quiz-option" onclick="checkQuiz(this, false)">Wikipedia</label>
+          <label class="quiz-option" onclick="checkQuiz(this, true)">Netflix (et autres streaming)</label>
+          <label class="quiz-option" onclick="checkQuiz(this, false)">Google Search</label>
+          <label class="quiz-option" onclick="checkQuiz(this, false)">Aucun</label>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROTECTION -->
+    <section>
+      <h2>🛡️ Comment te protéger</h2>
+
+      <div class="card-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📷</div>
+          <h4>Désactive le GPS sur ta caméra</h4>
+          <p>Réglages > Confidentialité > Localisation > Appareil photo</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧹</div>
+          <h4>Nettoie avant de partager</h4>
+          <p>Utilise des outils de suppression de métadonnées</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📸</div>
+          <h4>Capture d'écran = reset</h4>
+          <p>Une capture d'écran supprime les métadonnées originales</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h4>Utilise Signal/Telegram</h4>
+          <p>Ces apps suppriment automatiquement les métadonnées</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <h4>PDF = attention</h4>
+          <p>Exporter en PDF ne supprime pas les métadonnées Word</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h4>Vérifie avant d'envoyer</h4>
+          <p>Inspecte tes fichiers importants avec un outil d'analyse</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONCLUSION -->
+    <section>
+      <h2>🎯 Ce qu'il faut retenir</h2>
+
+      <div class="card" style="background: linear-gradient(135deg, rgba(167, 139, 250, 0.1), rgba(96, 165, 250, 0.1));">
+        <h3>📊 Métadonnées</h3>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 0.5rem 0;">✅ Tes fichiers contiennent des infos invisibles sur toi</li>
+          <li style="padding: 0.5rem 0;">✅ Photos = potentiellement ta localisation exacte</li>
+          <li style="padding: 0.5rem 0;">✅ Documents = ton identité et ton historique</li>
+          <li style="padding: 0.5rem 0;">✅ Tu peux et dois les supprimer avant de partager</li>
+        </ul>
+      </div>
+
+      <div class="card" style="background: linear-gradient(135deg, rgba(251, 146, 60, 0.1), rgba(248, 113, 113, 0.1));">
+        <h3>🎨 Stéganographie</h3>
+        <ul style="list-style: none; padding: 0;">
+          <li style="padding: 0.5rem 0;">✅ Technique pour cacher des messages dans des fichiers</li>
+          <li style="padding: 0.5rem 0;">✅ Utilisée légitimement (journalistes, artistes) et illégitimement (criminels)</li>
+          <li style="padding: 0.5rem 0;">✅ Netflix t'identifie avec de la stégano invisible</li>
+          <li style="padding: 0.5rem 0;">✅ L'outil, pas l'usage, est neutre</li>
+        </ul>
+      </div>
+
+      <div class="success-box">
+        <h4>🧠 La vraie leçon</h4>
+        <p>Le numérique laisse des traces invisibles partout. En comprenant ces mécanismes, tu deviens un citoyen numérique averti — capable de protéger ta vie privée ET de comprendre les enjeux de surveillance, de journalisme, de liberté d'expression.</p>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>Module POLiT!KA — Métadonnées & Stéganographie</p>
+    <p style="margin-top: 0.5rem; font-size: 0.9rem;">Tout se passe dans ton navigateur. Aucune donnée n'est envoyée. 🔐</p>
+  </footer>
+
+  <script>
+    // ===== MÉTADONNÉES =====
+    const dropZone = document.getElementById('dropZone');
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        analyzeFile(file);
+      }
+    });
+
+    function analyzeFile(file) {
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = e.target.result;
+        const metadata = extractBasicMetadata(file, data);
+        displayMetadata(metadata);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    function extractBasicMetadata(file, arrayBuffer) {
+      const metadata = [];
+      let hasSensitive = false;
+
+      // Infos basiques
+      metadata.push({ key: 'Nom du fichier', value: file.name });
+      metadata.push({ key: 'Type', value: file.type });
+      metadata.push({ key: 'Taille', value: formatSize(file.size) });
+      metadata.push({ key: 'Dernière modification', value: new Date(file.lastModified).toLocaleString() });
+
+      // Tenter d'extraire EXIF basique
+      const bytes = new Uint8Array(arrayBuffer);
+      
+      // Chercher marqueur EXIF (très simplifié)
+      let exifFound = false;
+      for (let i = 0; i < Math.min(bytes.length, 100); i++) {
+        if (bytes[i] === 0xFF && bytes[i+1] === 0xE1) {
+          exifFound = true;
+          break;
+        }
+      }
+
+      if (exifFound) {
+        metadata.push({ key: 'Données EXIF', value: '⚠️ PRÉSENTES', sensitive: true });
+        hasSensitive = true;
+
+        // Simuler des données pour la démo (dans un vrai outil on parlerait EXIF)
+        metadata.push({ key: 'GPS potentiel', value: '⚠️ Possible (vérifier avec outil spécialisé)', sensitive: true });
+      } else {
+        metadata.push({ key: 'Données EXIF', value: '✅ Non détectées ou supprimées' });
+      }
+
+      // Dimensions (via Image)
+      const img = new Image();
+      img.onload = function() {
+        const dimRow = document.createElement('tr');
+        dimRow.innerHTML = `<th>Dimensions</th><td>${img.width} × ${img.height} px</td>`;
+        document.getElementById('metadataTable').appendChild(dimRow);
+
+        const pixelRow = document.createElement('tr');
+        pixelRow.innerHTML = `<th>Pixels totaux</th><td>${(img.width * img.height).toLocaleString()}</td>`;
+        document.getElementById('metadataTable').appendChild(pixelRow);
+
+        const capacityRow = document.createElement('tr');
+        const capacity = Math.floor((img.width * img.height * 3) / 8);
+        capacityRow.innerHTML = `<th>Capacité stégano (LSB)</th><td>~${capacity.toLocaleString()} caractères</td>`;
+        document.getElementById('metadataTable').appendChild(capacityRow);
+      };
+      img.src = URL.createObjectURL(file);
+
+      return { items: metadata, hasSensitive };
+    }
+
+    function displayMetadata(metadata) {
+      const table = document.getElementById('metadataTable');
+      table.innerHTML = metadata.items.map(m => `
+        <tr>
+          <th>${m.key}</th>
+          <td class="${m.sensitive ? 'sensitive' : ''}">${m.value}</td>
+        </tr>
+      `).join('');
+
+      const warning = document.getElementById('metadataWarning');
+      if (metadata.hasSensitive) {
+        warning.classList.remove('safe');
+        document.getElementById('warningText').textContent = '⚠️ Attention : des données potentiellement sensibles ont été détectées !';
+      } else {
+        warning.classList.add('safe');
+        document.getElementById('warningText').textContent = '✅ Aucune donnée sensible évidente détectée.';
+      }
+
+      document.getElementById('metadataDisplay').classList.add('visible');
+    }
+
+    function formatSize(bytes) {
+      if (bytes < 1024) return bytes + ' octets';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' Ko';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' Mo';
+    }
+
+    // ===== STÉGANOGRAPHIE =====
+    let coverImage = null;
+    let decodeImage = null;
+
+    function showSteganoPanel(panel) {
+      document.querySelectorAll('.stegano-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.stegano-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('panel-' + panel).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function loadCoverImage(file) {
+      if (!file) return;
+      document.getElementById('coverLabel').textContent = '✅ ' + file.name;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          coverImage = img;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function loadDecodeImage(file) {
+      if (!file) return;
+      document.getElementById('decodeLabel').textContent = '✅ ' + file.name;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          decodeImage = img;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function encodeMessage() {
+      if (!coverImage) {
+        alert('Choisis d\'abord une image !');
+        return;
+      }
+
+      let message = document.getElementById('secretMessage').value;
+      if (!message) {
+        alert('Écris un message à cacher !');
+        return;
+      }
+
+      const password = document.getElementById('encodePassword').value;
+      if (password) {
+        message = simpleEncrypt(message, password);
+      }
+
+      // Ajouter délimiteur de fin
+      message += '\x00\x00\x00';
+
+      // Créer canvas
+      const canvas = document.getElementById('outputCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = coverImage.width;
+      canvas.height = coverImage.height;
+      ctx.drawImage(coverImage, 0, 0);
+
+      // Encoder le message
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+
+      // Convertir message en bits
+      let bits = '';
+      for (let i = 0; i < message.length; i++) {
+        bits += message.charCodeAt(i).toString(2).padStart(8, '0');
+      }
+
+      // Vérifier capacité
+      const maxBits = data.length * 3 / 4; // RGB channels only
+      if (bits.length > maxBits) {
+        alert('Message trop long pour cette image !');
+        return;
+      }
+
+      // Encoder dans LSB
+      let bitIndex = 0;
+      for (let i = 0; i < data.length && bitIndex < bits.length; i += 4) {
+        // Rouge
+        if (bitIndex < bits.length) {
+          data[i] = (data[i] & 0xFE) | parseInt(bits[bitIndex]);
+          bitIndex++;
+        }
+        // Vert
+        if (bitIndex < bits.length) {
+          data[i + 1] = (data[i + 1] & 0xFE) | parseInt(bits[bitIndex]);
+          bitIndex++;
+        }
+        // Bleu
+        if (bitIndex < bits.length) {
+          data[i + 2] = (data[i + 2] & 0xFE) | parseInt(bits[bitIndex]);
+          bitIndex++;
+        }
+        // Alpha reste inchangé
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+
+      // Afficher comparaison
+      const compareOrig = document.getElementById('compareOriginal');
+      const compareEnc = document.getElementById('compareEncoded');
+      
+      const ctxOrig = compareOrig.getContext('2d');
+      const ctxEnc = compareEnc.getContext('2d');
+      
+      ctxOrig.drawImage(coverImage, 0, 0, 200, 150);
+      ctxEnc.drawImage(canvas, 0, 0, 200, 150);
+
+      document.getElementById('encodeResult').style.display = 'block';
+    }
+
+    function decodeMessage() {
+      if (!decodeImage) {
+        alert('Choisis d\'abord une image !');
+        return;
+      }
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = decodeImage.width;
+      canvas.height = decodeImage.height;
+      ctx.drawImage(decodeImage, 0, 0);
+
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+
+      // Extraire les bits LSB
+      let bits = '';
+      for (let i = 0; i < data.length; i += 4) {
+        bits += (data[i] & 1).toString();
+        bits += (data[i + 1] & 1).toString();
+        bits += (data[i + 2] & 1).toString();
+      }
+
+      // Convertir en caractères
+      let message = '';
+      for (let i = 0; i < bits.length; i += 8) {
+        const byte = bits.substr(i, 8);
+        const charCode = parseInt(byte, 2);
+        if (charCode === 0) {
+          // Vérifier délimiteur de fin
+          if (bits.substr(i, 24) === '000000000000000000000000') {
+            break;
+          }
+        }
+        if (charCode > 0 && charCode < 256) {
+          message += String.fromCharCode(charCode);
+        }
+      }
+
+      // Décrypter si mot de passe
+      const password = document.getElementById('decodePassword').value;
+      if (password) {
+        message = simpleDecrypt(message, password);
+      }
+
+      document.getElementById('decodedMessage').textContent = message || '(Aucun message trouvé ou format incorrect)';
+      document.getElementById('decodeResult').classList.add('visible');
+    }
+
+    // Chiffrement XOR simple (pour la démo)
+    function simpleEncrypt(text, key) {
+      let result = '';
+      for (let i = 0; i < text.length; i++) {
+        result += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+      }
+      return result;
+    }
+
+    function simpleDecrypt(text, key) {
+      return simpleEncrypt(text, key); // XOR est symétrique
+    }
+
+    // ===== QUIZ =====
+    function checkQuiz(option, correct) {
+      const allOptions = option.parentElement.querySelectorAll('.quiz-option');
+      allOptions.forEach(opt => {
+        opt.style.pointerEvents = 'none';
+      });
+
+      if (correct) {
+        option.classList.add('correct');
+      } else {
+        option.classList.add('wrong');
+        // Montrer la bonne réponse
+        allOptions.forEach(opt => {
+          if (opt.onclick.toString().includes('true')) {
+            opt.classList.add('correct');
+          }
+        });
+      }
+    }
+  </script>
+</body>
+</html>
